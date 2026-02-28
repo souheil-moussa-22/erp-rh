@@ -1,7 +1,7 @@
 /* Container principal */
 .roles-container {
   min-height: 100vh;
-  background: white;
+  background: var(--color-surface);
   padding: 30px 20px;
   font-family: inherit;
 }
@@ -26,16 +26,16 @@
 .roles-title {
   font-size: 32px;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--color-text-primary);
   margin: 0 0 8px 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .roles-subtitle {
-  color: #718096;
+  color: var(--color-text-muted);
   font-size: 16px;
   margin: 0;
   font-weight: 400;
@@ -54,8 +54,8 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
   border: none;
   border-radius: 12px;
   font-size: 15px;
@@ -63,7 +63,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px var(--color-primary-glow);
   white-space: nowrap;
 }
 
@@ -77,8 +77,8 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: white;
-  color: #667eea;
+  background: var(--color-surface);
+  color: var(--color-primary);
   border: 2px solid #667eea;
   border-radius: 12px;
   font-size: 15px;
@@ -91,8 +91,8 @@
 }
 
 .search-btn:hover {
-  background: #667eea;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-surface);
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
 }
@@ -128,7 +128,7 @@
   left: 50%;
   transform: translateX(-50%);
   background: #333;
-  color: white;
+  color: var(--color-surface);
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 12px;
@@ -148,11 +148,11 @@
 }
 
 .edit-btn {
-  color: #667eea;
+  color: var(--color-primary);
 }
 
 .edit-btn:hover {
-  color: #667eea;
+  color: var(--color-primary);
   transform: translateY(-2px);
 }
 
@@ -172,7 +172,7 @@
   gap: 8px;
   padding: 10px 20px;
   background: #e53e3e;
-  color: white;
+  color: var(--color-surface);
   border: none;
   border-radius: 10px;
   font-size: 14px;
@@ -193,7 +193,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background: #f7fafc;
+  background: var(--color-bg);
   border-radius: 15px;
   margin-bottom: 20px;
   border: 1px solid #e2e8f0;
@@ -211,7 +211,7 @@
 }
 
 .selected-count {
-  color: #667eea;
+  color: var(--color-primary);
   font-weight: 600;
   font-size: 14px;
 }
@@ -235,7 +235,7 @@
 .checkmark {
   width: 20px;
   height: 20px;
-  background: white;
+  background: var(--color-surface);
   border: 2px solid #cbd5e0;
   border-radius: 6px;
   margin-right: 8px;
@@ -244,14 +244,14 @@
 }
 
 .checkbox-container input:checked ~ .checkmark {
-  background: #667eea;
-  border-color: #667eea;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .checkbox-container input:checked ~ .checkmark:after {
   content: "✓";
   position: absolute;
-  color: white;
+  color: var(--color-surface);
   font-size: 14px;
   font-weight: bold;
   top: 50%;
@@ -260,14 +260,14 @@
 }
 
 .checkbox-container input:indeterminate ~ .checkmark {
-  background: #667eea;
-  border-color: #667eea;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .checkbox-container input:indeterminate ~ .checkmark:after {
   content: "—";
   position: absolute;
-  color: white;
+  color: var(--color-surface);
   font-size: 14px;
   font-weight: bold;
   top: 50%;
@@ -277,7 +277,7 @@
 
 /* Section du tableau */
 .table-section {
-  background: white;
+  background: var(--color-surface);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -301,22 +301,22 @@
   justify-content: space-between;
   align-items: center;
   padding: 25px 30px;
-  background: #f7fafc;
+  background: var(--color-bg);
   border-bottom: 1px solid #e2e8f0;
 }
 
 .table-title {
-  color: #1a202c;
+  color: var(--color-text-primary);
   font-size: 20px;
   font-weight: 700;
   margin: 0;
 }
 
 .table-count {
-  color: #718096;
+  color: var(--color-text-muted);
   font-size: 14px;
   font-weight: 500;
-  background: white;
+  background: var(--color-surface);
   padding: 8px 16px;
   border-radius: 20px;
   border: 1px solid #e2e8f0;
@@ -327,11 +327,11 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  background: white;
+  background: var(--color-surface);
 }
 
 .roles-table thead tr {
-  background: #f7fafc;
+  background: var(--color-bg);
 }
 
 .roles-table th {
@@ -359,13 +359,13 @@
 }
 
 .roles-table tbody tr {
-  background: white;
+  background: var(--color-surface);
   border-bottom: 1px solid #e2e8f0;
   transition: all 0.3s ease;
 }
 
 .roles-table tbody tr:hover {
-  background: #f7fafc;
+  background: var(--color-bg);
 }
 
 .roles-table tbody tr.selected {
@@ -386,7 +386,7 @@
 /* Informations du rôle */
 .role-name {
   font-weight: 600;
-  color: #1a202c;
+  color: var(--color-text-primary);
 }
 
 .role-info {
@@ -396,8 +396,8 @@
 }
 
 .role-badge {
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 12px;
@@ -432,7 +432,7 @@
 }
 
 .loading-spinner span {
-  color: #718096;
+  color: var(--color-text-muted);
   font-size: 16px;
   font-weight: 500;
 }
@@ -441,13 +441,13 @@
 .no-data {
   padding: 60px 20px;
   text-align: center;
-  background: white;
+  background: var(--color-surface);
 }
 
 .no-data-icon {
   font-size: 48px;
   margin-bottom: 16px;
-  color: #a0aec0;
+  color: var(--color-text-placeholder);
 }
 
 .no-data h3 {
@@ -458,14 +458,14 @@
 }
 
 .no-data p {
-  color: #718096;
+  color: var(--color-text-muted);
   margin: 0;
   font-size: 16px;
 }
 
 /* Messages d'erreur */
 .error-message {
-  background: white;
+  background: var(--color-surface);
   border-radius: 12px;
   padding: 16px 20px;
   color: #e53e3e;
@@ -504,7 +504,7 @@
 }
 
 .modal-content {
-  background: white;
+  background: var(--color-surface);
   border-radius: 20px;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
   width: 100%;
@@ -538,14 +538,14 @@
 }
 
 .modal-title {
-  color: #1a202c;
+  color: var(--color-text-primary);
   font-size: 24px;
   font-weight: 700;
   margin: 0 0 8px 0;
 }
 
 .modal-subtitle {
-  color: #718096;
+  color: var(--color-text-muted);
   font-size: 16px;
   margin: 0;
 }
@@ -554,7 +554,7 @@
   background: none;
   border: none;
   font-size: 20px;
-  color: #718096;
+  color: var(--color-text-muted);
   cursor: pointer;
   padding: 0;
   width: 40px;
@@ -567,7 +567,7 @@
 }
 
 .close-btn:hover {
-  background: #f7fafc;
+  background: var(--color-bg);
   color: #4a5568;
 }
 
@@ -608,22 +608,22 @@
   border-radius: 10px;
   font-size: 15px;
   transition: all 0.3s ease;
-  background: #f7fafc;
-  color: #2d3748;
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #667eea;
-  background-color: white;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary);
+  background-color: var(--color-surface);
+  box-shadow: 0 0 0 4px var(--color-primary-light);
 }
 
 .form-hint {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #718096;
+  color: var(--color-text-muted);
   font-size: 13px;
   font-style: italic;
 }
@@ -641,8 +641,8 @@
 
 .cancel-btn {
   padding: 12px 24px;
-  background: white;
-  color: #718096;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
   border: 2px solid #718096;
   border-radius: 10px;
   font-size: 15px;
@@ -652,8 +652,8 @@
 }
 
 .cancel-btn:hover:not(:disabled) {
-  background: #718096;
-  color: white;
+  background: var(--color-text-muted);
+  color: var(--color-surface);
 }
 
 .cancel-btn:disabled {
@@ -666,8 +666,8 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #667eea;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-surface);
   border: none;
   border-radius: 10px;
   font-size: 15px;
@@ -714,7 +714,7 @@
 }
 
 .confirmation-modal {
-  background: white;
+  background: var(--color-surface);
   border-radius: 20px;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
   width: 100%;
@@ -725,7 +725,7 @@
 
 .confirmation-header {
   background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
-  color: white;
+  color: var(--color-surface);
   padding: 30px;
   text-align: center;
 }
@@ -762,7 +762,7 @@
 
 .role-to-delete-badge {
   background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
-  color: white;
+  color: var(--color-surface);
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 14px;
@@ -807,8 +807,8 @@
 
 .cancel-delete-btn {
   padding: 12px 24px;
-  background: white;
-  color: #718096;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
   border: 2px solid #718096;
   border-radius: 10px;
   font-size: 15px;
@@ -819,8 +819,8 @@
 }
 
 .cancel-delete-btn:hover {
-  background: #718096;
-  color: white;
+  background: var(--color-text-muted);
+  color: var(--color-surface);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(113, 128, 150, 0.3);
 }
@@ -831,7 +831,7 @@
   gap: 8px;
   padding: 12px 24px;
   background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
-  color: white;
+  color: var(--color-surface);
   border: none;
   border-radius: 10px;
   font-size: 15px;
@@ -894,7 +894,7 @@
 .search-icon {
   position: absolute;
   left: 15px;
-  color: #a0aec0;
+  color: var(--color-text-placeholder);
   z-index: 2;
 }
 
@@ -905,16 +905,16 @@
   border-radius: 10px;
   font-size: 15px;
   transition: all 0.3s ease;
-  background: #f7fafc;
+  background: var(--color-bg);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  color: #2d3748;
+  color: var(--color-text-secondary);
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
-  background-color: white;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary);
+  background-color: var(--color-surface);
+  box-shadow: 0 0 0 4px var(--color-primary-light);
 }
 
 .clear-search {
@@ -923,7 +923,7 @@
   background: none;
   border: none;
   font-size: 16px;
-  color: #a0aec0;
+  color: var(--color-text-placeholder);
   cursor: pointer;
   padding: 4px;
   border-radius: 50%;
@@ -941,15 +941,15 @@
 }
 
 .search-results-info {
-  color: #718096;
+  color: var(--color-text-muted);
   font-size: 14px;
   font-weight: 500;
 }
 
 .clear-search-btn {
   padding: 10px 16px;
-  background: #667eea;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-surface);
   border: none;
   border-radius: 8px;
   font-size: 14px;
@@ -1140,7 +1140,7 @@
 }
 
 .simple-confirmation-modal {
-  background: white;
+  background: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   width: 100%;
@@ -1164,7 +1164,7 @@
 }
 
 .simple-confirmation-title {
-  color: #2d3748;
+  color: var(--color-text-secondary);
   font-size: 18px;
   font-weight: 600;
   margin: 0 0 16px 0;
@@ -1192,7 +1192,7 @@
   max-height: 80px;
   overflow-y: auto;
   padding: 8px;
-  background: #f7fafc;
+  background: var(--color-bg);
   border-radius: 6px;
 }
 
@@ -1226,7 +1226,7 @@
 
 .simple-cancel-btn {
   padding: 8px 16px;
-  background: white;
+  background: var(--color-surface);
   color: #4a5568;
   border: 1px solid #cbd5e0;
   border-radius: 6px;
@@ -1237,8 +1237,8 @@
 }
 
 .simple-cancel-btn:hover:not(:disabled) {
-  background: #f7fafc;
-  border-color: #a0aec0;
+  background: var(--color-bg);
+  border-color: var(--color-text-placeholder);
 }
 
 .simple-cancel-btn:disabled {
@@ -1249,7 +1249,7 @@
 .simple-confirm-btn {
   padding: 8px 16px;
   background: #e53e3e;
-  color: white;
+  color: var(--color-surface);
   border: none;
   border-radius: 6px;
   font-size: 14px;

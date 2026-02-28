@@ -1,5 +1,5 @@
 .training-card {
-  background: white;
+  background: var(--color-surface);
   border-radius: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
@@ -54,15 +54,15 @@
 
 .action-btn:hover {
   background: #f8f9fa;
-  border-color: #667eea;
-  color: #667eea;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .dropdown-menu {
   position: absolute;
   top: 100%;
   right: 0;
-  background: white;
+  background: var(--color-surface);
   border: 1px solid #e9ecef;
   border-radius: 8px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
@@ -93,7 +93,7 @@
 
 .dropdown-item:hover {
   background: #f8f9fa;
-  color: #667eea;
+  color: var(--color-primary);
 }
 
 .dropdown-item.warning { color: #e0a800; }
@@ -147,7 +147,7 @@
 
 .meta-item i {
   width: 16px;
-  color: #667eea;
+  color: var(--color-primary);
 }
 
 /* Progress Section */

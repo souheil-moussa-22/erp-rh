@@ -6,7 +6,7 @@
   flex-direction: column;
   align-items: center;
   padding: 30px 20px;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   min-height: 100vh;
   box-sizing: border-box;
   position: relative;
@@ -15,7 +15,7 @@
 
 .payslip-btn {
   background-color: #4CAF50;
-  color: white;
+  color: var(--color-surface);
   border: none;
   padding: 10px 16px;
   border-radius: 6px;
@@ -148,7 +148,7 @@
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid #fff;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 25px var(--color-primary-glow);
   transition: all 0.3s ease;
   display: block;
 }
@@ -168,7 +168,7 @@
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 15px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   position: relative;
@@ -182,7 +182,7 @@
   left: 0;
   width: 50px;
   height: 3px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   border-radius: 2px;
 }
 
@@ -196,7 +196,7 @@
 }
 
 .profile-info strong {
-  color: #2d3748;
+  color: var(--color-text-secondary);
   min-width: 120px;
 }
 
@@ -204,8 +204,8 @@
 /* Bouton Payslip Bleu */
 /* =========================== */
 .payslip-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
   border: none;
   padding: 12px 20px;
   border-radius: 10px;
@@ -213,7 +213,7 @@
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px var(--color-primary-glow);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -230,7 +230,7 @@
 }
 
 .payslip-btn:disabled {
-  background: #a0aec0;
+  background: var(--color-text-placeholder);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -261,7 +261,7 @@
 /* Bouton fiche de paie */
 .download-btn {
   background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-  color: white;
+  color: var(--color-surface);
   border: none;
   padding: 8px 16px;
   font-size: 0.85rem;
@@ -292,7 +292,7 @@
   font-size: 22px;
   font-weight: 700;
   margin-bottom: 20px;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   position: relative;
   padding-bottom: 10px;
 }
@@ -305,7 +305,7 @@
   left: 0;
   width: 40px;
   height: 3px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   border-radius: 2px;
 }
 
@@ -342,8 +342,8 @@
 
 .employee-form input:focus,
 .modal-content input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-light);
   transform: translateY(-1px);
 }
 
@@ -354,7 +354,7 @@
   padding: 14px 28px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   color: #fff;
   font-weight: 600;
   cursor: pointer;
@@ -442,14 +442,14 @@
 }
 
 .photo-upload-form input:hover {
-  border-color: #667eea;
-  background: #f7fafc;
+  border-color: var(--color-primary);
+  background: var(--color-bg);
 }
 
 .upload-photo-btn {
   padding: 10px 20px;
   background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-  color: white;
+  color: var(--color-surface);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -464,7 +464,7 @@
 }
 
 .upload-photo-btn:disabled {
-  background: #a0aec0;
+  background: var(--color-text-placeholder);
   cursor: not-allowed;
   transform: none;
 }
@@ -490,7 +490,7 @@
   height: 44px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   color: #fff;
   font-size: 18px;
   font-weight: bold;
@@ -499,7 +499,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px var(--color-primary-glow);
 }
 
 .icon-btn:hover {
@@ -525,7 +525,7 @@
 .formation-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  border-color: #667eea;
+  border-color: var(--color-primary);
 }
 
 .formation-row {
@@ -556,7 +556,7 @@
 
 .delete-btn {
   background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
-  color: white;
+  color: var(--color-surface);
   border: none;
   padding: 6px 12px;
   cursor: pointer;
@@ -572,7 +572,7 @@
 }
 
 .pdf-link {
-  color: #667eea;
+  color: var(--color-primary);
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
@@ -582,7 +582,7 @@
 }
 
 .pdf-link:hover {
-  color: #764ba2;
+  color: var(--color-primary-dark);
   text-decoration: underline;
 }
 
@@ -594,10 +594,10 @@
 
 .no-formations {
   text-align: center;
-  color: #718096;
+  color: var(--color-text-muted);
   font-style: italic;
   padding: 40px 20px;
-  background: #f7fafc;
+  background: var(--color-bg);
   border-radius: 12px;
   border: 2px dashed #cbd5e0;
   font-size: 16px;
@@ -652,7 +652,7 @@
   right: 25px;
   font-size: 28px;
   font-weight: bold;
-  color: #667eea;
+  color: var(--color-primary);
   cursor: pointer;
   transition: all 0.3s ease;
   width: 40px;
@@ -664,9 +664,9 @@
 }
 
 .close-btn:hover {
-  color: #764ba2;
+  color: var(--color-primary-dark);
   transform: rotate(90deg);
-  background: #f7fafc;
+  background: var(--color-bg);
 }
 
 /* =========================== */
@@ -678,7 +678,7 @@
 }
 
 .file-info {
-  color: #718096;
+  color: var(--color-text-muted);
   font-size: 0.8rem;
   display: block;
   margin-top: 5px;
@@ -717,7 +717,7 @@
 /* Bouton Annuler */
 .cancel-btn {
   background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
-  color: white;
+  color: var(--color-surface);
 }
 
 .cancel-btn:hover {
@@ -727,17 +727,17 @@
 
 /* Bouton Ajouter/Créer */
 .add-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
 }
 
 .add-btn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px var(--color-primary-glow);
 }
 
 .add-btn:disabled {
-  background-color: #a0aec0;
+  background-color: var(--color-text-placeholder);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -746,7 +746,7 @@
 /* Bouton Supprimer */
 .delete-btn {
   background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
-  color: white;
+  color: var(--color-surface);
 }
 
 .delete-btn:hover {
@@ -757,7 +757,7 @@
 /* Bouton Mettre à jour */
 .update-btn {
   background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-  color: white;
+  color: var(--color-surface);
 }
 
 .update-btn:hover {
@@ -768,7 +768,7 @@
 /* Bouton Succès */
 .success-btn {
   background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-  color: white;
+  color: var(--color-surface);
 }
 
 .success-btn:hover {
@@ -1078,8 +1078,8 @@
     align-items: center;
     gap: 15px;
     padding: 30px 30px 20px 30px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--gradient-primary);
+    color: var(--color-surface);
     position: relative;
   }
 
@@ -1087,7 +1087,7 @@
     margin: 0;
     font-size: 24px;
     font-weight: 700;
-    color: white;
+    color: var(--color-surface);
     flex: 1;
   }
 
@@ -1110,12 +1110,12 @@
   .update-confirmation .modal-icon svg {
     width: 24px;
     height: 24px;
-    color: white;
+    color: var(--color-surface);
   }
 
   .update-confirmation .close-btn {
     position: static;
-    color: white;
+    color: var(--color-surface);
     font-size: 24px;
     width: 35px;
     height: 35px;
@@ -1144,7 +1144,7 @@
 
   .update-confirmation .confirmation-message p {
     font-size: 18px;
-    color: #2d3748;
+    color: var(--color-text-secondary);
     margin: 0 0 20px 0;
     font-weight: 500;
   }
@@ -1154,7 +1154,7 @@
     align-items: flex-start;
     gap: 12px;
     padding: 15px;
-    background: rgba(102, 126, 234, 0.1);
+    background: var(--color-primary-light);
     border: 1px solid rgba(102, 126, 234, 0.2);
     border-radius: 12px;
     color: #4a5568;
@@ -1163,7 +1163,7 @@
   }
 
   .update-confirmation .warning-note svg {
-    color: #667eea;
+    color: var(--color-primary);
     margin-top: 2px;
     flex-shrink: 0;
   }
@@ -1175,7 +1175,7 @@
 
   .update-confirmation .modal-actions {
     padding: 25px 30px;
-    background: white;
+    background: var(--color-surface);
     border-top: 1px solid #e2e8f0;
     gap: 15px;
   }
@@ -1184,8 +1184,8 @@
   .update-confirmation .btn-secondary {
     flex: 1;
     padding: 14px 20px;
-    background: white;
-    color: #718096;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
     border: 2px solid #e2e8f0;
     border-radius: 12px;
     font-weight: 600;
@@ -1198,7 +1198,7 @@
   }
 
   .update-confirmation .btn-secondary:hover {
-    background: #f7fafc;
+    background: var(--color-bg);
     border-color: #cbd5e0;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -1208,7 +1208,7 @@
     flex: 1;
     padding: 14px 20px;
     background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-    color: white;
+    color: var(--color-surface);
     border: none;
     border-radius: 12px;
     font-weight: 600;
@@ -1369,7 +1369,7 @@
 
   .info-value {
     padding: 8px 12px;
-    background: white;
+    background: var(--color-surface);
     border: 1px solid #dee2e6;
     border-radius: 4px;
     color: #2c3e50;
@@ -1643,8 +1643,8 @@
 }
 
 .char-counter.normal {
-  color: #718096;
-  background: #f7fafc;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
 }
 
 .char-counter.warning {
@@ -1684,8 +1684,8 @@
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
-  border-color: #667eea;
-  background: white;
+  border-color: var(--color-primary);
+  background: var(--color-surface);
   box-shadow:
     0 0 0 4px rgba(102, 126, 234, 0.15),
     0 8px 20px rgba(102, 126, 234, 0.2);
@@ -1846,8 +1846,8 @@
 .info-tooltip .tooltip-icon {
   width: 16px;
   height: 16px;
-  background: #667eea;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-surface);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1858,7 +1858,7 @@
 }
 
 .info-tooltip:hover .tooltip-icon {
-  background: #764ba2;
+  background: var(--color-primary-dark);
   transform: scale(1.1);
 }
 
@@ -1867,8 +1867,8 @@
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background: #2d3748;
-  color: white;
+  background: var(--color-text-secondary);
+  color: var(--color-surface);
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 0.8rem;
@@ -1887,7 +1887,7 @@
   left: 50%;
   transform: translateX(-50%);
   border: 6px solid transparent;
-  border-top-color: #2d3748;
+  border-top-color: var(--color-text-secondary);
 }
 
 .info-tooltip:hover .tooltip-text {
@@ -1957,7 +1957,7 @@
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   font-size: 14px;
-  background: white;
+  background: var(--color-surface);
   transition: all 0.3s ease;
   min-height: 46px;
   box-sizing: border-box;
@@ -1972,7 +1972,7 @@ input[type="date"] {
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   font-size: 14px;
-  background: white;
+  background: var(--color-surface);
   transition: all 0.3s ease;
   min-height: 46px;
   box-sizing: border-box;
@@ -1988,16 +1988,16 @@ input[type="date"] {
   transform: translateY(-50%);
   pointer-events: none;
   font-size: 16px;
-  color: #667eea;
+  color: var(--color-primary);
   z-index: 2;
-  background: white;
+  background: var(--color-surface);
   padding: 0 4px;
 }
 
 /* États des champs date */
 input[type="date"]:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
   outline: none;
 }
 
@@ -2042,7 +2042,7 @@ input[type="date"]::-moz-focus-inner {
 
 /* Style pour les hints de date */
 .date-hint {
-  color: #718096;
+  color: var(--color-text-muted);
   font-size: 0.75rem;
   display: block;
   margin-top: 5px;
@@ -2078,7 +2078,7 @@ input[type="date"]::-webkit-datetime-edit-fields-wrapper {
 }
 
 input[type="date"]::-webkit-datetime-edit-text {
-  color: #667eea;
+  color: var(--color-primary);
   padding: 0 2px;
 }
 
@@ -2140,7 +2140,7 @@ input[type="date"]::-webkit-clear-button {
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   font-size: 14px;
-  background: white;
+  background: var(--color-surface);
   transition: all 0.3s ease;
   min-height: 46px;
   box-sizing: border-box;
@@ -2148,8 +2148,8 @@ input[type="date"]::-webkit-clear-button {
 }
 
 .date-input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
   outline: none;
 }
 
@@ -2223,7 +2223,7 @@ input[type="date"]::-webkit-clear-button {
 
 /* Style pour les hints de date */
 .date-hint {
-  color: #718096;
+  color: var(--color-text-muted);
   font-size: 11px;
   display: block;
   margin-top: 4px;
@@ -2300,7 +2300,7 @@ input[type="date"]::-webkit-clear-button {
 /* Variables et Reset */
 /* =========================== */
 :host {
-  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --primary-gradient: var(--gradient-primary);
   --secondary-gradient: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
   --danger-gradient: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
   --neutral-gradient: linear-gradient(135deg, #718096 0%, #4a5568 100%);
@@ -2327,7 +2327,7 @@ input[type="date"]::-webkit-clear-button {
 /* Carte de Profil */
 /* =========================== */
 .employee-profile {
-  background: white;
+  background: var(--color-surface);
   border-radius: var(--border-radius);
   box-shadow: var(--card-shadow);
   overflow: hidden;
@@ -2371,7 +2371,7 @@ input[type="date"]::-webkit-clear-button {
 
 .profile-photo:hover {
   transform: scale(1.05);
-  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 12px 35px var(--color-primary-glow);
 }
 
 .profile-info {
@@ -2418,13 +2418,13 @@ input[type="date"]::-webkit-clear-button {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #718096;
+  color: var(--color-text-muted);
   font-weight: 600;
 }
 
 .info-value {
   font-size: 16px;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 
@@ -2443,7 +2443,7 @@ input[type="date"]::-webkit-clear-button {
 /* Formulaire */
 /* =========================== */
 .employee-form {
-  background: white;
+  background: var(--color-surface);
   border-radius: var(--border-radius);
   box-shadow: var(--card-shadow);
   padding: calc(var(--spacing-unit) * 6);
@@ -2466,14 +2466,14 @@ input[type="date"]::-webkit-clear-button {
   justify-content: center;
   background: var(--primary-gradient);
   border-radius: 12px;
-  color: white;
+  color: var(--color-surface);
   font-size: 20px;
 }
 
 .section-title {
   font-size: 22px;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -2514,9 +2514,9 @@ input[type="date"]::-webkit-clear-button {
 
 .form-input:focus {
   outline: none;
-  border-color: #667eea;
-  background: white;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary);
+  background: var(--color-surface);
+  box-shadow: 0 0 0 4px var(--color-primary-light);
 }
 
 .form-input.valid {
@@ -2549,12 +2549,12 @@ input[type="date"]::-webkit-clear-button {
 .password-title {
   font-size: 18px;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
 .password-description {
-  color: #718096;
+  color: var(--color-text-muted);
   font-size: 14px;
   margin: 0;
 }
@@ -2563,7 +2563,7 @@ input[type="date"]::-webkit-clear-button {
 /* Formations */
 /* =========================== */
 .formation-container {
-  background: white;
+  background: var(--color-surface);
   border-radius: var(--border-radius);
   box-shadow: var(--card-shadow);
   padding: calc(var(--spacing-unit) * 6);
@@ -2584,7 +2584,7 @@ input[type="date"]::-webkit-clear-button {
   gap: 8px;              /* Espace entre l’icône et le texte */
   font-size: 22px;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -2594,7 +2594,7 @@ input[type="date"]::-webkit-clear-button {
   gap: 8px;              /* Espace entre l’icône et le texte */
   font-size: 22px;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -2616,7 +2616,7 @@ input[type="date"]::-webkit-clear-button {
 .formation-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--hover-shadow);
-  border-color: #667eea;
+  border-color: var(--color-primary);
 }
 
 .formation-details {
@@ -2655,8 +2655,8 @@ input[type="date"]::-webkit-clear-button {
 
 .btn-primary {
   background: var(--primary-gradient);
-  color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  color: var(--color-surface);
+  box-shadow: 0 4px 15px var(--color-primary-glow);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -2666,7 +2666,7 @@ input[type="date"]::-webkit-clear-button {
 
 .btn-secondary {
   background: var(--secondary-gradient);
-  color: white;
+  color: var(--color-surface);
   box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
 }
 
@@ -2677,7 +2677,7 @@ input[type="date"]::-webkit-clear-button {
 
 .btn-danger {
   background: var(--danger-gradient);
-  color: white;
+  color: var(--color-surface);
   box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3);
 }
 
@@ -2688,7 +2688,7 @@ input[type="date"]::-webkit-clear-button {
 
 .btn-neutral {
   background: var(--neutral-gradient);
-  color: white;
+  color: var(--color-surface);
   box-shadow: 0 4px 15px rgba(113, 128, 150, 0.3);
 }
 
@@ -2738,7 +2738,7 @@ input[type="date"]::-webkit-clear-button {
 .upload-title {
   font-size: 18px;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -2772,7 +2772,7 @@ input[type="date"]::-webkit-clear-button {
 }
 
 .modal-content {
-  background: white;
+  background: var(--color-surface);
   border-radius: var(--border-radius);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   max-width: 600px;
@@ -2798,7 +2798,7 @@ input[type="date"]::-webkit-clear-button {
 .modal-title {
   font-size: 24px;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -2806,7 +2806,7 @@ input[type="date"]::-webkit-clear-button {
   background: none;
   border: none;
   font-size: 24px;
-  color: #718096;
+  color: var(--color-text-muted);
   cursor: pointer;
   padding: calc(var(--spacing-unit) * 1);
   border-radius: 8px;
@@ -2814,8 +2814,8 @@ input[type="date"]::-webkit-clear-button {
 }
 
 .modal-close:hover {
-  background: #f7fafc;
-  color: #2d3748;
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
 }
 
 .modal-body {
@@ -2864,13 +2864,13 @@ input[type="date"]::-webkit-clear-button {
   align-items: center;
   min-height: 400px;
   font-size: 16px;
-  color: #718096;
+  color: var(--color-text-muted);
 }
 
 .empty-state {
   text-align: center;
   padding: calc(var(--spacing-unit) * 10) calc(var(--spacing-unit) * 4);
-  color: #718096;
+  color: var(--color-text-muted);
 }
 
 .empty-state-icon {

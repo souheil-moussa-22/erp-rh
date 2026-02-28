@@ -15,7 +15,7 @@
 
 /* Contenu du modal */
 .modal-content {
-  background: white;
+  background: var(--color-surface);
   border-radius: 8px;
   width: 500px; /* Increased width for more content */
   max-width: 90%;
@@ -183,7 +183,7 @@
 
 .modal-actions button[type="submit"] {
   background-color: #007bff;
-  color: white;
+  color: var(--color-surface);
 }
 
 .modal-actions button[type="submit"]:hover:not(:disabled) {
@@ -197,7 +197,7 @@
 
 .modal-actions button[type="button"] {
   background-color: #6c757d;
-  color: white;
+  color: var(--color-surface);
 }
 
 .modal-actions button[type="button"]:hover {
@@ -209,7 +209,7 @@
   border-radius: 4px;
   cursor: pointer;
   background-color: #007bff;
-  color: white;
+  color: var(--color-surface);
   border: none;
 }
 
@@ -289,7 +289,7 @@
     top: 5px;
     right: 5px;
     background: rgba(255, 0, 0, 0.7);
-    color: white;
+    color: var(--color-surface);
     border: none;
     border-radius: 50%;
     width: 24px;

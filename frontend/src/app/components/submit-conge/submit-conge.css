@@ -1,6 +1,6 @@
 .conge-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   padding: 40px 20px;
   display: flex;
   align-items: center;
@@ -8,7 +8,7 @@
 }
 
 .conge-card {
-  background: white;
+  background: var(--color-surface);
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   width: 100%;
@@ -37,13 +37,13 @@
 .conge-title {
   font-size: 28px;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--color-text-primary);
   margin: 0 0 10px 0;
 }
 
 .conge-subtitle {
   font-size: 14px;
-  color: #718096;
+  color: var(--color-text-muted);
   margin: 0;
 }
 
@@ -92,7 +92,7 @@
   display: block;
   font-size: 14px;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   margin-bottom: 8px;
 }
 
@@ -113,7 +113,7 @@
 .form-select:focus,
 .form-textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -165,7 +165,7 @@
 .duration-value {
   font-size: 16px;
   font-weight: 700;
-  color: #667eea;
+  color: var(--color-primary);
 }
 
 /* Action Buttons */
@@ -191,12 +191,12 @@
 
 .btn-primary {
   color: white;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 10px 20px var(--color-primary-glow);
 }
 
 .btn-primary:active:not(:disabled) {
