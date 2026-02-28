@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-add-employee',
@@ -96,17 +97,8 @@ export class AddEmployeeComponent implements OnInit {
       this.canAddEmployee = false;
     }
 
-    console.log(' AddEmployeeComponent - Permissions vérifiées:');
-    console.log('   - canAddEmployee:', this.canAddEmployee);
-    try {
-      console.log('   - isHR:', this.authService.isHR());
-      console.log('   - isHRManager:', this.authService.isHRManager());
-      console.log('   - Rôles utilisateur:', this.authService.getUserRoles());
-    } catch {}
-
     if (!this.canAddEmployee) {
       this.errorMessage = 'Vous n\'avez pas les permissions pour ajouter un employé.';
-      console.warn('Accès refusé - L\'utilisateur n\'est pas RH ou Manager RH');
     }
   }
 
@@ -301,11 +293,9 @@ export class AddEmployeeComponent implements OnInit {
       actualWorkingDays: this.employee.actualWorkingDays !== null ? Number(this.employee.actualWorkingDays) : null
     };
 
-    console.log('📤 Données envoyées:', employeeData);
-
     const headers = this.getAuthHeaders();
 
-    this.http.post('http://localhost:8081/api/employees/Add-employee', employeeData, {
+    this.http.post(`${environment.apiUrl}/api/employees/Add-employee`, employeeData, {
       headers: headers,
       observe: 'response',
       responseType: 'text' as 'json'
@@ -313,7 +303,6 @@ export class AddEmployeeComponent implements OnInit {
       next: (response: any) => {
         this.isLoading = false;
         this.isSubmitting = false;
-        console.log('Réponse serveur:', response);
 
         if (response && response.status >= 200 && response.status < 300) {
           this.showSuccessMessage();
@@ -328,7 +317,6 @@ export class AddEmployeeComponent implements OnInit {
       error: (error: HttpErrorResponse) => {
         this.isLoading = false;
         this.isSubmitting = false;
-        console.error('Erreur détaillée:', error);
 
         if (error.status === 401) {
           this.errorMessage = 'Authentification échouée. Veuillez vous reconnecter.';
@@ -387,11 +375,5 @@ export class AddEmployeeComponent implements OnInit {
   }
 
   // Utilitaire debug
-  testAuth(): void {
-    console.log('TEST AUTHENTIFICATION:');
-    console.log(' - Connecté:', this.authService.isLoggedIn());
-    console.log(' - Token:', this.authService.getToken());
-    console.log(' - Rôles:', this.authService.getUserRoles());
-    console.log(' - Peut ajouter employés:', this.authService.isHRorManager());
-  }
 }
+

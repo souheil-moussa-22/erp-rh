@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 export interface LinkedInPublishResponse {
   id: string;
@@ -14,7 +15,7 @@ export interface LinkedInPublishResponse {
   providedIn: 'root'
 })
 export class LinkedInService {
-  private apiUrl = 'http://localhost:8081/api/linkedin';
+  private apiUrl = `${environment.apiUrl}/api/linkedin`;
 
   constructor(
     private http: HttpClient,

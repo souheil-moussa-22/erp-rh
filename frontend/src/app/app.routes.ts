@@ -57,8 +57,7 @@ export const routes: Routes = [
       { path: 'roles', component: RoleListComponent },
       { path: 'chatbot', component: ChatbotComponent },
       // Vérifiez comment est définie votre route
-      {path: 'my-leave ',
-        component: LeaveBalanceComponent},
+      { path: 'my-leave', component: LeaveBalanceComponent },
 
       {
         path: 'jobs/new',

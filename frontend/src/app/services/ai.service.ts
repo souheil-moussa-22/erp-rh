@@ -1,9 +1,9 @@
-// src/app/services/ai.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 export interface AiSuggestionRequest {
   context?: string;
@@ -43,8 +43,8 @@ export interface AiStatusResponse {
   providedIn: 'root'
 })
 export class AiService {
-  private apiUrl = 'http://localhost:8081/api/ai';
-  private jobOfferAiUrl = 'http://localhost:8081/api/job-offers/ai';
+  private apiUrl = `${environment.apiUrl}/api/ai`;
+  private jobOfferAiUrl = `${environment.apiUrl}/api/job-offers/ai`;
   private http = inject(HttpClient);
   private authService = inject(AuthService);
 

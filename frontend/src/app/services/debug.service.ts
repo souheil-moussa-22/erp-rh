@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DebugService {
-  private apiUrl = 'http://localhost:8081/api';
+  private apiUrl = `${environment.apiUrl}/api`;
 
   constructor(private http: HttpClient) {}
 

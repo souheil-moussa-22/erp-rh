@@ -4,6 +4,7 @@ import { map, Observable, of, throwError } from 'rxjs';
 import { saveAs } from 'file-saver';
 import { catchError, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 export interface Formation {
   id?: string;
@@ -81,7 +82,7 @@ export interface PasswordChangeData {
   providedIn: 'root'
 })
 export class EmployeeServices {
-  private apiUrl = 'http://localhost:8081/api/employees';
+  private apiUrl = `${environment.apiUrl}/api/employees`;
 
   constructor(
     private http: HttpClient,
@@ -91,115 +92,54 @@ export class EmployeeServices {
   // Méthode utilitaire pour créer les headers avec le token
   private getAuthHeaders(): HttpHeaders {
     const token = this.authService.getToken();
-    console.log(' Creating auth headers with token:', token ? 'PRESENT' : 'NULL');
-
-    if (token) {
-      return new HttpHeaders({
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      });
-    } else {
-      console.warn(' No token found for authenticated request');
-      return new HttpHeaders({
-        'Content-Type': 'application/json'
-      });
-    }
+    return token
+      ? new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' })
+      : new HttpHeaders({ 'Content-Type': 'application/json' });
   }
 
-  // Méthode pour les requêtes avec FormData
+  // Méthode pour les requêtes avec FormData (pas de Content-Type, laissé au navigateur)
   private getAuthHeadersFormData(): HttpHeaders {
     const token = this.authService.getToken();
-    console.log(' Creating FormData auth headers with token:', token ? 'PRESENT' : 'NULL');
-
-    if (token) {
-      return new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      });
-    } else {
-      console.warn(' No token found for FormData request');
-      return new HttpHeaders();
-    }
+    return token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
   }
 
-  // Headers pour les requêtes blob - VERSION CORRIGÉE
+  // Headers pour les requêtes blob
   private getAuthHeadersBlob(): HttpHeaders {
     const token = this.authService.getToken();
-    console.log(' Creating blob auth headers with token:', token ? 'PRESENT' : 'NULL');
-
-    if (token) {
-      return new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      });
-    } else {
-      console.warn(' No token found for blob request');
-      return new HttpHeaders();
-    }
+    return token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : new HttpHeaders();
   }
 
   // ================= EMPLOYEE =================
-// employee.service.ts
   getAllEmployees(): Observable<Employee[]> {
-    console.log(' getAllEmployees - Starting request with DTO format');
     const headers = this.getAuthHeaders();
 
     return this.http.get<Employee[]>(this.apiUrl, {
       headers,
       observe: 'response'
     }).pipe(
-      tap(response => {
-        console.log('getAllEmployees SUCCESS - Status:', response.status);
-        console.log(' Employees count:', response.body?.length || 0);
-      }),
       map(response => response.body || []),
+      catchError(error => throwError(() => error))
+    );
+  }
+
+  getEmployeeById(id: string): Observable<Employee> {
+    const headers = this.getAuthHeaders();
+
+    return this.http.get<Employee>(`${this.apiUrl}/${id}`, { headers }).pipe(
       catchError(error => {
-        console.error(' getAllEmployees FAILED:', error);
-
-        // Log détaillé de l'erreur
-        if (error.status === 200) {
-          console.error(' Raw error response:', error.error);
+        if (error.status === 401 || error.status === 403) {
+          this.authService.logout();
         }
-
         return throwError(() => error);
       })
     );
   }
-getEmployeeById(id: string): Observable<Employee> {
-    console.log(' getEmployeeById - ID:', id);
-
-    const token = this.authService.getToken();
-    if (!token) {
-        console.error(' No token available');
-        return throwError(() => new Error('No authentication token'));
-    }
-
-    const headers = new HttpHeaders({
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-    });
-
-    return this.http.get<Employee>(`${this.apiUrl}/${id}`, { headers }).pipe(
-        tap((employee) => {
-            console.log(' getEmployeeById SUCCESS - Employee:', employee?.username);
-        }),
-        catchError(error => {
-            console.error(' getEmployeeById FAILED - Status:', error.status);
-
-            if (error.status === 401 || error.status === 403) {
-                console.error(' Authentication error, redirecting to login');
-                this.authService.logout();
-            }
-
-            return throwError(() => error);
-        })
-    );
-}
 
 
 
 
   // ================= GÉNÉRATION FICHES DE PAIE EN MASSE =================
   generatePayslipsForYear(employeeId: string, year: number): Observable<any> {
-    console.log(' generatePayslipsForYear - Adding auth headers');
     const headers = this.getAuthHeaders();
 
     return this.http.post<any>(
@@ -207,18 +147,11 @@ getEmployeeById(id: string): Observable<Employee> {
       {},
       { headers }
     ).pipe(
-      tap(result => {
-        console.log(' generatePayslipsForYear SUCCESS:', result);
-      }),
-      catchError(error => {
-        console.error(' generatePayslipsForYear FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
   generateTestPayslips(employeeId: string): Observable<any> {
-    console.log(' generateTestPayslips - Adding auth headers');
     const headers = this.getAuthHeaders();
 
     return this.http.post<any>(
@@ -226,55 +159,34 @@ getEmployeeById(id: string): Observable<Employee> {
       {},
       { headers }
     ).pipe(
-      tap(result => {
-        console.log(' generateTestPayslips SUCCESS:', result);
-      }),
-      catchError(error => {
-        console.error(' generateTestPayslips FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
   createEmployee(employee: Employee): Observable<Employee> {
-    console.log(' createEmployee - Adding auth headers');
     const headers = this.getAuthHeaders();
 
     return this.http.post<Employee>(`${this.apiUrl}/Add-employee`, employee, { headers }).pipe(
-      tap((newEmployee) => console.log(' createEmployee SUCCESS - New ID:', newEmployee?.id)),
-      catchError(error => {
-        console.error(' createEmployee FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
   updateEmployeeById(id: string, data: Employee): Observable<Employee> {
-    console.log(' updateEmployeeById - Adding auth headers');
     const headers = this.getAuthHeaders();
 
     return this.http.put<Employee>(`${this.apiUrl}/${id}`, data, { headers }).pipe(
-      tap((updatedEmployee) => console.log(' updateEmployeeById SUCCESS - Updated:', updatedEmployee?.username)),
-      catchError(error => {
-        console.error(' updateEmployeeById FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
   deleteEmployee(id: string): Observable<any> {
-    console.log(' deleteEmployee - Adding auth headers');
     const headers = this.getAuthHeaders();
 
     return this.http.delete(`${this.apiUrl}/${id}`, {
       responseType: 'text',
       headers
     }).pipe(
-      tap(() => console.log(' deleteEmployee SUCCESS')),
-      catchError(error => {
-        console.error('deleteEmployee FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
@@ -338,42 +250,29 @@ getEmployeePhotoBlob(id: string): Observable<Blob> {
 
   // ================= FORMATION =================
   addFormation(employeeId: string, formData: FormData): Observable<Formation> {
-    console.log(' addFormation - Adding FormData auth headers');
     const headers = this.getAuthHeadersFormData();
 
     return this.http.post<Formation>(`${this.apiUrl}/${employeeId}/formations`, formData, { headers }).pipe(
-      tap((formation) => console.log(' addFormation SUCCESS - New formation:', formation?.name)),
-      catchError(error => {
-        console.error(' addFormation FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
   getFormationCertificate(certificateId: string): string {
-    const certificateUrl = `${this.apiUrl}/formations/certificate/${certificateId}`;
-    console.log(' Generated certificate URL:', certificateUrl);
-    return certificateUrl;
+    return `${this.apiUrl}/formations/certificate/${certificateId}`;
   }
 
   deleteFormation(employeeId: string, formationId: string): Observable<any> {
-    console.log(' deleteFormation - Adding auth headers');
     const headers = this.getAuthHeaders();
 
     return this.http.delete(`${this.apiUrl}/${employeeId}/formations/${formationId}`, {
       responseType: 'text',
       headers
     }).pipe(
-      tap(() => console.log(' deleteFormation SUCCESS')),
-      catchError(error => {
-        console.error(' deleteFormation FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
   getFormationCertificateBlob(certificateId: string): Observable<Blob> {
-    console.log(' getFormationCertificateBlob - Adding auth headers');
     const headers = this.getAuthHeaders();
 
     return this.http.get(`${this.apiUrl}/formations/certificate/${certificateId}`, {
@@ -386,17 +285,12 @@ getEmployeePhotoBlob(id: string): Observable<Blob> {
         }, {} as any)
       }
     }).pipe(
-      tap(() => console.log(' getFormationCertificateBlob SUCCESS')),
-      catchError(error => {
-        console.error(' getFormationCertificateBlob FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
   // ================= PAYSLIP =================
   getPayslipPDF(employeeId: string): Observable<Blob> {
-    console.log(' getPayslipPDF - Adding auth headers');
     const headers = this.getAuthHeaders();
 
     return this.http.get(`${this.apiUrl}/${employeeId}/payslip`, {
@@ -409,95 +303,60 @@ getEmployeePhotoBlob(id: string): Observable<Blob> {
         }, {} as any)
       }
     }).pipe(
-      tap(() => console.log(' getPayslipPDF SUCCESS')),
-      catchError(error => {
-        console.error(' getPayslipPDF FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
   // ================= HISTORIQUE FICHES DE PAIE =================
   getEmployeePayslipsByYear(employeeId: string, year: number): Observable<Payslip[]> {
-    console.log(' getEmployeePayslipsByYear - Adding auth headers');
     const headers = this.getAuthHeaders();
     const params = new HttpParams().set('year', year.toString());
 
     return this.http.get<Payslip[]>(`${this.apiUrl}/${employeeId}/payslips/by-year`, { headers, params }).pipe(
-      tap(payslips => {
-        console.log(` getEmployeePayslipsByYear SUCCESS: ${payslips?.length || 0} payslips`);
-      }),
-      catchError(error => {
-        console.error(` getEmployeePayslipsByYear FAILED:`, error);
-        return this.getEmployeePayslips(employeeId).pipe(
-          map(allPayslips => {
-            const filtered = allPayslips.filter(p => p.year === year);
-            console.log(`Fallback - Fiches filtrées pour ${year}:`, filtered.length);
-            return filtered;
-          })
-        );
-      })
+      catchError(() =>
+        this.getEmployeePayslips(employeeId).pipe(
+          map(allPayslips => allPayslips.filter(p => p.year === year))
+        )
+      )
     );
   }
 
   getEmployeePayslips(employeeId: string): Observable<Payslip[]> {
-    console.log(' getEmployeePayslips - Adding auth headers');
     const headers = this.getAuthHeaders();
 
     return this.http.get<Payslip[]>(`${this.apiUrl}/${employeeId}/payslips`, { headers }).pipe(
-      tap(payslips => {
-        console.log(' getEmployeePayslips SUCCESS:', payslips?.length || 0, 'payslips');
-      }),
-      catchError(error => {
-        console.error(' getEmployeePayslips FAILED:', error);
-        return of([]);
-      })
+      catchError(() => of([]))
     );
   }
 
   downloadHistoricalPayslip(payslipId: string): Observable<Blob> {
-    console.log(' downloadHistoricalPayslip - Adding auth headers');
     const headers = this.getAuthHeaders();
 
     return this.http.get(`${this.apiUrl}/payslips/${payslipId}/download`, {
       responseType: 'blob',
       headers
     }).pipe(
-      tap(() => console.log(`downloadHistoricalPayslip SUCCESS for ID: ${payslipId}`)),
-      catchError(error => {
-        console.error(' downloadHistoricalPayslip FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
   // ================= GÉNÉRATION FICHE DE PAIE =================
   generatePayslipForMonth(employeeId: string, month: number, year: number): Observable<Payslip> {
-    console.log(' generatePayslipForMonth - Adding auth headers');
     const headers = this.getAuthHeaders();
     const params = new HttpParams()
       .set('month', month.toString())
       .set('year', year.toString());
 
     return this.http.post<Payslip>(`${this.apiUrl}/${employeeId}/payslip/generate`, null, { headers, params }).pipe(
-      tap(response => {
-        console.log(' generatePayslipForMonth SUCCESS:', response);
-      }),
-      catchError(error => {
-        console.error(' generatePayslipForMonth FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
   getAvailableYears(employeeId: string): Observable<number[]> {
-    console.log('getAvailableYears - Adding auth headers');
     const headers = this.getAuthHeaders();
 
     return this.http.get<number[]>(`${this.apiUrl}/${employeeId}/payslips/years`, { headers }).pipe(
-      tap(years => console.log(' getAvailableYears SUCCESS:', years)),
-      catchError(error => {
-        console.error(' getAvailableYears FAILED:', error);
+      catchError(() => {
         const currentYear = new Date().getFullYear();
         return of([currentYear, currentYear - 1, currentYear - 2]);
       })
@@ -506,106 +365,65 @@ getEmployeePhotoBlob(id: string): Observable<Blob> {
 
   // ================= EXPORT / IMPORT EXCEL =================
   exportEmployees(): Observable<Blob> {
-    console.log(' exportEmployees - Adding auth headers');
     const headers = this.getAuthHeaders();
 
     return this.http.get(`${this.apiUrl}/export`, {
       responseType: 'blob',
       headers
     }).pipe(
-      tap(() => console.log('exportEmployees SUCCESS')),
-      catchError(error => {
-        console.error(' exportEmployees FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
   downloadEmployeesExcel(): void {
     this.exportEmployees().subscribe({
-      next: (res: Blob) => {
-        saveAs(res, 'employees.xlsx');
-        console.log(' downloadEmployeesExcel SUCCESS');
-      },
-      error: (err: any) => {
-        console.error(" downloadEmployeesExcel FAILED:", err);
-      }
+      next: (res: Blob) => saveAs(res, 'employees.xlsx'),
+      error: (err: any) => console.error('downloadEmployeesExcel failed:', err)
     });
   }
 
   importEmployees(file: File): Observable<any> {
-    console.log(' importEmployees - Adding FormData auth headers');
     const headers = this.getAuthHeadersFormData();
     const formData = new FormData();
     formData.append('file', file);
 
     return this.http.post(`${this.apiUrl}/import`, formData, { headers }).pipe(
-      tap(() => console.log(' importEmployees SUCCESS')),
-      catchError(error => {
-        console.error(' importEmployees FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
   // ================= UTILITY METHODS =================
   testConnection(): Observable<any> {
-    console.log(' Testing API connection...');
     const headers = this.getAuthHeaders();
 
     return this.http.get(`${this.apiUrl}/test`, { headers }).pipe(
-      tap(() => console.log(' Connection test SUCCESS')),
-      catchError(error => {
-        console.error(' Connection test FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
   checkAuthStatus(): void {
     const token = this.authService.getToken();
     const user = this.authService.getUser();
-
-    console.log(' Auth Status Check:');
-    console.log('  - Token:', token ? `PRESENT (${token.length} chars)` : 'NULL');
-    console.log('  - User:', user ? 'PRESENT' : 'NULL');
-
-    if (user) {
-      console.log('  - User ID:', user.id);
-      console.log('  - Username:', user.username);
-      console.log('  - Roles:', user.roles);
+    if (!token || !user) {
+      console.warn('checkAuthStatus: missing token or user');
     }
   }
 
-  //   MÉTHODE POUR TESTER LES HEADERS
   testPhotoRequest(id: string): void {
-    const headers = this.getAuthHeadersBlob();
-    console.log(' TEST Headers structure:', headers);
-    console.log(' TEST Headers keys:', headers.keys());
-    console.log('TEST Authorization header:', headers.get('Authorization'));
-
     this.getEmployeePhotoBlob(id).subscribe({
-      next: (blob) => {
-        console.log('TEST SUCCESS - Blob received:', blob.size);
-      },
-      error: (error) => {
-        console.error(' TEST FAILED:', error);
-      }
+      error: (error) => console.error('testPhotoRequest failed:', error)
     });
   }
-// ================= CHANGEMENT MOT DE PASSE =================
+
+  // ================= CHANGEMENT MOT DE PASSE =================
   changePassword(employeeId: string, passwordData: PasswordChangeData): Observable<any> {
-    console.log(' changePassword - Adding auth headers');
     const headers = this.getAuthHeaders();
 
     return this.http.put(`${this.apiUrl}/${employeeId}/change-password`, passwordData, {
       headers,
       responseType: 'text'
     }).pipe(
-      tap(() => console.log(' changePassword SUCCESS')),
-      catchError(error => {
-        console.error(' changePassword FAILED:', error);
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
-  }}
+  }
+}

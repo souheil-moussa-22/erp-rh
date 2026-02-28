@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 // Exportez l'interface AVANT la classe
 export interface LeaveBalanceDTO {
@@ -16,59 +17,42 @@ export interface LeaveBalanceDTO {
 })
 
 export class LeaveBalanceService {
-  private apiUrl = 'http://localhost:8081/api/leave-balances';
+  private apiUrl = `${environment.apiUrl}/api/leave-balances`;
 
   constructor(private http: HttpClient) { }
 
-  getEmployeeLeaveBalances(employeeId: string): Observable<LeaveBalanceDTO[]> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('authToken');
+    return token
+      ? new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' })
+      : new HttpHeaders({ 'Content-Type': 'application/json' });
+  }
 
+  getEmployeeLeaveBalances(employeeId: string): Observable<LeaveBalanceDTO[]> {
     return this.http.get<LeaveBalanceDTO[]>(
       `${this.apiUrl}/employee/${employeeId}`,
-      { headers }
+      { headers: this.getAuthHeaders() }
     );
   }
 
   getEmployeeLeaveBalanceByType(employeeId: string, leaveType: string): Observable<LeaveBalanceDTO> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-
     return this.http.get<LeaveBalanceDTO>(
       `${this.apiUrl}/employee/${employeeId}/type/${leaveType}`,
-      { headers }
+      { headers: this.getAuthHeaders() }
     );
   }
 
   calculateUsedLeaveDays(employeeId: string, leaveType: string): Observable<number> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-
     return this.http.get<number>(
       `${this.apiUrl}/employee/${employeeId}/calculate-used-days?leaveType=${leaveType}`,
-      { headers }
+      { headers: this.getAuthHeaders() }
     );
   }
 
   calculateRemainingLeaveDays(employeeId: string, leaveType: string): Observable<number> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-
     return this.http.get<number>(
       `${this.apiUrl}/employee/${employeeId}/calculate-remaining-days?leaveType=${leaveType}`,
-      { headers }
+      { headers: this.getAuthHeaders() }
     );
   }
 }

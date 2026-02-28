@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 export interface JobOffer {
   id: string;
@@ -52,7 +53,7 @@ export interface JobOfferRequest {
   providedIn: 'root'
 })
 export class JobOfferService {
-  private apiUrl = 'http://localhost:8081/api/job-offers';
+  private apiUrl = `${environment.apiUrl}/api/job-offers`;
   private http = inject(HttpClient);
   private authService = inject(AuthService);
 
@@ -126,31 +127,20 @@ export class JobOfferService {
   testBackendConnection(): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.get(this.apiUrl, { headers })
-      .pipe(
-        tap(() => console.log(' Backend connection test successful')),
-        catchError(this.handleError)
-      );
+      .pipe(catchError(this.handleError));
   }
-// Dans job-offer.service.ts - AJOUTER CES MÉTHODES
 
-updateJobOffer(id: string, request: JobOfferRequest): Observable<JobOffer> {
-  const headers = this.getAuthHeaders();
-  return this.http.put<JobOffer>(`${this.apiUrl}/${id}`, request, { headers })
-    .pipe(
-      tap((updatedJob) => console.log(' Offre mise à jour:', updatedJob.title)),
-      catchError(this.handleError)
-    );
-}
+  updateJobOffer(id: string, request: JobOfferRequest): Observable<JobOffer> {
+    const headers = this.getAuthHeaders();
+    return this.http.put<JobOffer>(`${this.apiUrl}/${id}`, request, { headers })
+      .pipe(catchError(this.handleError));
+  }
 
-// Méthode pour récupérer une offre spécifique
-getJobOfferById(id: string): Observable<JobOffer> {
-  const headers = this.getAuthHeaders();
-  return this.http.get<JobOffer>(`${this.apiUrl}/${id}`, { headers })
-    .pipe(
-      tap((job) => console.log(' Offre récupérée:', job.title)),
-      catchError(this.handleError)
-    );
-}
+  getJobOfferById(id: string): Observable<JobOffer> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<JobOffer>(`${this.apiUrl}/${id}`, { headers })
+      .pipe(catchError(this.handleError));
+  }
   private handleError(error: HttpErrorResponse) {
     console.error(' JobOfferService Error:', {
       status: error.status,

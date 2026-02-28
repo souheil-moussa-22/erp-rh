@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Client, StompConfig } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Notification {
   id: string;
@@ -28,11 +29,10 @@ export class WebSocketService {
 
   connect(userId: string, userRoles?: string[]): void {
 
-    const endpoint = 'http://localhost:8081/ws-endpoint';
+    const endpoint = `${environment.apiUrl}/ws-endpoint`;
 
     const stompConfig: StompConfig = {
       webSocketFactory: () => new SockJS(endpoint),
-      debug: (str) => console.log(str),
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
@@ -41,7 +41,6 @@ export class WebSocketService {
     this.stompClient = new Client(stompConfig);
 
     this.stompClient.onConnect = () => {
-      console.log('Connected via SockJS');
       this.connectionStatusSubject.next(true);
 
       // USER NOTIFICATIONS
