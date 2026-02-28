@@ -40,3 +40,5 @@ yarn-error.log*
 .env
 .env.*.local
 .env.local
+application-local.properties
+application-local.yml
