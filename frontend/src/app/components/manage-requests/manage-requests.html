@@ -1,0 +1,267 @@
+<div class="manage-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Manage Leave Requests</h1>
+      <p class="subtitle">Review and respond to employee leave requests</p>
+    </div>
+    <div class="header-stats">
+      <div class="stat-card pending">
+        <span class="stat-icon">⏳</span>
+        <div class="stat-info">
+          <span class="stat-value">{{ getCountByStatus('PENDING') }}</span>
+          <span class="stat-label">Pending</span>
+        </div>
+      </div>
+      <div class="stat-card approved">
+        <span class="stat-icon">✅</span>
+        <div class="stat-info">
+          <span class="stat-value">{{ getCountByStatus('APPROVED') }}</span>
+          <span class="stat-label">Approved</span>
+        </div>
+      </div>
+      <div class="stat-card rejected">
+        <span class="stat-icon">❌</span>
+        <div class="stat-info">
+          <span class="stat-value">{{ getCountByStatus('REJECTED') }}</span>
+          <span class="stat-label">Rejected</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    <button class="tab-button" [class.active]="filter === 'all'" (click)="filterRequests('all')">
+      All Requests ({{ getTotalCount() }})
+    </button>
+
+    <button class="tab-button priority" [class.active]="filter === 'PENDING'" (click)="filterRequests('PENDING')">
+      <span class="badge">{{ getCountByStatus('PENDING') }}</span>
+      Pending Review
+    </button>
+
+    <button class="tab-button" [class.active]="filter === 'APPROVED'" (click)="filterRequests('APPROVED')">
+      Approved
+    </button>
+
+    <button class="tab-button" [class.active]="filter === 'REJECTED'" (click)="filterRequests('REJECTED')">
+      Rejected
+    </button>
+  </div>
+
+  <!-- Search and Sort -->
+  <div class="controls-bar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Search by employee name..."
+        [(ngModel)]="searchText"
+        (input)="applyFilters()"
+        class="search-input"
+      />
+    </div>
+
+    <select class="sort-select" [(ngModel)]="sortBy" (change)="applySort()">
+      <option value="date-desc">Newest First</option>
+      <option value="date-asc">Oldest First</option>
+      <option value="employee">Employee Name</option>
+      <option value="duration">Duration</option>
+    </select>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading requests...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMessage && !isLoading" class="alert alert-error">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Requests List -->
+  <div *ngIf="!isLoading && !errorMessage" class="requests-container">
+    <div *ngIf="displayedRequests.length === 0" class="empty-state">
+      <span class="empty-icon">📭</span>
+      <h3>No requests found</h3>
+      <p *ngIf="filter === 'PENDING'">There are no pending requests to review.</p>
+      <p *ngIf="searchText && filter !== 'PENDING'">No requests match your search.</p>
+      <p *ngIf="!searchText && filter !== 'PENDING'">There are no {{ filter.toLowerCase() }} requests.</p>
+    </div>
+
+    <div *ngIf="displayedRequests.length > 0" class="requests-list">
+      <div
+        *ngFor="let request of displayedRequests"
+        class="request-item"
+        [class.highlight]="request.status === 'PENDING'">
+
+        <!-- Employee Info -->
+        <div class="employee-section">
+          <div class="employee-avatar">{{ getInitials(request.employeeName) }}</div>
+          <div class="employee-details">
+            <h3 class="employee-name">{{ request.employeeName }}</h3>
+            <span class="employee-id">ID: {{ request.employeeId }}</span>
+          </div>
+        </div>
+
+        <!-- Request Details -->
+        <div class="request-details">
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-icon">{{ getTypeIcon(request.type) }}</span>
+              <div class="detail-content">
+                <span class="detail-label">Type</span>
+                <span class="detail-value">{{ formatType(request.type) }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <span class="detail-icon">📅</span>
+              <div class="detail-content">
+                <span class="detail-label">Period</span>
+                <span class="detail-value">{{ formatDate(request.startDate) }} - {{ formatDate(request.endDate) }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <span class="detail-icon">⏱️</span>
+              <div class="detail-content">
+                <span class="detail-label">Duration</span>
+                <span class="detail-value">{{ request.duration }} day(s)</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <span class="detail-icon">📤</span>
+              <div class="detail-content">
+                <span class="detail-label">Submitted</span>
+                <span class="detail-value">{{ formatDate(request.submissionDate) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="reason-section">
+            <span class="reason-label">💭 Reason:</span>
+            <p class="reason-text">{{ request.reason }}</p>
+          </div>
+
+          <!-- Response Info -->
+          <div *ngIf="request.status !== 'PENDING'" class="response-info">
+            <span class="response-icon">
+              {{ request.status.includes('APPROVED') ? '✅' : '❌' }}
+            </span>
+
+            <!-- Manager Response -->
+            <span *ngIf="request.managerRespondedBy">
+              {{ request.status }} by {{ request.managerRespondedBy }} on {{ formatDate(request.managerResponseDate) }}
+            </span>
+
+            <!-- RH Response -->
+            <span *ngIf="request.rhRespondedBy">
+              {{ request.status }} by {{ request.rhRespondedBy }} on {{ formatDate(request.rhResponseDate) }}
+            </span>
+
+            <!-- Manager Rejection -->
+            <div *ngIf="request.managerRejectionReason" class="rejection-box">
+              <strong>Manager Rejection Reason:</strong>
+              <p>{{ request.managerRejectionReason }}</p>
+            </div>
+
+            <!-- RH Rejection -->
+            <div *ngIf="request.rhRejectionReason" class="rejection-box">
+              <strong>RH Rejection Reason:</strong>
+              <p>{{ request.rhRejectionReason }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status & Actions -->
+        <div class="actions-section">
+          <span class="status-badge" [class]="request.status.toLowerCase()">
+            {{ request.status }}
+          </span>
+
+          <div *ngIf="canProcessRequest(request)" class="action-buttons">
+            <button class="btn-approve" (click)="openApproveModal(request)">✅ Approve</button>
+            <button class="btn-reject" (click)="openRejectModal(request)">❌ Reject</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Approve Modal -->
+<div *ngIf="showApproveModal" class="modal-overlay" (click)="closeModals()">
+  <div class="modal-content approve" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-icon success">✅</span>
+      <h3>Approve Leave Request</h3>
+    </div>
+
+    <div class="modal-body">
+      <p>You are about to approve the leave request for:</p>
+
+      <div class="request-summary">
+        <strong>{{ selectedRequest?.employeeName }}</strong>
+        <span>{{ formatType(selectedRequest?.type || '') }}</span>
+        <span>{{ selectedRequest?.duration }} day(s)</span>
+        <span>{{ formatDate(selectedRequest?.startDate || '') }} - {{ formatDate(selectedRequest?.endDate || '') }}</span>
+      </div>
+
+      <p>This action cannot be undone.</p>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="closeModals()">Cancel</button>
+
+      <button class="btn-confirm approve" (click)="confirmApprove()" [disabled]="isProcessing">
+        {{ isProcessing ? 'Processing...' : 'Yes, Approve' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Reject Modal -->
+<div *ngIf="showRejectModal" class="modal-overlay" (click)="closeModals()">
+  <div class="modal-content reject" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-icon danger">❌</span>
+      <h3>Reject Leave Request</h3>
+    </div>
+
+    <div class="modal-body">
+      <p>You are about to reject the leave request for:</p>
+
+      <div class="request-summary">
+        <strong>{{ selectedRequest?.employeeName }}</strong>
+        <span>{{ formatType(selectedRequest?.type || '') }}</span>
+        <span>{{ selectedRequest?.duration }} day(s)</span>
+      </div>
+
+      <div class="form-group">
+        <label for="rejectionReason" class="form-label">Rejection Reason *</label>
+
+        <textarea
+          id="rejectionReason"
+          [(ngModel)]="rejectionReason"
+          class="form-textarea"
+          rows="4"
+          placeholder="Please provide a reason for rejection..."></textarea>
+
+        <span *ngIf="showReasonError" class="error-text">Rejection reason is required</span>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="closeModals()">Cancel</button>
+
+      <button class="btn-confirm reject" (click)="confirmReject()" [disabled]="isProcessing">
+        {{ isProcessing ? 'Processing...' : 'Yes, Reject' }}
+      </button>
+    </div>
+  </div>
+</div>

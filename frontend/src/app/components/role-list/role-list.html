@@ -1,0 +1,311 @@
+<div class="roles-container">
+  <!-- Header with action buttons -->
+  <div class="roles-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="roles-title">Role Management</h1>
+        <p class="roles-subtitle">Manage roles and permissions for your system</p>
+      </div>
+      <div class="header-actions">
+        <button class="add-btn" (click)="openAddModal()">
+          <i class="fas fa-plus"></i>
+          New Role
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global error message -->
+  @if (errorMessage) {
+    <div class="error-message" (click)="clearError()">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ errorMessage }}
+    </div>
+  }
+
+  <!-- Search and bulk actions -->
+
+  <!-- Roles table -->
+  <div class="table-section">
+    <div class="table-header">
+      <h3 class="table-title">Roles List</h3>
+      <span class="table-count">{{ filteredRoles.length }} role(s)</span>
+    </div>
+
+    <div class="table-container">
+      @if (loading) {
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <span>Loading roles...</span>
+        </div>
+      }
+
+      @if (!loading && filteredRoles.length > 0) {
+        <div class="table-wrapper">
+          <table class="roles-table">
+            <thead>
+              <tr>
+                <th class="column-checkbox"></th>
+                <th class="column-name">Role Name</th>
+                <th class="column-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (role of filteredRoles; track role.id) {
+                <tr class="table-row" [class.selected]="selectedRoles.has(role.id)">
+                  <td class="column-checkbox">
+                    <label class="checkbox-container">
+                      <input 
+                        type="checkbox" 
+                        [checked]="selectedRoles.has(role.id)"
+                        (change)="toggleRoleSelection(role.id)">
+                      <span class="checkmark"></span>
+                    </label>
+                  </td>
+                  <td class="role-name">
+                    <div class="role-info">
+                      <span class="role-badge">{{ role.roleName }}</span>
+                    </div>
+                  </td>
+                  <td class="actions">
+                    <button class="action-btn edit-btn" (click)="openEditModal(role)" title="Edit role">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn delete-btn" (click)="openDeleteConfirmation(role)" title="Delete role">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      @if (!loading && filteredRoles.length === 0) {
+        <div class="no-data">
+          <div class="no-data-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          @if (searchTerm) {
+            <h3>No roles found</h3>
+            <p>No roles match your search "{{ searchTerm }}"</p>
+            <button class="clear-search-btn" (click)="clearSearch()">
+              Clear search
+            </button>
+          } @else {
+            <h3>No roles found</h3>
+            <p>Start by creating your first role by clicking the "New Role" button</p>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Add Modal -->
+  @if (showAddModal) {
+    <div class="modal-overlay" (click)="closeAddModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-title-section">
+            <h2 class="modal-title">Create New Role</h2>
+            <p class="modal-subtitle">Add a new role to the system</p>
+          </div>
+          <button class="close-btn" (click)="closeAddModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          @if (modalErrorMessage) {
+            <div class="error-message modal-error" (click)="clearModalError()">
+              <i class="fas fa-exclamation-triangle"></i>
+              {{ modalErrorMessage }}
+            </div>
+          }
+
+          <form (ngSubmit)="createRole()" class="role-form">
+            <div class="form-group">
+              <label for="roleName" class="form-label">
+                Role Name
+                <span class="required">*</span>
+              </label>
+              <input
+                type="text"
+                id="roleName"
+                [(ngModel)]="newRoleName"
+                name="roleName"
+                class="form-input"
+                placeholder="ROLE_ADMIN, ROLE_USER, etc."
+                required
+                autocomplete="off">
+              <div class="form-hint">
+                <i class="fas fa-lightbulb"></i>
+                Name must start with "ROLE_" and contain only uppercase letters and underscores
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="cancel-btn" (click)="closeAddModal()" [disabled]="modalLoading">
+                Cancel
+              </button>
+              <button type="submit" class="submit-btn" [disabled]="modalLoading">
+                @if (modalLoading) {
+                  <span class="loading-spinner-btn"></span>
+                  Creating...
+                } @else {
+                  <i class="fas fa-check"></i>
+                  Create Role
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Edit Modal -->
+  @if (showEditModal) {
+    <div class="modal-overlay" (click)="closeEditModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-title-section">
+            <h2 class="modal-title">Edit Role</h2>
+            <p class="modal-subtitle">Modify role information</p>
+          </div>
+          <button class="close-btn" (click)="closeEditModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          @if (modalErrorMessage) {
+            <div class="error-message modal-error" (click)="clearModalError()">
+              <i class="fas fa-exclamation-triangle"></i>
+              {{ modalErrorMessage }}
+            </div>
+          }
+
+          <form (ngSubmit)="updateRole()" class="role-form">
+            <div class="form-group">
+              <label for="editRoleName" class="form-label">
+                Role Name
+                <span class="required">*</span>
+              </label>
+              <input
+                type="text"
+                id="editRoleName"
+                [(ngModel)]="editRoleData.roleName"
+                name="editRoleName"
+                class="form-input"
+                placeholder="ROLE_ADMIN, ROLE_USER, etc."
+                required
+                autocomplete="off">
+              <div class="form-hint">
+                <i class="fas fa-lightbulb"></i>
+                Name must start with "ROLE_" and contain only uppercase letters and underscores
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="cancel-btn" (click)="closeEditModal()" [disabled]="modalLoading">
+                Cancel
+              </button>
+              <button type="submit" class="submit-btn" [disabled]="modalLoading">
+                @if (modalLoading) {
+                  <span class="loading-spinner-btn"></span>
+                  Updating...
+                } @else {
+                  <i class="fas fa-check"></i>
+                  Update Role
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
+
+<!-- Simple Delete Confirmation Popup -->
+@if (showDeleteConfirmation) {
+  <div class="simple-confirmation-overlay" (click)="closeDeleteConfirmation()">
+    <div class="simple-confirmation-modal" (click)="$event.stopPropagation()">
+      <div class="simple-confirmation-content">
+        <h3 class="simple-confirmation-title">Delete Role</h3>
+        <p class="simple-confirmation-message">
+          Are you sure you want to delete <strong>"{{ editRoleData.roleName }}"</strong>?
+        </p>
+        <p class="simple-confirmation-warning">This action cannot be undone.</p>
+        
+        @if (deleteError) {
+          <div class="simple-error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ deleteError }}
+          </div>
+        }
+
+        <div class="simple-confirmation-actions">
+          <button class="simple-cancel-btn" (click)="closeDeleteConfirmation()" [disabled]="deleteLoading">
+            Cancel
+          </button>
+          <button class="simple-confirm-btn" (click)="confirmDelete()" [disabled]="deleteLoading">
+            @if (deleteLoading) {
+              <span class="simple-loading"></span>
+              Deleting...
+            } @else {
+              Delete
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Simple Bulk Delete Confirmation Popup -->
+@if (showBulkDeleteConfirmation) {
+  <div class="simple-confirmation-overlay" (click)="closeBulkDeleteConfirmation()">
+    <div class="simple-confirmation-modal" (click)="$event.stopPropagation()">
+      <div class="simple-confirmation-content">
+        <h3 class="simple-confirmation-title">Delete Roles</h3>
+        <p class="simple-confirmation-message">
+          Are you sure you want to delete {{ getSelectedCount() }} selected role(s)?
+        </p>
+        
+        <div class="simple-selected-roles">
+          @for (role of filteredRoles; track role.id) {
+            @if (selectedRoles.has(role.id)) {
+              <span class="simple-role-badge">{{ role.roleName }}</span>
+            }
+          }
+        </div>
+        
+        <p class="simple-confirmation-warning">This action cannot be undone.</p>
+
+        @if (deleteError) {
+          <div class="simple-error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ deleteError }}
+          </div>
+        }
+
+        <div class="simple-confirmation-actions">
+          <button class="simple-cancel-btn" (click)="closeBulkDeleteConfirmation()" [disabled]="bulkDeleteLoading">
+            Cancel
+          </button>
+          <button class="simple-confirm-btn" (click)="confirmBulkDelete()" [disabled]="bulkDeleteLoading">
+            @if (bulkDeleteLoading) {
+              <span class="simple-loading"></span>
+              Deleting...
+            } @else {
+              Delete ({{ getSelectedCount() }})
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+</div>

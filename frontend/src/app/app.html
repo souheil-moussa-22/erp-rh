@@ -1,0 +1,7 @@
+<!-- app.component.html -->
+
+<!-- Show navbar only when user is logged in (not on auth pages) -->
+<app-navbar *ngIf="!isAuthPage()"></app-navbar>
+
+<!-- Router outlet for all pages -->
+<router-outlet></router-outlet>

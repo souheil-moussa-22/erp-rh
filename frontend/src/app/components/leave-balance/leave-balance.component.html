@@ -1,0 +1,237 @@
+<div class="container">
+  <!-- En-tête -->
+  <mat-card class="header-card">
+    <mat-card-content>
+      <div class="header-content">
+        <div class="header-icon-container">
+          <mat-icon class="header-icon">dashboard</mat-icon>
+        </div>
+        <div class="header-text">
+          <h1 class="header-title">Mes Soldes de Congé</h1>
+          <p class="header-subtitle">Consultez l'état de vos différents types de congé et jours restants</p>
+        </div>
+        <div class="header-actions">
+          <button mat-stroked-button (click)="refresh()" class="refresh-header-btn">
+            <mat-icon>refresh</mat-icon>
+            Actualiser
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-content">
+      <mat-spinner diameter="50"></mat-spinner>
+      <span class="loading-text">Chargement de vos soldes de congé...</span>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <div class="error-content">
+      <div class="error-icon">
+        <mat-icon color="warn">error_outline</mat-icon>
+      </div>
+      <div class="error-text-content">
+        <h3 class="error-title">Erreur de chargement</h3>
+        <p class="error-message">{{ error }}</p>
+      </div>
+      <button mat-raised-button color="primary" (click)="refresh()" class="retry-btn">
+        <mat-icon>refresh</mat-icon>
+        Réessayer
+      </button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading && !error" class="content">
+    <!-- Navigation par onglets -->
+    <mat-tab-group (selectedTabChange)="onTabChange($event)" animationDuration="200ms" class="custom-tab-group">
+
+      <!-- Onglet Congés Principaux -->
+      <mat-tab label="Congés Principaux">
+        <div class="tab-content">
+          <div class="cards-grid">
+            <mat-card *ngFor="let balance of mainLeaves"
+                      class="balance-card"
+                      [class]="'status-' + getStatusColor(balance.remainingDays, balance.totalDays)">
+              <mat-card-content>
+                <div class="card-header">
+                  <div class="card-icon-container">
+                    <mat-icon class="card-icon">{{ getLeaveIcon(balance.leaveType) }}</mat-icon>
+                  </div>
+                  <h3 class="card-title">{{ balance.leaveLabel }}</h3>
+                  <div class="card-badge" [class]="'badge-' + getStatusColor(balance.remainingDays, balance.totalDays)">
+                    {{ ((balance.remainingDays / balance.totalDays) * 100) >= 50 ? 'Bon' : 'Attention' }}
+                  </div>
+                </div>
+
+                <div class="progress-section">
+                  <div class="progress-info">
+                    <span class="days-remaining">{{ formatDays(balance.remainingDays) }}j</span>
+                    <span class="days-total">/ {{ formatDays(balance.totalDays) }}j restants</span>
+                  </div>
+                  <mat-progress-bar
+                    [value]="(balance.remainingDays / balance.totalDays) * 100"
+                    mode="determinate"
+                    class="progress-bar">
+                  </mat-progress-bar>
+                </div>
+
+                <div class="stats-grid">
+                  <div class="stat-item">
+                    <div class="stat-circle total">
+                      <span class="stat-value">{{ formatDays(balance.totalDays) }}</span>
+                    </div>
+                    <span class="stat-label">Total</span>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-circle used">
+                      <span class="stat-value">{{ formatDays(balance.usedDays) }}</span>
+                    </div>
+                    <span class="stat-label">Utilisé</span>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-circle remaining">
+                      <span class="stat-value">{{ formatDays(balance.remainingDays) }}</span>
+                    </div>
+                    <span class="stat-label">Restant</span>
+                  </div>
+                </div>
+
+                <div class="percentage-container">
+                  <div class="percentage-text">
+                    {{ ((balance.remainingDays / balance.totalDays) * 100).toFixed(0) }}% restant
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Onglet Congés Spéciaux -->
+      <mat-tab label="Congés Spéciaux">
+        <div class="tab-content">
+          <div class="cards-grid">
+            <mat-card *ngFor="let balance of specialLeaves" class="balance-card special">
+              <mat-card-content>
+                <div class="card-header">
+                  <div class="card-icon-container">
+                    <mat-icon class="card-icon">{{ getLeaveIcon(balance.leaveType) }}</mat-icon>
+                  </div>
+                  <h3 class="card-title">{{ balance.leaveLabel }}</h3>
+                  <div class="card-badge" [class]="balance.remainingDays > 0 ? 'badge-available' : 'badge-used'">
+                    {{ balance.remainingDays > 0 ? 'Disponible' : 'Utilisé' }}
+                  </div>
+                </div>
+
+                <div class="special-stats">
+                  <div class="special-stat">
+                    <span class="stat-label">Jours accordés</span>
+                    <span class="special-value">{{ formatDays(balance.totalDays) }}j</span>
+                  </div>
+                  <div class="special-stat" *ngIf="balance.usedDays > 0">
+                    <span class="stat-label">Déjà utilisé</span>
+                    <span class="special-value used">{{ formatDays(balance.usedDays) }}j</span>
+                  </div>
+                </div>
+
+                <div class="availability-container">
+                  <div class="availability" [class.available]="balance.remainingDays > 0">
+                    <div class="availability-icon">
+                      <mat-icon>{{ balance.remainingDays > 0 ? 'check_circle' : 'cancel' }}</mat-icon>
+                    </div>
+                    <div class="availability-text">
+                      <span class="availability-status">{{ balance.remainingDays > 0 ? 'Disponible' : 'Utilisé' }}</span>
+                      <span class="availability-days" *ngIf="balance.remainingDays > 0">
+                        {{ formatDays(balance.remainingDays) }} jour(s) restant(s)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Onglet Tous les Congés -->
+      <mat-tab label="Vue d'Ensemble">
+        <div class="tab-content">
+          <mat-card class="overview-card">
+            <mat-card-header>
+              <mat-card-title>Synthèse de tous vos congés</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <table mat-table [dataSource]="balances" class="leaves-table">
+
+                <!-- Type de Congé -->
+                <ng-container matColumnDef="type">
+                  <th mat-header-cell *matHeaderCellDef>Type de Congé</th>
+                  <td mat-cell *matCellDef="let balance">
+                    <div class="type-cell">
+                      <div class="type-icon">
+                        <mat-icon>{{ getLeaveIcon(balance.leaveType) }}</mat-icon>
+                      </div>
+                      <span class="type-label">{{ balance.leaveLabel }}</span>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <!-- Total -->
+                <ng-container matColumnDef="total">
+                  <th mat-header-cell *matHeaderCellDef>Total</th>
+                  <td mat-cell *matCellDef="let balance" class="total-cell">
+                    {{ formatDays(balance.totalDays) }}j
+                  </td>
+                </ng-container>
+
+                <!-- Utilisé -->
+                <ng-container matColumnDef="used">
+                  <th mat-header-cell *matHeaderCellDef>Utilisé</th>
+                  <td mat-cell *matCellDef="let balance" class="used-cell">
+                    {{ formatDays(balance.usedDays) }}j
+                  </td>
+                </ng-container>
+
+                <!-- Restant -->
+                <ng-container matColumnDef="remaining">
+                  <th mat-header-cell *matHeaderCellDef>Restant</th>
+                  <td mat-cell *matCellDef="let balance"
+                      [class]="'remaining-cell ' + getStatusColor(balance.remainingDays, balance.totalDays)">
+                    {{ formatDays(balance.remainingDays) }}j
+                  </td>
+                </ng-container>
+
+                <!-- Pourcentage -->
+                <ng-container matColumnDef="percentage">
+                  <th mat-header-cell *matHeaderCellDef>% Restant</th>
+                  <td mat-cell *matCellDef="let balance">
+                    <div class="percentage-cell">
+                      <div class="percentage-value">
+                        {{ ((balance.remainingDays / balance.totalDays) * 100).toFixed(0) }}%
+                      </div>
+                      <mat-progress-bar
+                        [value]="(balance.remainingDays / balance.totalDays) * 100"
+                        mode="determinate"
+                        class="table-progress"
+                        [class]="'progress-' + getStatusColor(balance.remainingDays, balance.totalDays)">
+                      </mat-progress-bar>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="['type', 'total', 'used', 'remaining', 'percentage']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['type', 'total', 'used', 'remaining', 'percentage'];"></tr>
+              </table>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </div>
+</div>

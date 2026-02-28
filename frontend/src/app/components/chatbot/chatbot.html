@@ -1,0 +1,125 @@
+<!-- chatbot.html -->
+<div class="container">
+    <div class="popup-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Assistant RH</h1>
+                    <div class="tagline">Votre compagnon pour les questions RH</div> <!-- Correction ici -->
+                </div>
+                <!-- Bouton de fermeture -->
+                <button class="close-btn" (click)="closeChatbot()" aria-label="Fermer le chatbot">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <!-- Messages Area avec scroll -->
+            <div class="chat-messages" #chatMessages>
+                <!-- Message de bienvenue -->
+                @if (messages.length === 0) {
+                    <div class="message bot-message">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-text">
+                                <strong>Bonjour ! 👋</strong> Je suis votre assistant RH.
+                                <br>
+                                Je peux vous aider avec vos questions sur les congés, salaires, RH et plus.
+                                <div class="quick-questions">
+                                    <button class="quick-question" (click)="insertQuestion('Comment demander un congé annuel ?')">
+                                        <i class="fas fa-calendar-check"></i> Congés
+                                    </button>
+                                    <button class="quick-question" (click)="insertQuestion('Quand est versé le salaire ?')">
+                                        <i class="fas fa-euro-sign"></i> Salaires
+                                    </button>
+                                    <button class="quick-question" (click)="insertQuestion('Comment contacter le service RH ?')">
+                                        <i class="fas fa-headset"></i> Contact RH
+                                    </button>
+                                    <button class="quick-question" (click)="insertQuestion('Que faire en cas de maladie ?')">
+                                        <i class="fas fa-heartbeat"></i> Maladie
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="message-time">{{ currentTime }}</div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Messages existants -->
+                @for (msg of messages; track msg) {
+                    <div [class]="'message ' + msg.sender + '-message'">
+                        <div class="message-avatar">
+                            <i [class]="msg.sender === 'bot' ? 'fas fa-robot' : 'fas fa-user'"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-text">{{ msg.text }}</div>
+                            <div class="message-time">{{ msg.time }}</div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Typing Indicator -->
+                @if (isTyping) {
+                    <div class="message bot-message">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="typing-indicator">
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Input Area (toujours visible) -->
+            <div class="input-area" [formGroup]="chatForm">
+                <div class="input-wrapper">
+                    <input type="text"
+                           formControlName="question"
+                           placeholder="Écrivez votre question RH ici..."
+                           (keypress)="onKeyPress($event)"
+                           autocomplete="off"
+                           #questionInput>
+                    <button class="send-btn"
+                            (click)="sendMessage()"
+                            title="Envoyer"
+                            [disabled]="!chatForm.valid">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="input-hint">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Appuyez sur Entrée pour envoyer • Cliquez sur les suggestions ci-dessous</span>
+                </div>
+            </div>
+
+            <!-- FAQ Suggestions (toujours visible) -->
+            <div class="faq-suggestions">
+                <div class="faq-header">
+                    <i class="fas fa-star"></i>
+                    <h3>Questions fréquentes</h3>
+                </div>
+                <div class="suggestions-grid">
+                    @for (suggestion of faqSuggestions; track suggestion) {
+                        <button (click)="insertQuestion(suggestion.question)" class="suggestion-btn">
+                            <i class="fas" [ngClass]="suggestion.icon"></i>
+                            <span>{{ suggestion.text }}</span>
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

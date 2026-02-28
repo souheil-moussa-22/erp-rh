@@ -1,0 +1,357 @@
+<div class="form-container">
+  <div class="form-card">
+    <!-- Header -->
+    <div class="form-header">
+      <h1 class="form-title">
+        <i class="fas fa-briefcase me-2"></i>
+        {{ isEdit ? 'Edit Offer' : 'New Job Offer' }}
+      </h1>
+      <button type="button" class="back-button" (click)="goBack()">
+        <i class="fas fa-arrow-left me-2"></i>
+        Back
+      </button>
+    </div>
+
+    <!-- Error message -->
+    @if (errorMessage) {
+      <div class="error-banner">
+        <div class="error-content">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <span class="error-text">{{ errorMessage }}</span>
+        </div>
+      </div>
+    }
+
+    <!-- Loading State -->
+    @if (loading) {
+      <div class="loading-container">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <p>Loading offer...</p>
+      </div>
+    }
+
+    <!-- Form -->
+    @if (!loading) {
+      <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="job-form">
+
+        <!-- Row 1: Title avec suggestions AI - CORRIGÉ -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label required" for="title">Job Title</label>
+            <input
+              type="text"
+              id="title"
+              formControlName="title"
+              class="form-input"
+              [class.error]="getFieldError('title')"
+              placeholder="Ex: Full Stack Developer"
+            >
+            @if (getFieldError('title')) {
+              <div class="error-message">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{ getFieldError('title') }}
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="department">Department</label>
+            <input
+              type="text"
+              id="department"
+              formControlName="department"
+              class="form-input"
+              [class.error]="getFieldError('department')"
+              placeholder="Ex: Development"
+            >
+            @if (getFieldError('department')) {
+              <div class="error-message">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{ getFieldError('department') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Row 2: Location and Contract Type -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label required" for="location">Location</label>
+            <input
+              type="text"
+              id="location"
+              formControlName="location"
+              class="form-input"
+              [class.error]="getFieldError('location')"
+              placeholder="Ex: Paris, Remote"
+            >
+            @if (getFieldError('location')) {
+              <div class="error-message">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{ getFieldError('location') }}
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="contractType">Contract Type</label>
+            <select
+              id="contractType"
+              formControlName="contractType"
+              class="form-select"
+              [class.error]="getFieldError('contractType')"
+            >
+              <option value="">Select a type</option>
+              @for (type of contractTypes; track type) {
+                <option [value]="type">{{ type }}</option>
+              }
+            </select>
+            @if (getFieldError('contractType')) {
+              <div class="error-message">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{ getFieldError('contractType') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Row 3: Experience Level and Education -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label required" for="experienceLevel">Experience Level</label>
+            <select
+              id="experienceLevel"
+              formControlName="experienceLevel"
+              class="form-select"
+              [class.error]="getFieldError('experienceLevel')"
+            >
+              <option value="">Select a level</option>
+              @for (level of experienceLevels; track level) {
+                <option [value]="level">{{ level }}</option>
+              }
+            </select>
+            @if (getFieldError('experienceLevel')) {
+              <div class="error-message">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{ getFieldError('experienceLevel') }}
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="educationRequired">Education Level</label>
+            <select
+              id="educationRequired"
+              formControlName="educationRequired"
+              class="form-select"
+              [class.error]="getFieldError('educationRequired')"
+            >
+              <option value="">Select a level</option>
+              @for (education of educationLevels; track education) {
+                <option [value]="education">{{ education }}</option>
+              }
+            </select>
+            @if (getFieldError('educationRequired')) {
+              <div class="error-message">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                {{ getFieldError('educationRequired') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Closing Date -->
+        <div class="form-group">
+          <label class="form-label required" for="closingDate">Closing Date</label>
+          <input
+            type="date"
+            id="closingDate"
+            formControlName="closingDate"
+            class="form-input"
+            [class.error]="getFieldError('closingDate')"
+          >
+          @if (getFieldError('closingDate')) {
+            <div class="error-message">
+              <i class="fas fa-exclamation-circle me-1"></i>
+              {{ getFieldError('closingDate') }}
+            </div>
+          }
+        </div>
+
+        <!-- Description avec boutons AI -->
+        <div class="form-group full-width">
+          <div class="field-header">
+            <label class="form-label required" for="description">Job Description</label>
+            <div class="ai-buttons">
+              <button type="button" class="ai-button"
+                      (click)="generateDescriptionAI()"
+                      [disabled]="aiGenerating || !jobForm.get('title')?.value || !jobForm.get('department')?.value || !jobForm.get('location')?.value">
+                <i class="fas fa-robot"></i>
+                Generate with AI
+              </button>
+              <button type="button" class="ai-button"
+                      (click)="improveFieldAI('description')"
+                      [disabled]="aiGenerating || !jobForm.get('description')?.value">
+                <i class="fas fa-magic"></i>
+                Improve with AI
+              </button>
+            </div>
+          </div>
+          <textarea
+            id="description"
+            formControlName="description"
+            class="form-textarea"
+            [class.error]="getFieldError('description')"
+            placeholder="Describe the main missions and work environment..."
+            rows="4"
+          ></textarea>
+          @if (getFieldError('description')) {
+            <div class="error-message">
+              <i class="fas fa-exclamation-circle me-1"></i>
+              {{ getFieldError('description') }}
+            </div>
+          }
+        </div>
+
+        <!-- Responsibilities avec bouton AI -->
+        <div class="form-group full-width">
+          <div class="field-header">
+            <label class="form-label required" for="responsibilities">Responsibilities</label>
+            <button type="button" class="ai-button"
+                    (click)="improveFieldAI('responsibilities')"
+                    [disabled]="aiGenerating || !jobForm.get('responsibilities')?.value">
+              <i class="fas fa-magic"></i>
+              Improve with AI
+            </button>
+          </div>
+          <textarea
+            id="responsibilities"
+            formControlName="responsibilities"
+            class="form-textarea"
+            [class.error]="getFieldError('responsibilities')"
+            placeholder="List the main responsibilities of the position..."
+            rows="4"
+          ></textarea>
+          @if (getFieldError('responsibilities')) {
+            <div class="error-message">
+              <i class="fas fa-exclamation-circle me-1"></i>
+              {{ getFieldError('responsibilities') }}
+            </div>
+          }
+        </div>
+
+        <!-- Requirements avec bouton AI -->
+        <div class="form-group full-width">
+          <div class="field-header">
+            <label class="form-label required" for="requirements">Requirements and Skills</label>
+            <button type="button" class="ai-button"
+                    (click)="generateRequirementsAI()"
+                    [disabled]="aiGenerating || !jobForm.get('responsibilities')?.value">
+              <i class="fas fa-cogs"></i>
+              Generate from responsibilities
+            </button>
+          </div>
+          <textarea
+            id="requirements"
+            formControlName="requirements"
+            class="form-textarea"
+            [class.error]="getFieldError('requirements')"
+            placeholder="List technical skills and required qualifications..."
+            rows="4"
+          ></textarea>
+          @if (getFieldError('requirements')) {
+            <div class="error-message">
+              <i class="fas fa-exclamation-circle me-1"></i>
+              {{ getFieldError('requirements') }}
+            </div>
+          }
+        </div>
+
+        <!-- Benefits avec bouton AI -->
+        <div class="form-group full-width">
+          <div class="field-header">
+            <label class="form-label required" for="benefits">Benefits</label>
+            <button type="button" class="ai-button"
+                    (click)="improveFieldAI('benefits')"
+                    [disabled]="aiGenerating || !jobForm.get('benefits')?.value">
+              <i class="fas fa-magic"></i>
+              Improve with AI
+            </button>
+          </div>
+          <textarea
+            id="benefits"
+            formControlName="benefits"
+            class="form-textarea"
+            [class.error]="getFieldError('benefits')"
+            placeholder="Describe the benefits offered (salary, social benefits, etc.)..."
+            rows="3"
+          ></textarea>
+          @if (getFieldError('benefits')) {
+            <div class="error-message">
+              <i class="fas fa-exclamation-circle me-1"></i>
+              {{ getFieldError('benefits') }}
+            </div>
+          }
+        </div>
+
+        <!-- Tags -->
+        <div class="form-group full-width">
+          <label class="form-label" for="tags">Tags</label>
+          <div class="tags-container">
+            @for (tag of currentTags; track tag) {
+              <div class="tag-item">
+                <span>{{ tag }}</span>
+                <button type="button" class="tag-remove" (click)="removeTag(tag)">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            }
+            <input
+              type="text"
+              id="tags"
+              class="tag-input"
+              placeholder="Add a tag..."
+              [value]="tagInput"
+              (input)="onTagInput($event)"
+              (keydown)="onTagKeydown($event)"
+              (blur)="addCurrentTag()"
+            >
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button type="button" class="cancel-button" (click)="goBack()">
+            <i class="fas fa-times me-2"></i>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="submit-button"
+            [disabled]="submitting || !jobForm.valid"
+          >
+            @if (submitting) {
+              <i class="fas fa-spinner fa-spin me-2"></i>
+              Saving...
+            } @else {
+              <i class="fas" [class.fa-save]="isEdit" [class.fa-plus]="!isEdit" class="me-2"></i>
+              {{ isEdit ? 'Update' : 'Create Offer' }}
+            }
+          </button>
+        </div>
+      </form>
+
+      <!-- Loading AI Overlay -->
+      @if (aiGenerating) {
+        <div class="ai-loading-overlay">
+          <div class="ai-loading-content">
+            <i class="fas fa-robot fa-spin fa-2x"></i>
+            <p>AI is generating content...</p>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

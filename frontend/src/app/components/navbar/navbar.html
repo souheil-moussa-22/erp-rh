@@ -1,0 +1,75 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo / Brand -->
+    <div class="navbar-brand">
+      <a routerLink="/dashboard" class="brand-link">
+        <span class="brand-icon">🏢</span>
+        <span class="brand-text">HR Management</span>
+      </a>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+      <span class="hamburger-icon">☰</span>
+    </button>
+
+    <!-- Right Side Actions -->
+    <div class="navbar-actions">
+      <!-- Notification Bell -->
+      <app-notification></app-notification>
+
+      <!-- User Profile Dropdown -->
+      <div class="user-menu">
+        <button class="user-button" (click)="toggleUserMenu()">
+          <div class="user-avatar">
+            {{ getUserInitials() }}
+          </div>
+          <span class="user-name">{{ currentUser?.username || 'User' }}</span>
+          <span class="dropdown-arrow" [class.open]="isUserMenuOpen">▼</span>
+        </button>
+
+        <!-- User Dropdown Menu -->
+        @if (isUserMenuOpen) {
+          <div class="user-dropdown">
+            <div class="dropdown-header">
+              <div class="user-avatar-large">
+                {{ getUserInitials() }}
+              </div>
+              <div class="user-info">
+                <p class="user-fullname">{{ currentUser?.username || 'User' }}</p>
+                <p class="user-email">{{ currentUser?.email || 'user@example.com' }}</p>
+              </div>
+            </div>
+
+            <div class="dropdown-divider"></div>
+
+            <a routerLink="/profile" class="dropdown-item" (click)="closeUserMenu()">
+              <span class="item-icon">👤</span>
+              My Profile
+            </a>
+            <a routerLink="/settings" class="dropdown-item" (click)="closeUserMenu()">
+              <span class="item-icon">⚙️</span>
+              Settings
+            </a>
+            <a routerLink="/notifications" class="dropdown-item" (click)="closeUserMenu()">
+              <span class="item-icon">🔔</span>
+              All Notifications
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <button class="dropdown-item logout" (click)="logout()">
+              <span class="item-icon">🚪</span>
+              Logout
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Overlay for mobile menu and dropdowns -->
+@if (isMobileMenuOpen || isUserMenuOpen) {
+  <div class="navbar-overlay" (click)="closeAllMenus()"></div>
+}

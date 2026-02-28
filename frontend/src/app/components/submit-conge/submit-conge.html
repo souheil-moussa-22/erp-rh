@@ -1,0 +1,146 @@
+<div class="conge-container">
+  <div class="conge-card">
+    <!-- Header -->
+    <div class="conge-header">
+      <h1 class="conge-title">Submit Leave Request</h1>
+      <p class="conge-subtitle">Fill in the details for your leave request</p>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (errorMessage) {
+      <div class="alert alert-error">
+        {{ errorMessage }}
+      </div>
+    }
+
+    @if (successMessage) {
+      <div class="alert alert-success">
+        {{ successMessage }}
+      </div>
+    }
+
+    <!-- Form -->
+    <form [formGroup]="congeForm" (ngSubmit)="onSubmit()" class="conge-form">
+
+      <!-- Leave Type -->
+      <div class="form-group">
+        <label for="type" class="form-label">Leave Type *</label>
+        <select
+          id="type"
+          formControlName="type"
+          class="form-select"
+          [class.error]="type?.invalid && type?.touched"
+        >
+          <option value="">Select leave type</option>
+          <option value="ANNUAL">Annual Leave</option>
+          <option value="SICK">Sick Leave</option>
+          <option value="UNPAID">Unpaid Leave</option>
+          <option value="MATERNITY">Maternity Leave</option>
+          <option value="PATERNITY">Paternity Leave</option>
+          <option value="EMERGENCY">Emergency Leave</option>
+        </select>
+        @if (type?.invalid && type?.touched) {
+          <div class="error-message">
+            @if (type?.errors?.['required']) {
+              <span>Leave type is required</span>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Start Date -->
+      <div class="form-group">
+        <label for="startDate" class="form-label">Start Date *</label>
+        <input
+          type="date"
+          id="startDate"
+          formControlName="startDate"
+          class="form-input"
+          [class.error]="startDate?.invalid && startDate?.touched"
+        />
+        @if (startDate?.invalid && startDate?.touched) {
+          <div class="error-message">
+            @if (startDate?.errors?.['required']) {
+              <span>Start date is required</span>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- End Date -->
+      <div class="form-group">
+        <label for="endDate" class="form-label">End Date *</label>
+        <input
+          type="date"
+          id="endDate"
+          formControlName="endDate"
+          class="form-input"
+          [class.error]="endDate?.invalid && endDate?.touched"
+        />
+        @if (endDate?.invalid && endDate?.touched) {
+          <div class="error-message">
+            @if (endDate?.errors?.['required']) {
+              <span>End date is required</span>
+            }
+          </div>
+        }
+        @if (congeForm.errors?.['dateRangeInvalid'] && endDate?.touched) {
+          <div class="error-message">
+            End date must be after start date
+          </div>
+        }
+      </div>
+
+      <!-- Duration Display -->
+      @if (duration > 0) {
+        <div class="duration-info">
+          <span class="duration-label">Duration:</span>
+          <span class="duration-value">{{ duration }} day(s)</span>
+        </div>
+      }
+
+      <!-- Reason -->
+      <div class="form-group">
+        <label for="reason" class="form-label">Reason *</label>
+        <textarea
+          id="reason"
+          formControlName="reason"
+          class="form-textarea"
+          rows="4"
+          placeholder="Please provide a reason for your leave request..."
+          [class.error]="reason?.invalid && reason?.touched"
+        ></textarea>
+        @if (reason?.invalid && reason?.touched) {
+          <div class="error-message">
+            @if (reason?.errors?.['required']) {
+              <span>Reason is required</span>
+            }
+            @if (reason?.errors?.['minlength']) {
+              <span>Reason must be at least 10 characters</span>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="form-actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="onCancel()"
+          [disabled]="isLoading"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn-primary"
+          [class.loading]="isLoading"
+          [disabled]="isLoading || congeForm.invalid"
+        >
+          {{ isLoading ? 'Submitting...' : 'Submit Request' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,128 @@
+<!-- signup.component.html - Décommenter et adapter les champs -->
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="logo">
+        <i class="logo-icon">🏢</i>
+        <span class="logo-text">ERP RH</span>
+      </div>
+      <h1 class="auth-title">Créer un compte</h1>
+      <p class="auth-subtitle">Rejoignez notre plateforme</p>
+    </div>
+
+    <!-- Message d'erreur global -->
+    <div *ngIf="errorMessage" class="error-message global-error">
+      {{ errorMessage }}
+    </div>
+
+    <form class="auth-form" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username" class="form-label">Nom d'utilisateur</label>
+        <input
+          type="text"
+          id="username"
+          formControlName="username"
+          class="form-input"
+          placeholder="Votre nom d'utilisateur"
+          [class.error]="signupForm.get('username')?.invalid && signupForm.get('username')?.touched">
+        @if (signupForm.get('username')?.invalid && signupForm.get('username')?.touched) {
+          <div class="error-message">
+            Le nom d'utilisateur est requis
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-input"
+          placeholder="votre@email.com"
+          [class.error]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
+        @if (signupForm.get('email')?.invalid && signupForm.get('email')?.touched) {
+          <div class="error-message">
+            Veuillez entrer un email valide
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Mot de passe</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="form-input"
+          placeholder="Votre mot de passe"
+          [class.error]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
+        @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
+          <div class="error-message">
+            Le mot de passe doit contenir au moins 6 caractères
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          class="form-input"
+          placeholder="Confirmer votre mot de passe"
+          [class.error]="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched">
+        @if (signupForm.get('confirmPassword')?.errors?.['passwordMismatch'] && signupForm.get('confirmPassword')?.touched) {
+          <div class="error-message">
+            Les mots de passe ne correspondent pas
+          </div>
+        }
+        @if (signupForm.get('confirmPassword')?.errors?.['required'] && signupForm.get('confirmPassword')?.touched) {
+          <div class="error-message">
+            Veuillez confirmer votre mot de passe
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Rôle</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" formControlName="role" value="ROLE_EMPLOYEE" class="radio-input">
+            <span class="radio-custom"></span>
+            Employé
+          </label>
+          <label class="radio-label">
+            <input type="radio" formControlName="role" value="ROLE_HR" class="radio-input">
+            <span class="radio-custom"></span>
+            RH
+          </label>
+          <label class="radio-label">
+            <input type="radio" formControlName="role" value="ROLE_HRMANAGER" class="radio-input">
+            <span class="radio-custom"></span>
+            Manager RH
+          </label>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="auth-button"
+        [disabled]="signupForm.invalid || isLoading">
+        @if (!isLoading) {
+          <span>Créer mon compte</span>
+        }
+        @if (isLoading) {
+          <span class="loading">Création...</span>
+        }
+      </button>
+
+      <div class="auth-footer">
+        <p>Déjà un compte ?
+          <a routerLink="/login" class="auth-link">Se connecter</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

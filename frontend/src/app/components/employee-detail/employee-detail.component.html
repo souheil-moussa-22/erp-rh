@@ -1,0 +1,544 @@
+<div *ngIf="!loading && employee" class="employee-container">
+
+  <!-- Employee Profile -->
+  <div class="employee-profile">
+    <div class="profile-header">
+      <!-- Photo on left -->
+      <div class="photo-section">
+        <div class="photo-wrapper">
+          <img class="profile-photo"
+               [src]="getPhotoUrl()"
+               alt="Employee Photo">
+        </div>
+      </div>
+
+      <!-- Information on right -->
+      <div class="profile-info">
+        <h2>{{ employee.username }}</h2>
+        <p><strong>Email:</strong> {{ employee.email }}</p>
+        <p><strong>Phone:</strong> {{ employee.phone || '-' }}</p>
+        <p><strong>Position:</strong> {{ employee.position || '-' }}</p>
+        <p><strong>Hire Date:</strong> {{ employee.hireDate | date:'yyyy-MM-dd' }}</p>
+      </div>
+
+      <div class="payslip-action">
+        <button class="payslip-btn" (click)="viewPayslipHistory()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="payslip-icon" viewBox="0 0 16 16">
+            <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5"/>
+            <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+          </svg>
+          View Payslip History
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modification form -->
+  <div class="employee-form" *ngIf="canSeeUpdateForm()">
+    <h3>Update Information</h3>
+    <form (ngSubmit)="onUpdateSubmit($event)">
+
+      <!-- ================= FIELDS FOR ALL USERS (OWN PROFILE) ================= -->
+      <div *ngIf="isViewingOwnProfile" class="form-row">
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input id="username" type="text" [(ngModel)]="employee.username" name="username" required maxlength="50">
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input id="email" type="email" [(ngModel)]="employee.email" name="email" required maxlength="50">
+        </div>
+      </div>
+
+      <div *ngIf="isViewingOwnProfile" class="form-row">
+        <div class="form-group">
+          <label for="address">Address:</label>
+          <input id="address" type="text" [(ngModel)]="employee.address" name="address" required maxlength="100">
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone:</label>
+          <input id="phone"
+                 type="number"
+                 [(ngModel)]="employee.phone"
+                 name="phone"
+                 (blur)="validatePhone()"
+                 min="20000000"
+                 max="99999999"
+                 placeholder="Ex: 50123456"
+                 [class.invalid]="phoneError"
+                 [class.valid]="employee.phone && !phoneError">
+          <div *ngIf="phoneError" class="error-message">{{ phoneError }}</div>
+        </div>
+
+      </div>
+
+
+
+      <!-- ================= PASSWORD CHANGE SECTION (OWN PROFILE ONLY) ================= -->
+      <div *ngIf="isViewingOwnProfile" class="password-section">
+        <h4>Change Password</h4>
+        <small class="section-description">Fill out only if you want to change your password</small>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="currentPassword">Current Password:</label>
+            <input
+              id="currentPassword"
+              type="password"
+              [(ngModel)]="passwordForm.currentPassword"
+              name="currentPassword"
+              placeholder="Enter your current password"
+              [class.invalid]="passwordErrors.current"
+              [class.valid]="passwordForm.currentPassword && !passwordErrors.current">
+            <div *ngIf="passwordErrors.current" class="error-message">
+              {{ passwordErrors.current }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="newPassword">New Password:</label>
+            <input
+              id="newPassword"
+              type="password"
+              [(ngModel)]="passwordForm.newPassword"
+              name="newPassword"
+              (input)="onNewPasswordChange()"
+              placeholder="New password"
+              [class.invalid]="passwordErrors.new"
+              [class.valid]="passwordForm.newPassword && !passwordErrors.new && validatePassword(passwordForm.newPassword)">
+            <div *ngIf="passwordErrors.new" class="error-message">
+              {{ passwordErrors.new }}
+            </div>
+            <div *ngIf="passwordForm.newPassword && !passwordErrors.new && validatePassword(passwordForm.newPassword)"
+                 class="success-message">
+              Valid password
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password:</label>
+            <input
+              id="confirmPassword"
+              type="password"
+              [(ngModel)]="passwordForm.confirmPassword"
+              name="confirmPassword"
+              (input)="onConfirmPasswordChange()"
+              placeholder="Confirm new password"
+              [class.invalid]="passwordErrors.confirm"
+              [class.valid]="passwordForm.confirmPassword && !passwordErrors.confirm && passwordForm.newPassword === passwordForm.confirmPassword">
+            <div *ngIf="passwordErrors.confirm" class="error-message">
+              {{ passwordErrors.confirm }}
+            </div>
+            <div *ngIf="passwordForm.confirmPassword && !passwordErrors.confirm && passwordForm.newPassword === passwordForm.confirmPassword"
+                 class="success-message">
+              Passwords match
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <!-- ================= HR FIELDS ONLY (OTHER EMPLOYEES) ================= -->
+      <div *ngIf="!isViewingOwnProfile && canViewAllInfo" class="form-row">
+        <div class="form-group">
+          <label for="cin">CIN:</label>
+          <input id="cin" type="text" [(ngModel)]="employee.cin" name="cin" maxlength="20">
+        </div>
+        <div class="form-group">
+          <label for="cnssNumber">CNSS Number:</label>
+          <input id="cnssNumber" type="text" [(ngModel)]="employee.cnssNumber" name="cnssNumber" maxlength="30">
+        </div>
+      </div>
+
+      <div *ngIf="!isViewingOwnProfile && canViewAllInfo" class="form-row">
+        <div class="form-group">
+          <label for="position">Position:</label>
+          <input id="position"
+                 type="text"
+                 [(ngModel)]="employee.position"
+                 name="position"
+                 (blur)="validatePosition()"
+                 maxlength="15"
+                 [class.invalid]="positionError"
+                 [class.valid]="employee.position && !positionError">
+          <div *ngIf="positionError" class="error-message">{{ positionError }}</div>
+        </div>
+        <div class="form-group">
+          <label for="salary">Salary:</label>
+          <input id="salary"
+                 type="number"
+                 [(ngModel)]="employee.salary"
+                 name="salary"
+                 (blur)="validateSalary()"
+                 min="0"
+                 step="0.01"
+                 [class.invalid]="salaryError"
+                 [class.valid]="employee.salary && !salaryError">
+          <div *ngIf="salaryError" class="error-message">{{ salaryError }}</div>
+        </div>
+      </div>
+
+      <div *ngIf="!isViewingOwnProfile && canViewAllInfo" class="form-row">
+        <div class="form-group">
+          <label for="rib">RIB:</label>
+          <input id="rib" type="text" [(ngModel)]="employee.rib" name="rib" maxlength="30">
+        </div>
+        <div class="form-group">
+          <label for="bankName">Bank Name:</label>
+          <input id="bankName" type="text" [(ngModel)]="employee.bankName" name="bankName" maxlength="50">
+        </div>
+      </div>
+
+      <!-- Hire Date in HR section -->
+      <div *ngIf="!isViewingOwnProfile && canViewAllInfo" class="form-row">
+        <div class="form-group">
+          <label for="hireDate">Hire Date:</label>
+          <input id="hireDate"
+                 type="date"
+                 [(ngModel)]="employee.hireDate"
+                 name="hireDate"
+                 (blur)="validateHireDate()"
+                 [max]="getMaxHireDate()"
+                 [class.invalid]="hireDateError"
+                 [class.valid]="employee.hireDate && !hireDateError">
+          <div *ngIf="hireDateError" class="error-message">{{ hireDateError }}</div>
+        </div>
+        <div class="form-group">
+          <label for="address">Address:</label>
+          <input id="address" type="text" [(ngModel)]="employee.address" name="address" maxlength="50">
+        </div>
+      </div>
+
+      <!-- Photo section (only for HR on other employees) -->
+      <div *ngIf="!isViewingOwnProfile && canViewAllInfo" class="photo-upload-section">
+        <h4>Change Profile Photo</h4>
+        <div class="photo-upload-form">
+          <input type="file" (change)="onPhotoSelected($event)" accept="image/*">
+          <button type="button" (click)="uploadPhoto()" [disabled]="!selectedPhoto" class="upload-photo-btn">
+            Upload Photo
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="update-btn">Update Information</button>
+    </form>
+  </div>
+
+  <!-- Formations Container -->
+  <div class="formation-container">
+    <h3 class="formation-title">
+      Formations
+      <button class="icon-btn" (click)="showFormationModal = true" title="Add formation">&#10010;</button>
+    </h3>
+
+    <!-- Message if no formations -->
+    <div *ngIf="!employee.formations || employee.formations.length === 0" class="no-formations">
+      No formations added yet.
+    </div>
+
+    <!-- Formations List -->
+    <ul class="formation-list" *ngIf="employee.formations && employee.formations.length > 0">
+      <li *ngFor="let f of employee.formations" class="formation-item">
+        <!-- Line 1: Name + Start Date -->
+        <div class="formation-row">
+          <div class="formation-left">
+            <span class="formation-label">Formation Name:</span> {{ f.name }}
+          </div>
+          <div class="formation-right">
+            <span class="formation-label">Start Date:</span> {{ f.startDate | date:'yyyy-MM-dd' }}
+          </div>
+        </div>
+
+        <!-- Line 2: Location + End Date -->
+        <div class="formation-row">
+          <div class="formation-left">
+            <span class="formation-label">Location:</span> {{ f.location || '-' }}
+          </div>
+          <div class="formation-right">
+            <span class="formation-label">End Date:</span> {{ f.endDate | date:'yyyy-MM-dd' }}
+          </div>
+        </div>
+
+        <!-- Line 3: PDF + Actions -->
+        <div class="formation-row formation-actions">
+          <div class="formation-left" *ngIf="f.certificateId">
+            <span class="formation-label">Formation PDF:</span>
+            <button class="pdf-btn" (click)="viewFormationCertificate(f)" title="View certificate">
+              View PDF
+            </button>
+          </div>
+          <div class="formation-right">
+            <button class="delete-btn" (click)="deleteFormation(f.id)" title="Delete formation">
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <hr class="formation-separator">
+      </li>
+    </ul>
+  </div>
+
+  <!-- Modal to display formation PDF -->
+  <div class="modal formation-pdf-modal" *ngIf="showFormationPdfModal">
+    <div class="modal-content formation-pdf-modal-content">
+      <span class="close-btn" (click)="closeFormationPdfModal()">&times;</span>
+      <h3>{{ currentFormationTitle }}</h3>
+      <div class="pdf-container">
+        <iframe
+          *ngIf="currentFormationPdfUrl"
+          [src]="currentFormationPdfUrl | safeUrl"
+          width="100%"
+          height="600px"
+          style="border: none;"
+          (load)="onFormationPdfLoad()">
+        </iframe>
+        <div *ngIf="!currentFormationPdfUrl && formationPdfLoading" class="pdf-loading">
+          Loading certificate...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add formation modal -->
+  <div class="modal" *ngIf="showFormationModal">
+    <div class="modal-content">
+      <span class="close-btn" (click)="closeFormationModal()">&times;</span>
+      <h3>Add Formation</h3>
+      <form (ngSubmit)="addFormation($event)">
+        <div class="form-group">
+          <label for="formationName">Formation Name: <span class="required">*</span></label>
+          <input id="formationName" type="text" [(ngModel)]="newFormation.name" name="formationName" required>
+        </div>
+        <div class="form-group">
+          <label for="formationLocation">Location: <span class="required">*</span></label>
+          <input id="formationLocation" type="text" [(ngModel)]="newFormation.location" name="formationLocation" required>
+        </div>
+        <div class="form-row formation-dates">
+          <div class="form-group date-input-group">
+            <label for="formationStartDate">Start Date: <span class="required">*</span></label>
+            <input
+              id="formationStartDate"
+              type="date"
+              [(ngModel)]="newFormation.startDate"
+              name="startDate"
+              required
+              (change)="validateStartDate()"
+              [max]="getMaxStartDate()"
+              class="form-input date-input"
+              [class.invalid]="startDateError"
+              [class.valid]="newFormation.startDate && !startDateError">
+
+            <div *ngIf="startDateError" class="error-message">
+              {{ startDateError }}
+            </div>
+            <div *ngIf="!startDateError && newFormation.startDate" class="success-message">
+              ✓ Valid start date
+            </div>
+            <small class="date-hint">Cannot be in the future</small>
+          </div>
+          <div class="form-group date-input-group">
+            <label for="formationEndDate">End Date: <span class="required">*</span></label>
+            <input
+              id="formationEndDate"
+              type="date"
+              [(ngModel)]="newFormation.endDate"
+              name="endDate"
+              required
+              (change)="validateEndDate()"
+              [min]="newFormation.startDate"
+              class="form-input date-input"
+              [class.invalid]="endDateError"
+              [class.valid]="newFormation.endDate && !endDateError">
+
+            <div *ngIf="endDateError" class="error-message">
+              {{ endDateError }}
+            </div>
+            <div *ngIf="!endDateError && newFormation.endDate" class="success-message">
+              ✓ Valid end date
+            </div>
+            <small class="date-hint">Must be after start date</small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="certificate">Certificate (PDF):</label>
+          <input id="certificate" type="file" (change)="onCertificateSelected($event)" accept="application/pdf" name="certificate">
+          <small class="file-info">Accepted format: PDF only</small>
+        </div>
+
+        <!-- Error message for date validation -->
+        <div *ngIf="formationErrorMessage" class="error-message date-error">
+          {{ formationErrorMessage }}
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="cancel-btn" (click)="closeFormationModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-x-lg" viewBox="0 0 16 16">
+              <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+            </svg>
+            Cancel
+          </button>
+          <button type="submit" class="add-btn"
+                  [disabled]="!newFormation.name || !newFormation.location || !newFormation.startDate || !newFormation.endDate || formationErrorMessage">
+            Create Formation
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal for Delete Formation -->
+  <div class="modal confirmation-modal" *ngIf="showDeleteConfirmation">
+    <div class="modal-content">
+      <span class="close-btn" (click)="cancelDelete()">&times;</span>
+      <h3>Confirm Deletion</h3>
+      <div class="confirmation-message">
+        <p>Are you sure you want to delete this formation?</p>
+        <p class="warning-text">This action cannot be undone.</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="cancel-btn" (click)="cancelDelete()">
+          Cancel
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-x-lg" viewBox="0 0 16 16">
+            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+          </svg>
+        </button>
+        <button type="button" class="delete-btn" (click)="confirmDelete()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-trash3" viewBox="0 0 16 16">
+            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+          </svg>
+          Delete Formation
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal for Update Employee -->
+  <div class="modal confirmation-modal" *ngIf="showUpdateConfirmation">
+    <div class="modal-content update-confirmation">
+      <div class="modal-header">
+        <div class="modal-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+          </svg>
+        </div>
+        <h3>Confirm Update</h3>
+        <span class="close-btn" (click)="cancelUpdate()">&times;</span>
+      </div>
+
+      <div class="modal-body">
+        <div class="confirmation-message">
+          <p>Are you sure you want to update this employee's information?</p>
+          <div class="warning-note">
+            <span class="warning-text">This action will modify the employee's personal and professional data.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" (click)="cancelUpdate()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+          </svg>
+          Cancel
+        </button>
+        <button type="button" class="btn-primary" (click)="confirmUpdate()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+          </svg>
+          Update Information
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal for Delete Formation -->
+  <div class="modal success-modal" *ngIf="showDeleteSuccess">
+    <div class="modal-content">
+      <span class="close-btn" (click)="closeDeleteSuccess()">&times;</span>
+      <div class="success-icon">✅</div>
+      <div class="success-message">
+        <p>Formation deleted successfully!</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="success-btn" (click)="closeDeleteSuccess()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal for Photo Upload -->
+  <div class="modal success-modal" *ngIf="showUploadSuccess">
+    <div class="modal-content">
+      <span class="close-btn" (click)="closeUploadSuccess()">&times;</span>
+      <div class="success-icon">✅</div>
+      <div class="success-message">
+        <p>Photo uploaded successfully!</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="success-btn" (click)="closeUploadSuccess()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal for Update Employee -->
+  <div class="modal success-modal" *ngIf="showUpdateSuccess">
+    <div class="modal-content">
+      <span class="close-btn" (click)="closeUpdateSuccess()">&times;</span>
+      <div class="success-icon">✅</div>
+      <div class="success-message">
+        <p>Employee information updated successfully!</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="success-btn" (click)="closeUpdateSuccess()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal for Formation Added -->
+  <div class="modal success-modal" *ngIf="showFormationSuccess">
+    <div class="modal-content">
+      <span class="close-btn" (click)="closeFormationSuccess()">&times;</span>
+      <div class="success-icon">✅</div>
+      <div class="success-message">
+        <p>Formation added successfully!</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="success-btn" (click)="closeFormationSuccess()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal for Password Change -->
+  <div class="modal success-modal" *ngIf="showPasswordSuccess">
+    <div class="modal-content">
+      <span class="close-btn" (click)="showPasswordSuccess = false">&times;</span>
+      <div class="success-icon">✅</div>
+      <div class="success-message">
+        <p>Password changed successfully!</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="success-btn" (click)="showPasswordSuccess = false">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Modal -->
+  <div class="modal error-modal" *ngIf="showErrorModal">
+    <div class="modal-content">
+      <span class="close-btn" (click)="closeErrorModal()">&times;</span>
+      <div class="error-icon">❌</div>
+      <h3>Error</h3>
+      <div class="error-message">
+        <p>{{ errorMessage }}</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="cancel-btn" (click)="closeErrorModal()">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+

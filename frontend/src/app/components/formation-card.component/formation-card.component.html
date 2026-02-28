@@ -1,0 +1,114 @@
+<div class="training-card">
+  <!-- Card Header -->
+  <div class="card-header">
+    <div [class]="getStatusBadgeClass(training.status)">
+      <i class="fas"
+         [class.fa-clock]="training.status === 'PLANIFIED'"
+         [class.fa-play]="training.status === 'IN_PROGRESS'"
+         [class.fa-check]="training.status === 'COMPLETED'"
+         [class.fa-times]="training.status === 'CANCELLED'"></i>
+      {{ training.status }}
+    </div>
+
+    <div class="card-actions">
+      <div class="dropdown">
+        <button class="action-btn" type="button">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" [routerLink]="['/formations/edit', training.id]">
+            <i class="fas fa-edit"></i> Edit
+          </a>
+          <a *ngIf="training.status === 'PLANIFIED'" class="dropdown-item" (click)="onStartFormation()">
+            <i class="fas fa-play"></i> Start
+          </a>
+          <a *ngIf="training.status === 'IN_PROGRESS'" class="dropdown-item" (click)="onCompleteFormation()">
+            <i class="fas fa-check"></i> Complete
+          </a>
+          <a *ngIf="training.status !== 'COMPLETED' && training.status !== 'CANCELLED'"
+             class="dropdown-item warning" (click)="onCancelFormation()">
+            <i class="fas fa-times"></i> Cancel
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item danger" (click)="onDeleteFormation()">
+            <i class="fas fa-trash"></i> Delete
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Card Body -->
+  <div class="card-body">
+    <h3 class="training-title">{{ training.title }}</h3>
+    <p class="training-description">{{ training.description }}</p>
+
+    <div class="training-meta">
+      <div class="meta-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>{{ training.location }}</span>
+      </div>
+
+      <div class="meta-item">
+        <i class="fas fa-user-tie"></i>
+        <span>{{ training.formateur }}</span>
+      </div>
+
+      <div class="meta-item">
+        <i class="fas fa-calendar"></i>
+        <span>{{ formatDate(training.startDate) }} - {{ formatDate(training.endDate) }}</span>
+      </div>
+
+      <div class="meta-item">
+        <i class="fas fa-clock"></i>
+        <span>{{ training.startTime }} - {{ training.endTime }}</span>
+      </div>
+    </div>
+
+    <!-- Progress Section -->
+    <div class="progress-section">
+      <div class="progress-header">
+        <span class="progress-label">
+          <i class="fas fa-users"></i>
+          {{ training.currentParticipants }}/{{ training.maxParticipants }} participants
+        </span>
+        <span class="progress-percentage">
+          {{ getProgressPercentage() }}%
+        </span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill"
+             [style.width]="getProgressPercentage() + '%'"
+             [class]="getProgressPercentage() > 90 ? 'high' : getProgressPercentage() > 75 ? 'medium' : 'low'">
+        </div>
+      </div>
+    </div>
+
+    <!-- Skills Section -->
+    <div class="skills-section" *ngIf="training.skills && training.skills.length > 0">
+      <div class="skills-tags">
+        <span class="skill-tag" *ngFor="let skill of getSkillsArray()">
+          {{ skill }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Footer -->
+  <div class="card-footer">
+    <div class="footer-left">
+      <span class="category-tag">
+        <i class="fas fa-tag"></i>
+        {{ training.category }}
+      </span>
+      <span *ngIf="training.cost && training.cost > 0" class="cost-tag">
+        <i class="fas fa-euro-sign"></i>
+        {{ training.cost }}
+      </span>
+    </div>
+    <div class="footer-right">
+      <small class="creation-date">
+        Created {{ formatDate(training.createdAt) }}
+      </small>
+    </div>
+  </div>
+</div>

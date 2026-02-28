@@ -1,0 +1,216 @@
+<!-- src/app/components/ai-assistant/ai-assistant.component.html -->
+<div class="ai-container">
+  <header class="ai-header">
+    <h1><i class="fas fa-robot"></i> Assistant IA RH</h1>
+    <div class="ai-status" [class.available]="aiAvailable">
+      {{ statusMessage }}
+    </div>
+  </header>
+
+  <!-- Onglets de navigation -->
+  <nav class="ai-tabs">
+    <button
+      [class.active]="selectedAction === 'description'"
+      (click)="setAction('description')">
+      <i class="fas fa-file-alt"></i>
+      Générer Description
+    </button>
+    <button
+      [class.active]="selectedAction === 'titles'"
+      (click)="setAction('titles')">
+      <i class="fas fa-heading"></i>
+      Suggérer Titres
+    </button>
+    <button
+      [class.active]="selectedAction === 'improve'"
+      (click)="setAction('improve')">
+      <i class="fas fa-magic"></i>
+      Améliorer Texte
+    </button>
+  </nav>
+
+  <!-- Message d'erreur -->
+  @if (errorMessage) {
+    <div class="error-message">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ errorMessage }}
+    </div>
+  }
+
+  <!-- Loading overlay -->
+  @if (loading) {
+    <div class="loading-overlay">
+      <div class="spinner"></div>
+      <p>L'IA réfléchit...</p>
+    </div>
+  }
+
+  <!-- Formulaire Génération Description -->
+  @if (selectedAction === 'description') {
+    <div class="form-section">
+      <h2><i class="fas fa-edit"></i> Générer une description de poste</h2>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Titre du poste *</label>
+          <input
+            type="text"
+            [(ngModel)]="jobTitle"
+            placeholder="Ex: Développeur Full Stack"
+            [disabled]="loading">
+        </div>
+
+        <div class="form-group">
+          <label>Département *</label>
+          <input
+            type="text"
+            [(ngModel)]="department"
+            placeholder="Ex: Développement"
+            [disabled]="loading">
+        </div>
+
+        <div class="form-group">
+          <label>Localisation *</label>
+          <input
+            type="text"
+            [(ngModel)]="location"
+            placeholder="Ex: Paris, Télétravail"
+            [disabled]="loading">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button
+          class="btn-primary"
+          (click)="generateDescription()"
+          [disabled]="loading || !aiAvailable">
+          <i class="fas fa-bolt"></i>
+          Générer avec l'IA
+        </button>
+        <button class="btn-secondary" (click)="clearResults()">
+          <i class="fas fa-trash"></i>
+          Effacer
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Formulaire Suggestion Titres -->
+  @if (selectedAction === 'titles') {
+    <div class="form-section">
+      <h2><i class="fas fa-heading"></i> Suggérer des titres de poste</h2>
+
+      <div class="form-group">
+        <label>Description du poste *</label>
+        <textarea
+          [(ngModel)]="jobDescription"
+          rows="5"
+          placeholder="Décrivez les missions principales, compétences requises..."
+          [disabled]="loading"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button
+          class="btn-primary"
+          (click)="suggestTitles()"
+          [disabled]="loading || !aiAvailable">
+          <i class="fas fa-lightbulb"></i>
+          Suggérer des titres
+        </button>
+        <button class="btn-secondary" (click)="clearResults()">
+          <i class="fas fa-trash"></i>
+          Effacer
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Formulaire Amélioration Texte -->
+  @if (selectedAction === 'improve') {
+    <div class="form-section">
+      <h2><i class="fas fa-magic"></i> Améliorer un texte</h2>
+
+      <div class="form-group">
+        <label>Texte à améliorer *</label>
+        <textarea
+          [(ngModel)]="textToImprove"
+          rows="5"
+          placeholder="Collez ici le texte que vous souhaitez améliorer..."
+          [disabled]="loading"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Contexte (optionnel)</label>
+        <input
+          type="text"
+          [(ngModel)]="improvementContext"
+          placeholder="Ex: Description de poste pour un développeur senior"
+          [disabled]="loading">
+      </div>
+
+      <div class="form-actions">
+        <button
+          class="btn-primary"
+          (click)="improveText()"
+          [disabled]="loading || !aiAvailable">
+          <i class="fas fa-wand-magic-sparkles"></i>
+          Améliorer avec l'IA
+        </button>
+        <button class="btn-secondary" (click)="clearResults()">
+          <i class="fas fa-trash"></i>
+          Effacer
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Résultats -->
+  @if (aiResult) {
+    <div class="result-section">
+      <h2><i class="fas fa-scroll"></i> Résultat généré</h2>
+      <div class="result-card">
+        <div class="result-header">
+          <h3>Texte amélioré</h3>
+          <button class="btn-copy" (click)="copyToClipboard(aiResult)">
+            <i class="fas fa-copy"></i>
+            Copier
+          </button>
+        </div>
+        <div class="result-content">
+          <pre>{{ aiResult }}</pre>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (aiSuggestions.length > 0) {
+    <div class="result-section">
+      <h2><i class="fas fa-list"></i> Titres suggérés</h2>
+      <div class="suggestions-grid">
+        @for (title of aiSuggestions; track $index) {
+          <div class="suggestion-card">
+            <div class="suggestion-content">
+              <h4>{{ title }}</h4>
+              <button class="btn-small" (click)="copyToClipboard(title)">
+                <i class="fas fa-copy"></i>
+                Copier
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Instructions -->
+  <div class="instructions">
+    <h3><i class="fas fa-info-circle"></i> Comment utiliser</h3>
+    <ul>
+      <li>Remplissez les informations demandées</li>
+      <li>Cliquez sur le bouton de génération correspondant</li>
+      <li>Attendez que l'IA génère le résultat</li>
+      <li>Copiez et adaptez le résultat selon vos besoins</li>
+      <li>Pour de meilleurs résultats, soyez précis dans vos descriptions</li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,293 @@
+<div class="form-container">
+  <div class="form-card">
+    <!-- Header -->
+    <div class="form-header">
+      <h1 class="form-title">
+        <i class="fas fa-chalkboard-teacher"></i>
+        {{ isEdit ? 'Edit Training' : 'New Training' }}
+      </h1>
+      <button type="button" class="back-button" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i>
+        Back
+      </button>
+    </div>
+
+    <!-- Error message -->
+    <div *ngIf="errorMessage" class="error-banner">
+      <div class="error-content">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Loading training...</p>
+    </div>
+
+    <!-- Form -->
+    <form *ngIf="!loading" [formGroup]="formationForm" (ngSubmit)="onSubmit()" class="job-form">
+      
+      <!-- Title -->
+      <div class="form-group full-width">
+        <label class="form-label required">
+          <i class="fas fa-heading"></i>
+          Training Title
+        </label>
+        <input type="text" formControlName="title" class="form-input" 
+               placeholder="Ex: Advanced Angular Training"
+               [class.error]="formationForm.get('title')?.invalid && formationForm.get('title')?.touched">
+        <div class="error-container">
+          <div *ngIf="formationForm.get('title')?.invalid && formationForm.get('title')?.touched" 
+               class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ getFieldError('title') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group full-width">
+        <label class="form-label required">
+          <i class="fas fa-align-left"></i>
+          Description
+        </label>
+        <textarea formControlName="description" class="form-textarea"
+                  placeholder="Describe the objectives and content of the training..."
+                  [class.error]="formationForm.get('description')?.invalid && formationForm.get('description')?.touched"
+                  rows="4"></textarea>
+        <div class="char-count" [class]="getDescriptionClass()">
+          <i class="fas" [class.fa-check-circle]="getDescriptionLength() <= 500 && getDescriptionLength() >= 10"
+                        [class.fa-exclamation-triangle]="getDescriptionLength() > 450"
+                        [class.fa-times-circle]="getDescriptionLength() > 500"></i>
+          {{ getDescriptionLength() }}/500 characters
+        </div>
+        <div class="error-container">
+          <div *ngIf="formationForm.get('description')?.invalid && formationForm.get('description')?.touched" 
+               class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ getFieldError('description') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- First Row -->
+      <div class="form-row">
+        <!-- Trainer -->
+        <div class="form-group">
+          <label class="form-label required">
+            <i class="fas fa-user-tie"></i>
+            Trainer
+          </label>
+          <input type="text" formControlName="formateur" class="form-input"
+                 placeholder="Trainer name"
+                 [class.error]="formationForm.get('formateur')?.invalid && formationForm.get('formateur')?.touched">
+          <div class="error-container">
+            <div *ngIf="formationForm.get('formateur')?.invalid && formationForm.get('formateur')?.touched" 
+                 class="error-message">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ getFieldError('formateur') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="form-group">
+          <label class="form-label required">
+            <i class="fas fa-map-marker-alt"></i>
+            Location
+          </label>
+          <input type="text" formControlName="location" class="form-input"
+                 placeholder="Training room, address..."
+                 [class.error]="formationForm.get('location')?.invalid && formationForm.get('location')?.touched">
+          <div class="error-container">
+            <div *ngIf="formationForm.get('location')?.invalid && formationForm.get('location')?.touched" 
+                 class="error-message">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ getFieldError('location') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <!-- Category -->
+        <div class="form-group">
+          <label class="form-label required">
+            <i class="fas fa-tags"></i>
+            Category
+          </label>
+          <select formControlName="category" class="form-select"
+                  [class.error]="formationForm.get('category')?.invalid && formationForm.get('category')?.touched">
+            <option value="">Select a category</option>
+            <option *ngFor="let category of categories" [value]="category">
+              {{ category }}
+            </option>
+          </select>
+          <div class="error-container">
+            <div *ngIf="formationForm.get('category')?.invalid && formationForm.get('category')?.touched" 
+                 class="error-message">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ getFieldError('category') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Max Participants -->
+        <div class="form-group">
+          <label class="form-label required">
+            <i class="fas fa-users"></i>
+            Maximum Participants
+          </label>
+          <input type="number" formControlName="maxParticipants" class="form-input"
+                 placeholder="10"
+                 min="1" max="100"
+                 [class.error]="formationForm.get('maxParticipants')?.invalid && formationForm.get('maxParticipants')?.touched">
+          <div class="error-container">
+            <div *ngIf="formationForm.get('maxParticipants')?.invalid && formationForm.get('maxParticipants')?.touched" 
+                 class="error-message">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ getFieldError('maxParticipants') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Third Row -->
+      <div class="form-row">
+        <!-- Start Date -->
+        <div class="form-group">
+          <label class="form-label required">
+            <i class="fas fa-calendar-plus"></i>
+            Start Date
+          </label>
+          <input type="date" formControlName="startDate" class="form-input"
+                 [class.error]="formationForm.get('startDate')?.invalid && formationForm.get('startDate')?.touched">
+          <div class="error-container">
+            <div *ngIf="formationForm.get('startDate')?.invalid && formationForm.get('startDate')?.touched" 
+                 class="error-message">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ getFieldError('startDate') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- End Date -->
+        <div class="form-group">
+          <label class="form-label required">
+            <i class="fas fa-calendar-minus"></i>
+            End Date
+          </label>
+          <input type="date" formControlName="endDate" class="form-input"
+                 [class.error]="formationForm.get('endDate')?.invalid && formationForm.get('endDate')?.touched">
+          <div class="error-container">
+            <div *ngIf="(formationForm.get('endDate')?.invalid && formationForm.get('endDate')?.touched) || formationForm.errors?.['dateRange']" 
+                 class="error-message">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ formationForm.errors?.['dateRange'] ? 'End date must be after start date' : getFieldError('endDate') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fourth Row -->
+      <div class="form-row">
+        <!-- Start Time -->
+        <div class="form-group">
+          <label class="form-label required">
+            <i class="fas fa-clock"></i>
+            Start Time
+          </label>
+          <select formControlName="startTime" class="form-select"
+                  [class.error]="formationForm.get('startTime')?.invalid && formationForm.get('startTime')?.touched">
+            <option *ngFor="let time of timeSlots" [value]="time">
+              {{ time }}
+            </option>
+          </select>
+          <div class="error-container">
+            <div *ngIf="formationForm.get('startTime')?.invalid && formationForm.get('startTime')?.touched" 
+                 class="error-message">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ getFieldError('startTime') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- End Time -->
+        <div class="form-group">
+          <label class="form-label required">
+            <i class="fas fa-clock"></i>
+            End Time
+          </label>
+          <select formControlName="endTime" class="form-select"
+                  [class.error]="formationForm.get('endTime')?.invalid && formationForm.get('endTime')?.touched">
+            <option *ngFor="let time of timeSlots" [value]="time">
+              {{ time }}
+            </option>
+          </select>
+          <div class="error-container">
+            <div *ngIf="formationForm.get('endTime')?.invalid && formationForm.get('endTime')?.touched" 
+                 class="error-message">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ getFieldError('endTime') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fifth Row -->
+      <div class="form-row">
+        <!-- Cost -->
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fas fa-euro-sign"></i>
+            Cost (€)
+          </label>
+          <input type="number" formControlName="cost" class="form-input"
+                 placeholder="0.00" step="0.01" min="0"
+                 [class.error]="formationForm.get('cost')?.invalid && formationForm.get('cost')?.touched">
+          <div class="error-container">
+            <div *ngIf="formationForm.get('cost')?.invalid && formationForm.get('cost')?.touched" 
+                 class="error-message">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ getFieldError('cost') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fas fa-lightbulb"></i>
+            Targeted Skills
+          </label>
+          <input type="text" formControlName="skills" class="form-input"
+                 placeholder="Ex: Angular, TypeScript, RxJS..."
+                 [class.error]="formationForm.get('skills')?.invalid && formationForm.get('skills')?.touched">
+          <div class="error-container">
+            <div *ngIf="formationForm.get('skills')?.invalid && formationForm.get('skills')?.touched" 
+                 class="error-message">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ getFieldError('skills') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="button" class="cancel-button" (click)="goBack()">
+          <i class="fas fa-times"></i>
+          Cancel
+        </button>
+        <button type="submit" class="submit-button" 
+                [disabled]="formationForm.invalid || submitting">
+          <i class="fas" [class.fa-save]="!submitting" [class.fa-spinner]="submitting"></i>
+          {{ submitting ? 'Saving...' : (isEdit ? 'Update' : 'Create Training') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

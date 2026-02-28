@@ -1,0 +1,41 @@
+<nav>
+  <ul>
+    <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+    <li><a routerLink="/profile" routerLinkActive="active">Employees</a></li>
+  </ul>
+</nav>
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <span class="logo-icon">📊</span>
+      <span class="logo-text">ERP RH</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul class="menu-list">
+      <li *ngFor="let item of menuItems"
+          class="menu-item"
+          [class.active]="item.active"
+          (click)="onMenuClick(item)">
+        <span class="menu-icon">{{ item.icon }}</span>
+        <span class="menu-label">{{ item.label }}</span>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-profile">
+      <div class="user-avatar">👤</div>
+      <div class="user-info">
+        <div class="user-name">Jean Dupont</div>
+        <div class="user-role">Administrateur</div>
+      </div>
+    </div>
+    <button class="logout-btn" (click)="onLogout()">
+      <span>🚪</span>
+      <span>Déconnexion</span>
+    </button>
+  </div>
+  </aside>

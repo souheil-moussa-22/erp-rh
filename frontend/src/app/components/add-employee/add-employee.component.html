@@ -1,0 +1,259 @@
+<!-- Modal -->
+<div *ngIf="isOpen" class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="modal-header">
+      <h2>Add Employee</h2>
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Permission Warning -->
+      <div *ngIf="!canAddEmployee" class="permission-warning-banner">
+        <div class="warning-content">
+          <span class="warning-icon">⚠</span>
+          <span class="warning-text">
+            You do not have permission to add employees. Only HR and HR Managers can perform this action.
+          </span>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form *ngIf="canAddEmployee" #employeeForm="ngForm" (ngSubmit)="saveEmployee()">
+
+        <!-- SECTION — Personal Information -->
+        <div class="form-section">
+          <h4>Personal Information</h4>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" name="username" [(ngModel)]="employee.username" required placeholder="John Doe">
+            </div>
+
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" name="email" [(ngModel)]="employee.email" required placeholder="john.doe@example.com">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="text" name="phone" [(ngModel)]="employee.phone" placeholder="+33 1 23 45 67 89">
+            </div>
+
+            <div class="form-group">
+              <label>Gender</label>
+              <select name="gender" [(ngModel)]="employee.gender">
+                <option value="">-- Select --</option>
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Password *</label>
+              <input type="password" name="password" [(ngModel)]="employee.password" required placeholder="••••••">
+              <div *ngIf="employee.password" class="password-strength">
+                Password Strength:
+                <span [class]="'strength-' + passwordStrength">
+                  {{ passwordStrength === 'empty' ? 'Empty' :
+                  passwordStrength === 'weak' ? 'Weak' :
+                    passwordStrength === 'medium' ? 'Medium' : 'Strong' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION — Employment Information -->
+        <div class="form-section">
+          <h4>Employment Information</h4>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Hire Date</label>
+              <input type="date" name="hireDate" [(ngModel)]="employee.hireDate">
+            </div>
+
+            <div class="form-group">
+              <label>Salary (TND)</label>
+              <input type="number" name="salary" [(ngModel)]="employee.salary" step="0.01" min="0" placeholder="Salary amount">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Position *</label>
+              <select name="position" [(ngModel)]="employee.position" required>
+                <option value="">-- Select a position --</option>
+                <option value="SOFTWARE_DEVELOPER">Software Developer</option>
+                <option value="SENIOR_DEVELOPER">Senior Developer</option>
+                <option value="FRONTEND_DEVELOPER">Frontend Developer</option>
+                <option value="BACKEND_DEVELOPER">Backend Developer</option>
+                <option value="FULLSTACK_DEVELOPER">Fullstack Developer</option>
+                <option value="SOFTWARE_ENGINEER">Software Engineer</option>
+                <option value="SYSTEM_ENGINEER">System Engineer</option>
+                <option value="DEVOPS_ENGINEER">DevOps Engineer</option>
+                <option value="QA_ENGINEER">QA Engineer</option>
+                <option value="DATA_ENGINEER">Data Engineer</option>
+                <option value="PROJECT_MANAGER">Project Manager</option>
+                <option value="TEAM_LEAD">Team Lead</option>
+                <option value="TECH_LEAD">Tech Lead</option>
+                <option value="PRODUCT_MANAGER">Product Manager</option>
+                <option value="FINANCE_MANAGER">Finance Manager</option>
+                <option value="SALES_MANAGER">Sales Manager</option>
+                <option value="MARKETING_SPECIALIST">Marketing Specialist</option>
+                <option value="UI_UX_DESIGNER">UI/UX Designer</option>
+                <option value="GRAPHIC_DESIGNER">Graphic Designer</option>
+                <option value="DATA_ANALYST">Data Analyst</option>
+                <option value="BUSINESS_ANALYST">Business Analyst</option>
+                <option value="IT_SUPPORT">IT Support</option>
+                <option value="NETWORK_ADMIN">Network Admin</option>
+                <option value="DATABASE_ADMIN">Database Admin</option>
+                <option value="SECURITY_ANALYST">Security Analyst</option>
+                <option value="INTERN">Intern</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Status</label>
+              <select name="status" [(ngModel)]="employee.status">
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+                <option value="ON_LEAVE">On Leave</option>
+                <option value="PROBATION">Probation</option>
+                <option value="TERMINATED">Terminated</option>
+                <option value="RESIGNED">Resigned</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Custom Position -->
+          <div class="form-row" *ngIf="employee.position === 'OTHER'">
+            <div class="form-group">
+              <label>Custom Position *</label>
+              <input type="text" name="customPosition" [(ngModel)]="employee.customPosition" placeholder="Specify the position">
+            </div>
+          </div>
+
+        <div class="form-group">
+          <label class="required">Rôle</label>
+          <select [(ngModel)]="employee.role" name="role" required>
+            <option *ngFor="let role of availableRoles" [value]="role.value">
+              {{ role.label }}
+            </option>
+          </select>
+        </div>
+    </div>
+
+        <!-- SECTION — Tunisian Payroll Information -->
+        <div class="form-section">
+          <h4>Tunisian Payroll Information</h4>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>CIN *</label>
+              <input type="text" name="cin" [(ngModel)]="employee.cin" required placeholder="CIN number">
+            </div>
+
+            <div class="form-group">
+              <label>CNSS Number *</label>
+              <input type="text" name="cnssNumber" [(ngModel)]="employee.cnssNumber" required placeholder="CNSS number">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Matricule *</label>
+              <input type="text" name="matricule" [(ngModel)]="employee.matricule" required placeholder="Internal ID">
+            </div>
+
+            <div class="form-group">
+              <label>Working Days / Month</label>
+              <input type="number" name="workingDays" [(ngModel)]="employee.workingDays" min="0" max="31">
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION — Address & Bank -->
+        <div class="form-section">
+          <h4>Address & Bank</h4>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Address</label>
+              <input type="text" name="address" [(ngModel)]="employee.address">
+            </div>
+
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" name="city" [(ngModel)]="employee.city">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>RIB</label>
+              <input type="text" name="rib" [(ngModel)]="employee.rib">
+            </div>
+
+            <div class="form-group">
+              <label>Bank Name</label>
+              <input type="text" name="bankName" [(ngModel)]="employee.bankName">
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION — Allowances & Bonuses -->
+        <div class="form-section">
+          <h4>Allowances & Bonuses (TND)</h4>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Transport Allowance</label>
+              <input type="number" name="transportAllowance" [(ngModel)]="employee.transportAllowance" step="0.01" min="0">
+            </div>
+
+            <div class="form-group">
+              <label>Family Allowance</label>
+              <input type="number" name="familyAllowance" [(ngModel)]="employee.familyAllowance" step="0.01" min="0">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Other Bonuses</label>
+              <input type="number" name="otherBonuses" [(ngModel)]="employee.otherBonuses" step="0.01" min="0">
+            </div>
+
+            <div class="form-group">
+              <label>Actual Worked Days</label>
+              <input type="number" name="actualWorkingDays" [(ngModel)]="employee.actualWorkingDays" min="0" max="31">
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="modal-actions">
+          <button type="button" (click)="closeModal()" [disabled]="isLoading">Cancel</button>
+          <button type="submit" [disabled]="!employeeForm.valid || isSubmitting">
+            {{ isSubmitting ? 'Creating...' : 'Add Employee' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

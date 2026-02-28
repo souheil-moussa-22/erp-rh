@@ -1,0 +1,100 @@
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <ul>
+      <!-- Afficher "Liste des employés" seulement pour HR et HR Manager -->
+      <li *ngIf="canViewEmployees">
+        <a routerLink="/employees" routerLinkActive="active">
+          <i class="fas fa-users me-2"></i>
+          Employees List
+        </a>
+      </li>
+
+      <li *ngIf="canViewRoles">
+        <a routerLink="/roles" routerLinkActive="active">
+          <i class="fas fa-bullseye me-2"></i>
+          Roles List
+        </a>
+      </li>
+
+      <!-- Add Job Offers to sidebar (RH seulement) -->
+      <li *ngIf="canViewJobs">
+        <a routerLink="/jobs" routerLinkActive="active">
+          <i class="fas fa-briefcase me-2"></i>
+          Job Offers
+        </a>
+      </li>
+
+      <!--  Add Formations to sidebar (RH seulement) -->
+      <li *ngIf="canViewFormations">
+        <a routerLink="/formations" routerLinkActive="active">
+          <i class="fas fa-chalkboard-teacher me-2"></i>
+          Formations
+        </a>
+      </li>
+
+      <!-- Lien "Mon Profil" pour tous les utilisateurs -->
+      <li>
+        <a routerLink="/my-profile" routerLinkActive="active">
+          <i class="fas fa-user me-2"></i>
+          My Profile
+        </a>
+      </li>
+      <li>
+        <a routerLink="/my-leave" routerLinkActive="active">
+          <i class="fas fa-calendar-alt me-2"></i>
+          My Leave
+        </a>
+      </li>
+      <!-- Lien "My requests" pour les employées -->
+      <li *ngIf="canViewConges">
+        <a routerLink="/conges/my-requests" routerLinkActive="active">
+          <i class="fas fa-user me-2"></i>
+          My requests
+        </a>
+      </li>
+
+      <li *ngIf="canSubmitConges">
+        <a routerLink="/conges/submit" routerLinkActive="active">
+          <i class="fas fa-user me-2"></i>
+          New request
+        </a>
+      </li>
+
+      <li *ngIf="canManageConges">
+        <a routerLink="/conges/manage" routerLinkActive="active">
+          <i class="fas fa-user me-2"></i>
+          Manage requests
+        </a>
+      </li>
+
+      <!-- Bouton Déconnexion -->
+      <li>
+        <a (click)="logout()" class="logout-link">
+          <i class="fas fa-sign-out-alt me-2"></i>
+          Logout
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<!-- Chatbot popup (sans overlay) -->
+@if (showChatbot) {
+    <div class="chatbot-popup-wrapper">
+        <app-chatbot (close)="toggleChatbot()"></app-chatbot>
+    </div>
+}
+
+<!-- Bouton bulle pour ouvrir le chatbot -->
+<button class="chatbot-bubble" (click)="toggleChatbot()">
+    <i class="fas fa-comment-dots"></i>
+    @if (hasNewMessages) {
+        <span class="chatbot-notification">●</span>
+    }
+</button>

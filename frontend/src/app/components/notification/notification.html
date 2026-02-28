@@ -1,0 +1,80 @@
+<!-- notification.component.html -->
+<div class="notification-container">
+  <!-- Notification Bell Icon -->
+  <div class="notification-bell" (click)="toggleNotifications()">
+    <span class="bell-icon">🔔</span>
+    @if (unreadCount > 0) {
+      <span class="notification-badge">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
+    }
+  </div>
+
+  <!-- Notification Dropdown -->
+  @if (showNotifications) {
+    <div class="notification-dropdown">
+      <!-- Header -->
+      <div class="notification-header">
+        <h3>Notifications</h3>
+        <div class="header-actions">
+          <button class="btn-close" (click)="toggleNotifications()">×</button>
+        </div>
+      </div>
+
+      <!-- Connection Status -->
+      @if (!isConnected) {
+        <div class="connection-status">
+          <span class="status-icon">⚠️</span>
+          <span>Reconnecting to notification service...</span>
+        </div>
+      }
+
+      <!-- Notifications List -->
+      <div class="notification-list">
+        @if (notifications.length === 0) {
+          <div class="no-notifications">
+            <span class="no-notif-icon">📭</span>
+            <p>No notifications yet</p>
+          </div>
+        } @else {
+          @for (notification of notifications; track notification.id) {
+            <div
+              class="notification-item"
+              [class.unread]="!notification.read"
+              (click)="handleNotificationClick(notification)"
+            >
+              <div class="notification-icon">
+                @if (notification.type === 'LEAVE_REQUEST') {
+                  <span>📝</span>
+                } @else if (notification.type === 'LEAVE_APPROVED') {
+                  <span>✅</span>
+                } @else if (notification.type === 'LEAVE_REJECTED') {
+                  <span>❌</span>
+                } @else {
+                  <span>📬</span>
+                }
+              </div>
+              <div class="notification-content">
+                <h4>{{ notification.title }}</h4>
+                <p>{{ notification.message }}</p>
+                <span class="notification-time">{{ getTimeAgo(notification.createdAt) }}</span>
+              </div>
+            </div>
+          }
+        }
+      </div>
+
+      <!-- Footer -->
+      @if (notifications.length > 0) {
+        <div class="notification-footer">
+          <button class="btn-view-all" (click)="viewAllNotifications()">
+            View All Notifications
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- Overlay -->
+@if (showNotifications) {
+  <div class="notification-overlay" (click)="toggleNotifications()"></div>
+}

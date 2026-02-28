@@ -1,0 +1,164 @@
+<div class="formations-container">
+  <!-- Statistics Overview Section -->
+  <section class="stats-section">
+    <app-statistics-card 
+      [stats]="stats">
+    </app-statistics-card>
+  </section>
+
+  <!-- Main Content Card -->
+  <div class="formations-card">
+    
+    <!-- Page Header -->
+    <header class="page-header">
+      <div class="header-content">
+        <div class="header-main">
+          <h1 class="page-title">Training Management</h1>
+        </div>
+        
+        <div class="header-actions">
+          <button class="btn-secondary btn-refresh" (click)="loadFormations()" [disabled]="loading">
+            <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+            <span>{{ loading ? 'Refreshing...' : 'Refresh' }}</span>
+          </button>
+          <button class="btn-primary btn-create" routerLink="/formations/new">
+            <i class="fas fa-plus-circle"></i>
+            <span>Create Training</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Controls Section -->
+    <section class="controls-section">
+      <div class="controls-grid">
+        
+        <!-- Search and Filters Row -->
+        <div class="controls-row">
+          <!-- Search Box -->
+          <div class="search-control">
+            <div class="search-box">
+              <i class="fas fa-search search-icon"></i>
+              <input 
+                type="text" 
+                class="search-input" 
+                placeholder="Search trainings by title, description, or skills..." 
+                [(ngModel)]="searchTerm" 
+                (input)="searchFormations()"
+              >
+            </div>
+            <!-- <div class="search-hint">
+              <i class="fas fa-info-circle"></i>
+              <span>Press Enter to search</span>
+            </div> -->
+          </div>
+
+          <!-- Filters and Export -->
+          <div class="filters-export-control">
+            <div class="filters-export-grid">
+              
+              <!-- Status Filter -->
+              <div class="filter-group">
+                <select class="filter-select" [(ngModel)]="selectedStatus" (change)="applyFilters()">
+                  <option value="ALL">All Statuses</option>
+                  <option value="PLANIFIED">Planned</option>
+                  <option value="IN_PROGRESS">In Progress</option>
+                  <option value="COMPLETED">Completed</option>
+                  <option value="CANCELLED">Cancelled</option>
+                </select>
+              </div>
+
+              <!-- Category Filter -->
+              <div class="filter-group">
+                <select class="filter-select" [(ngModel)]="selectedCategory" (change)="applyFilters()">
+                  <option value="ALL">All Categories</option>
+                  <option value="TECHNICAL">Technical</option>
+                  <option value="SOFT_SKILLS">Soft Skills</option>
+                  <option value="MANAGEMENT">Management</option>
+                  <option value="COMPLIANCE">Compliance</option>
+                  <option value="LANGUAGE">Language</option>
+                </select>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Results Summary -->
+    <!-- Results Summary -->
+<section class="results-summary" *ngIf="!loading && filteredFormations.length > 0">
+  <div class="summary-content">
+    <div class="summary-text">
+      <h3>Training Programs</h3>
+      <p>Showing {{ filteredFormations.length }} of {{ totalCount }} training{{ totalCount !== 1 ? 's' : '' }}</p>
+    </div>
+    <div class="summary-actions">
+      <div class="sort-control">
+        <label>Sort by:</label>
+        <select class="sort-select" [(ngModel)]="selectedSort" (change)="onSortChange()">
+          <option *ngFor="let option of sortOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- Loading State -->
+    <section *ngIf="loading" class="loading-section">
+      <div class="loading-content">
+        <div class="loading-spinner-large"></div>
+        <h3>Loading Training Programs</h3>
+        <p>Please wait while we fetch your training data...</p>
+      </div>
+    </section>
+
+    <!-- Empty State -->
+    <section *ngIf="!loading && filteredFormations.length === 0" class="empty-section">
+      <div class="empty-content">
+        <div class="empty-illustration">
+          <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <h3>No Training Programs Found</h3>
+        <p>Start building your organization's learning ecosystem by creating your first training program.</p>
+      </div>
+    </section>
+
+    <!-- Trainings Grid -->
+    <section *ngIf="!loading && filteredFormations.length > 0" class="trainings-section">
+      <div class="trainings-grid">
+        <app-formation-card 
+          *ngFor="let training of filteredFormations"
+          [training]="training"
+          (startFormation)="handleStartFormation($event)"
+          (completeFormation)="handleCompleteFormation($event)"
+          (cancelFormation)="handleCancelFormation($event)"
+          (deleteFormation)="handleDeleteFormation($event)">
+        </app-formation-card>
+      </div>
+    </section>
+
+    <!-- Pagination (Optional) -->
+    <footer *ngIf="!loading && filteredFormations.length > 0" class="pagination-section">
+      <div class="pagination-content">
+        <div class="pagination-info">
+          Showing {{ filteredFormations.length }} of {{ totalCount }} items
+        </div>
+        <div class="pagination-controls">
+          <button class="btn-pagination" disabled>
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <span class="pagination-page">Page 1</span>
+          <button class="btn-pagination">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+</div>
