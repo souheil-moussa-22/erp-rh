@@ -44,6 +44,8 @@ export interface JobOfferRequest {
   experienceLevel: string;
   educationRequired: string;
   isActive?: boolean;
+  publishToLinkedIn?: boolean;
+  publishToIndeed?: boolean;
 }
 
 @Injectable({

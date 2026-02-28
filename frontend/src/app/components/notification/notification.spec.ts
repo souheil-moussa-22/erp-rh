@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Notification } from './notification';
+import { NotificationComponent } from './notification';
 
-describe('Notification', () => {
+describe('NotificationComponent', () => {
   let component: Notification;
   let fixture: ComponentFixture<Notification>;
 

@@ -38,8 +38,8 @@ public class LinkedInIntegrationController {
             String state = UUID.randomUUID().toString();
             oauthStates.put(state, organizationId);
 
-            // ⚡ SCOPES MODERNES (2024) - CORRIGÉ
-            String scopes = "openid profile email w_member_social w_organization_social rw_organization_admin";
+            // ⚡ SCOPES MODERNES (2024) - CORRIGÉ (removed rw_organization_admin as it requires special LinkedIn approval)
+            String scopes = "openid profile email w_member_social w_organization_social";
 
             // Construire l'URL d'autorisation
             String authUrl = String.format(
@@ -127,5 +127,10 @@ public class LinkedInIntegrationController {
         } catch (Exception e) {
             return ResponseEntity.ok( List.of());
         }
+    }
+    @GetMapping("/auth/init")
+    public ResponseEntity<LinkedInAuthResponse> initAuth(@RequestParam String organizationId) {
+        LinkedInAuthResponse response = linkedInService.initiateAuth(organizationId);
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { JobOfferService, JobOfferRequest } from '../../services/job-offer.service';
 import { AuthService } from '../../services/auth.service';
-import {AiService, AiSuggestionRequest, AiSuggestionType} from '../../services/ai.service';
+import { AiService, AiSuggestionRequest, AiSuggestionType } from '../../services/ai.service';
+import { LinkedInService } from '../../services/linkedin.service'; // AJOUTER
 
 @Component({
   selector: 'app-job-form',
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
   templateUrl: './job-form.component.html',
   styleUrl: './job-form.component.css',
 })
@@ -18,7 +19,8 @@ export class JobFormComponent implements OnInit {
   jobId: string | null = null;
   loading = false;
   submitting = false;
-  aiGenerating = false; // AJOUTER
+  aiGenerating = false;
+  linkedInPublishing = false; // AJOUTER
   errorMessage: string = '';
 
   contractTypes = ['CDI', 'CDD', 'FREELANCE', 'INTERNSHIP', 'PART_TIME'];
@@ -28,26 +30,41 @@ export class JobFormComponent implements OnInit {
   currentTags: string[] = [];
   tagInput: string = '';
 
+  // Option pour publier sur LinkedIn automatiquement
+  publishToLinkedIn = false; // AJOUTER
+
   constructor(
     private fb: FormBuilder,
     private jobService: JobOfferService,
     private authService: AuthService,
     private aiService: AiService,
+    private linkedInService: LinkedInService, // AJOUTER
     private route: ActivatedRoute,
     private router: Router
   ) {
     this.jobForm = this.createForm();
   }
-// Dans ngOnInit(), ajoutez un écouteur pour le champ title
+
   ngOnInit(): void {
     console.log('🔐 JobFormComponent - Initialisation');
     this.detectFormMode();
-    this.debugFormMode();
+    this.checkLinkedInIntegration(); // AJOUTER
+  }
 
-    // Écouter les changements du titre pour générer des suggestions
-    this.jobForm.get('title')?.valueChanges.subscribe(() => {
-      // Vous pouvez activer cette fonction si vous voulez des suggestions automatiques
-      // this.onTitleChange();
+  // NOUVELLE MÉTHODE : Vérifier si LinkedIn est connecté
+  checkLinkedInIntegration(): void {
+    this.linkedInService.checkIntegrationStatus().subscribe({
+      next: (status) => {
+        console.log('📘 LinkedIn Integration Status:', status);
+        if (status.connected) {
+          console.log('✅ LinkedIn est connecté');
+        } else {
+          console.log('❌ LinkedIn n\'est pas connecté');
+        }
+      },
+      error: (error) => {
+        console.warn('⚠️ Impossible de vérifier le statut LinkedIn:', error);
+      }
     });
   }
 
@@ -57,22 +74,13 @@ export class JobFormComponent implements OnInit {
     this.isEdit = currentUrl.includes('/edit') && !!this.jobId;
 
     if (this.isEdit && this.jobId) {
-      console.log('🔄 Mode ÉDITION détecté - Chargement de l\'offre:', this.jobId);
+      console.log('🔄 Mode ÉDITION détecté');
       this.loadJobOffer();
     } else {
       console.log('🆕 Mode CRÉATION détecté');
       this.isEdit = false;
       this.jobId = null;
     }
-  }
-
-  private debugFormMode(): void {
-    console.log('🔍 Debug Form Mode:');
-    console.log('  - URL complète:', this.router.url);
-    console.log('  - ID depuis route:', this.jobId);
-    console.log('  - Mode Édition:', this.isEdit);
-    console.log('  - User connecté:', this.authService.isLoggedIn());
-    console.log('  - Rôles user:', this.authService.getUserRoles());
   }
 
   createForm(): FormGroup {
@@ -103,34 +111,26 @@ export class JobFormComponent implements OnInit {
 
   loadJobOffer(): void {
     if (!this.jobId) {
-      console.error('❌ Impossible de charger l\'offre: jobId est null');
-      this.errorMessage = 'ID d\'offre non valide';
+      console.error('❌ Impossible de charger l\'offre');
       return;
     }
 
     this.loading = true;
-    this.errorMessage = '';
-    console.log('🔄 Chargement de l\'offre avec ID:', this.jobId);
-
     this.jobService.getJobOfferById(this.jobId).subscribe({
       next: (job) => {
-        console.log('✅ Offre chargée avec succès:', job);
-
-        // Méthode plus simple avec try-catch
+        console.log('✅ Offre chargée:', job);
+        
         let closingDate = '';
         try {
           if (job.closingDate) {
-            // Essayer de créer une Date à partir de la valeur
             const date = new Date(job.closingDate);
             if (!isNaN(date.getTime())) {
               closingDate = date.toISOString().split('T')[0];
             }
           }
         } catch (error) {
-          console.warn('⚠️ Erreur lors du formatage de la date:', error);
+          console.warn('⚠️ Erreur date:', error);
         }
-
-        console.log('🔍 Date formatée:', closingDate);
 
         this.currentTags = job.tags || [];
 
@@ -150,21 +150,16 @@ export class JobFormComponent implements OnInit {
         });
 
         this.loading = false;
-        console.log('✅ Formulaire rempli avec les données de l\'offre');
       },
       error: (error) => {
-        console.error('❌ Erreur lors du chargement de l\'offre:', error);
-        this.errorMessage = `Erreur lors du chargement: ${error.message}`;
+        console.error('❌ Erreur chargement:', error);
+        this.errorMessage = `Erreur: ${error.message}`;
         this.loading = false;
       }
     });
   }
-  onSubmit(): void {
-    console.log('📤 Soumission du formulaire:');
-    console.log('  - Mode:', this.isEdit ? 'ÉDITION' : 'CRÉATION');
-    console.log('  - ID:', this.jobId);
-    console.log('  - Formulaire valide:', this.jobForm.valid);
 
+  onSubmit(): void {
     if (this.jobForm.valid) {
       this.submitting = true;
       this.errorMessage = '';
@@ -186,106 +181,93 @@ export class JobFormComponent implements OnInit {
         experienceLevel: formValue.experienceLevel,
         educationRequired: formValue.educationRequired,
         tags: tags,
-        isActive: true
+        isActive: true,
+        publishToLinkedIn: this.publishToLinkedIn
       };
 
-      console.log('📦 Données à envoyer:', request);
-
       if (this.isEdit && this.jobId) {
-        console.log('🔄 Mise à jour de l\'offre:', this.jobId);
-        this.jobService.updateJobOffer(this.jobId, request).subscribe({
-          next: (response) => {
-            console.log('✅ Offre mise à jour avec succès:', response.title);
-            this.submitting = false;
-            alert('Offre mise à jour avec succès!');
-            this.router.navigate(['/jobs']);
-          },
-          error: (error) => {
-            console.error('❌ Erreur lors de la mise à jour:', error);
-            this.errorMessage = `Erreur lors de la mise à jour: ${error.message}`;
-            this.submitting = false;
-          }
-        });
+        this.updateJobOffer(request);
       } else {
-        console.log('🆕 Création d\'une nouvelle offre');
-        const publisherId = this.getCurrentUserId();
-        if (!publisherId) {
-          this.errorMessage = 'Utilisateur non connecté';
-          this.submitting = false;
-          return;
-        }
-
-        this.jobService.createJobOffer(request, publisherId).subscribe({
-          next: (response) => {
-            console.log('✅ Offre créée avec succès:', response.title);
-            this.submitting = false;
-            alert('Offre créée avec succès!');
-            this.router.navigate(['/jobs']);
-          },
-          error: (error) => {
-            console.error('❌ Erreur lors de la création:', error);
-            this.errorMessage = `Erreur lors de la création: ${error.message}`;
-            this.submitting = false;
-          }
-        });
+        this.createJobOffer(request);
       }
     } else {
-      console.log('❌ Formulaire invalide');
       this.markFormGroupTouched();
-      this.errorMessage = 'Veuillez corriger les erreurs dans le formulaire';
-      this.checkFormValidity();
-    }
-  }
-// Ajoutez cette méthode pour générer des suggestions basées sur le titre
-  onTitleChange(): void {
-    const title = this.jobForm.get('title')?.value;
-    if (title && title.length > 3) {
-      // Optionnel: mettre en place un debounce pour éviter trop d'appels
-      setTimeout(() => {
-        this.generateDescriptionFromTitle();
-      }, 500);
+      this.errorMessage = 'Veuillez corriger les erreurs';
     }
   }
 
-// Nouvelle méthode pour générer une description basée sur le titre
-  generateDescriptionFromTitle(): void {
-    const title = this.jobForm.get('title')?.value;
-    if (!title) return;
+  private createJobOffer(request: JobOfferRequest): void {
+    const publisherId = this.getCurrentUserId();
+    if (!publisherId) {
+      this.errorMessage = 'Utilisateur non connecté';
+      this.submitting = false;
+      return;
+    }
 
-    this.aiGenerating = true;
-
-    // Utiliser le service AI avec un prompt spécifique
-    const request: AiSuggestionRequest = {
-      type: AiSuggestionType.JOB_DESCRIPTION,
-      jobTitle: title,
-      language: 'fr'
-    };
-
-    this.aiService.generateSuggestion(request).subscribe({
+    this.jobService.createJobOffer(request, publisherId).subscribe({
       next: (response) => {
-        if (response.success && response.suggestion) {
-          this.jobForm.patchValue({
-            description: response.suggestion
-          });
+        console.log('✅ Offre créée:', response.title);
+        
+        // MODIFICATION : Publier automatiquement sur LinkedIn si l'option est cochée
+        if (this.publishToLinkedIn && response.id) {
+          this.publishJobToLinkedIn(response.id);
+        } else {
+          this.submitting = false;
+          alert('Offre créée avec succès!');
+          this.router.navigate(['/jobs']);
         }
-        this.aiGenerating = false;
       },
       error: (error) => {
-        console.error('Erreur AI:', error);
-        this.aiGenerating = false;
+        console.error('❌ Erreur création:', error);
+        this.errorMessage = `Erreur: ${error.message}`;
+        this.submitting = false;
       }
     });
   }
 
+  private updateJobOffer(request: JobOfferRequest): void {
+    if (!this.jobId) return;
+    
+    this.jobService.updateJobOffer(this.jobId, request).subscribe({
+      next: (response) => {
+        console.log('✅ Offre mise à jour:', response.title);
+        this.submitting = false;
+        alert('Offre mise à jour avec succès!');
+        this.router.navigate(['/jobs']);
+      },
+      error: (error) => {
+        console.error('❌ Erreur mise à jour:', error);
+        this.errorMessage = `Erreur: ${error.message}`;
+        this.submitting = false;
+      }
+    });
+  }
 
-  checkFormValidity(): void {
-    Object.keys(this.jobForm.controls).forEach(key => {
-      const control = this.jobForm.get(key);
-      if (control?.invalid) {
-        console.log(`Champ invalide: ${key}`, {
-          errors: control.errors,
-          value: control.value
-        });
+  // NOUVELLE MÉTHODE : Publier sur LinkedIn
+  publishJobToLinkedIn(jobId: string): void {
+    this.linkedInPublishing = true;
+    console.log('📘 Publication sur LinkedIn...');
+
+    this.linkedInService.publishJobToLinkedIn(jobId).subscribe({
+      next: (response) => {
+        console.log('✅ Publié sur LinkedIn:', response);
+        this.linkedInPublishing = false;
+        this.submitting = false;
+        
+        if (response.success) {
+          alert('Offre créée et publiée sur LinkedIn avec succès!');
+        } else {
+          alert('Offre créée, mais erreur LinkedIn: ' + response.errorMessage);
+        }
+        
+        this.router.navigate(['/jobs']);
+      },
+      error: (error) => {
+        console.error('❌ Erreur publication LinkedIn:', error);
+        this.linkedInPublishing = false;
+        this.submitting = false;
+        alert('Offre créée, mais échec de publication LinkedIn');
+        this.router.navigate(['/jobs']);
       }
     });
   }
@@ -293,7 +275,6 @@ export class JobFormComponent implements OnInit {
   private getCurrentUserId(): string {
     const currentUser = this.authService.getUser();
     if (currentUser && currentUser.id) {
-      console.log('🔑 ID utilisateur trouvé:', currentUser.id);
       return currentUser.id;
     }
 
@@ -301,21 +282,19 @@ export class JobFormComponent implements OnInit {
     if (userData) {
       try {
         const user = JSON.parse(userData);
-        console.log('🔑 ID utilisateur depuis localStorage:', user.id);
         return user.id;
       } catch (error) {
-        console.error('❌ Erreur parsing user data:', error);
+        console.error('Erreur parsing user:', error);
       }
     }
 
-    throw new Error('Aucun utilisateur connecté. Veuillez vous connecter d\'abord.');
+    throw new Error('Utilisateur non connecté');
   }
 
   markFormGroupTouched(): void {
     Object.keys(this.jobForm.controls).forEach(key => {
       const control = this.jobForm.get(key);
       control?.markAsTouched();
-      control?.updateValueAndValidity();
     });
   }
 
@@ -323,24 +302,10 @@ export class JobFormComponent implements OnInit {
     const field = this.jobForm.get(fieldName);
     if (field?.errors && field.touched) {
       if (field.errors['required']) return 'Ce champ est requis';
-      if (field.errors['minlength']) return `Longueur minimale: ${field.errors['minlength'].requiredLength} caractères`;
+      if (field.errors['minlength']) return `Longueur minimale: ${field.errors['minlength'].requiredLength}`;
       if (field.errors['pastDate']) return 'La date doit être dans le futur';
     }
     return '';
-  }
-
-  checkFormStatus(): void {
-    console.log('🔍 État du formulaire:');
-    console.log('  - Mode:', this.isEdit ? 'ÉDITION' : 'CRÉATION');
-    console.log('  - ID:', this.jobId);
-    console.log('  - Formulaire valide:', this.jobForm.valid);
-    console.log('  - Formulaire touché:', this.jobForm.touched);
-    console.log('  - Formulaire modifié:', this.jobForm.dirty);
-
-    Object.keys(this.jobForm.controls).forEach(key => {
-      const control = this.jobForm.get(key);
-      console.log(`  - ${key}: valide=${control?.valid}, touché=${control?.touched}, valeur=`, control?.value);
-    });
   }
 
   goBack(): void {
@@ -385,30 +350,23 @@ export class JobFormComponent implements OnInit {
     });
   }
 
-  // ========== MÉTHODES AI ==========
-
+  // Méthodes AI existantes...
   generateDescriptionAI(): void {
     const title = this.jobForm.get('title')?.value;
     const department = this.jobForm.get('department')?.value;
     const location = this.jobForm.get('location')?.value;
 
     if (!title || !department || !location) {
-      this.errorMessage = 'Veuillez d\'abord remplir le titre, département et localisation';
+      this.errorMessage = 'Veuillez remplir titre, département et localisation';
       return;
     }
 
     this.aiGenerating = true;
-    this.errorMessage = '';
-
     this.aiService.generateJobDescription(title, department, location)
       .subscribe({
         next: (response) => {
           if (response.success && response.suggestion) {
-            this.jobForm.patchValue({
-              description: response.suggestion
-            });
-          } else {
-            this.errorMessage = response.errorMessage || 'Erreur lors de la génération AI';
+            this.jobForm.patchValue({ description: response.suggestion });
           }
           this.aiGenerating = false;
         },
@@ -418,7 +376,6 @@ export class JobFormComponent implements OnInit {
         }
       });
   }
-
 
 // Méthode principale pour générer n'importe quel champ
   generateFieldAI(fieldName: string): void {

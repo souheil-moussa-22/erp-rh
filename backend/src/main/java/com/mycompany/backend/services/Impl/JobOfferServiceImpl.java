@@ -60,6 +60,19 @@ public class JobOfferServiceImpl implements JobOfferService {
         jobOffer.setIsActive(true);
 
         JobOffer saved = jobOfferRepository.save(jobOffer);
+
+        // Publish to LinkedIn if requested
+        if (request.getPublishToLinkedIn() != null && request.getPublishToLinkedIn()) {
+            try {
+                LinkedInPostResponse linkedInResponse = publishToLinkedIn(saved.getId());
+                if (!linkedInResponse.isSuccess()) {
+                    log.warn("Failed to publish job offer {} to LinkedIn: {}", saved.getId(), linkedInResponse.getErrorMessage());
+                }
+            } catch (Exception e) {
+                log.error("Error publishing job offer {} to LinkedIn: {}", saved.getId(), e.getMessage());
+            }
+        }
+
         return convertToDTO(saved);
     }
 

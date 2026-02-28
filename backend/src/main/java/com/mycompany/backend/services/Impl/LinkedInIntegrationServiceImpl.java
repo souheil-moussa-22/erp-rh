@@ -49,8 +49,8 @@ public class LinkedInIntegrationServiceImpl implements LinkedInIntegrationServic
             oauthState.setRedirectUri(linkedInConfig.getRedirectUri());
             oauthStateRepository.save(oauthState);
 
-            // ⚡ SCOPES MODERNES (2024) - CORRIGÉ
-            String scopes = "openid profile email w_member_social w_organization_social rw_organization_admin";
+            // ⚡ SCOPES MODERNES (2024) - CORRIGÉ (using only basic scopes that don't require special approval)
+            String scopes = "openid profile email w_member_social";
 
             // Construire l'URL d'autorisation
             String authUrl = String.format(

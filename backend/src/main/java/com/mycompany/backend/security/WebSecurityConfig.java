@@ -89,7 +89,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         // Routes publiques
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/linkedin/auth/callback",
+                                "/api/linkedin/auth/init").permitAll()
                         .requestMatchers("/ws-endpoint/**").permitAll()
                         .requestMatchers("/auth/login", "/auth/signup", "/api/password/**").permitAll()
                         .requestMatchers("/api/test/**").permitAll()

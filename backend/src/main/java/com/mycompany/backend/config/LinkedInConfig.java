@@ -1,27 +1,56 @@
 package com.mycompany.backend.config;
 
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
 
-@Data
 @Configuration
 @ConfigurationProperties(prefix = "linkedin")
 public class LinkedInConfig {
 
     private String clientId;
     private String clientSecret;
-    private String redirectUri = "https://www.linkedin.com/developers/tools/oauth/redirect";
-    private String apiUrl = "https://api.linkedin.com/v2";
-    private int timeout = 30000;
+    private String redirectUri;
     private int maxRetries = 3;
+    private String organizationId;
 
-    @Bean
-    public RestTemplate linkedInRestTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
-        // Configuration supplémentaire si nécessaire
-        return restTemplate;
+    // Getters et Setters
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getClientSecret() {
+        return clientSecret;
+    }
+
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
+    }
+
+    public String getRedirectUri() {
+        return redirectUri;
+    }
+
+    public void setRedirectUri(String redirectUri) {
+        this.redirectUri = redirectUri;
+    }
+
+    public int getMaxRetries() {
+        return maxRetries;
+    }
+
+    public void setMaxRetries(int maxRetries) {
+        this.maxRetries = maxRetries;
+    }
+
+    public String getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(String organizationId) {
+        this.organizationId = organizationId;
     }
 }

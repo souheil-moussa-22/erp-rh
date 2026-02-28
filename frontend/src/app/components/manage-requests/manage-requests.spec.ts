@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ManageRequests } from './manage-requests';
+import { ManageRequestsComponent } from './manage-requests';
 
-describe('ManageRequests', () => {
-  let component: ManageRequests;
-  let fixture: ComponentFixture<ManageRequests>;
+describe('ManageRequestsComponent', () => {
+  let component: ManageRequestsComponent;
+  let fixture: ComponentFixture<ManageRequestsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ManageRequests]
+      imports: [ManageRequestsComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ManageRequests);
+    fixture = TestBed.createComponent(ManageRequestsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

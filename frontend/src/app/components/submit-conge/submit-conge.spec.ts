@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SubmitConge } from './submit-conge';
+import { SubmitCongeComponent } from './submit-conge';
 
-describe('SubmitConge', () => {
-  let component: SubmitConge;
-  let fixture: ComponentFixture<SubmitConge>;
+describe('SubmitCongeComponent', () => {
+  let component: SubmitCongeComponent;
+  let fixture: ComponentFixture<SubmitCongeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SubmitConge]
+      imports: [SubmitCongeComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SubmitConge);
+    fixture = TestBed.createComponent(SubmitCongeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
