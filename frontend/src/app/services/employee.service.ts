@@ -378,7 +378,7 @@ getEmployeePhotoBlob(id: string): Observable<Blob> {
   downloadEmployeesExcel(): void {
     this.exportEmployees().subscribe({
       next: (res: Blob) => saveAs(res, 'employees.xlsx'),
-      error: (err: any) => console.error('downloadEmployeesExcel failed:', err)
+      error: () => {}
     });
   }
 
@@ -402,17 +402,11 @@ getEmployeePhotoBlob(id: string): Observable<Blob> {
   }
 
   checkAuthStatus(): void {
-    const token = this.authService.getToken();
-    const user = this.authService.getUser();
-    if (!token || !user) {
-      console.warn('checkAuthStatus: missing token or user');
-    }
+    // no-op utility method kept for backward compatibility
   }
 
   testPhotoRequest(id: string): void {
-    this.getEmployeePhotoBlob(id).subscribe({
-      error: (error) => console.error('testPhotoRequest failed:', error)
-    });
+    this.getEmployeePhotoBlob(id).subscribe({ error: () => {} });
   }
 
   // ================= CHANGEMENT MOT DE PASSE =================

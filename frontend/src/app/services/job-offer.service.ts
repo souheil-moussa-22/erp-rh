@@ -142,13 +142,6 @@ export class JobOfferService {
       .pipe(catchError(this.handleError));
   }
   private handleError(error: HttpErrorResponse) {
-    console.error(' JobOfferService Error:', {
-      status: error.status,
-      statusText: error.statusText,
-      url: error.url,
-      message: error.message
-    });
-
     let errorMessage = 'Une erreur est survenue';
 
     if (error.status === 401) {
