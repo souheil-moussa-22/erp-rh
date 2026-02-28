@@ -1,6 +1,6 @@
 /* ===== VARIABLES & RESET ===== */
 :root {
-  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --primary-gradient: var(--gradient-primary);
   --secondary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
   --accent-color: #ff6b6b;
   --dark-color: #2d3436;
@@ -32,7 +32,7 @@
 .popup-container {
   width: 420px;
   height: 680px;
-  background: white;
+  background: var(--color-surface);
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
   display: flex;
@@ -42,12 +42,12 @@
 
 /* ===== HEADER AMÉLIORÉ ===== */
 .header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
   padding: 24px 28px;
   position: relative;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px var(--color-primary-glow);
 }
 
 .logo-container {
@@ -65,7 +65,7 @@
   align-items: center;
   justify-content: center;
   font-size: 26px;
-  color: white;
+  color: var(--color-surface);
   backdrop-filter: blur(10px);
 }
 
@@ -78,7 +78,7 @@
   font-weight: 700;
   margin: 0;
   letter-spacing: -0.5px;
-  color: white;
+  color: var(--color-surface);
   line-height: 1.2;
 }
 
@@ -94,7 +94,7 @@
 .close-btn {
   background: rgba(255, 255, 255, 0.15);
   border: none;
-  color: white;
+  color: var(--color-surface);
   font-size: 18px;
   cursor: pointer;
   width: 36px;
@@ -150,7 +150,7 @@
 }
 
 .chat-messages::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   border-radius: 3px;
 }
 
@@ -198,13 +198,13 @@
 }
 
 .bot-message .message-avatar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
 }
 
 .user-message .message-avatar {
   background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color: white;
+  color: var(--color-surface);
 }
 
 .message-content {
@@ -218,14 +218,14 @@
 }
 
 .bot-message .message-content {
-  background: white;
+  background: var(--color-surface);
   color: #2d3436;
   border-top-left-radius: 4px;
 }
 
 .user-message .message-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
   border-top-right-radius: 4px;
 }
 
@@ -236,7 +236,7 @@
 }
 
 .user-message .message-text {
-  color: white;
+  color: var(--color-surface);
 }
 
 .message-time {
@@ -260,7 +260,7 @@
 }
 
 .quick-question {
-  background: white;
+  background: var(--color-surface);
   color: #5a67d8;
   padding: 10px 14px;
   border-radius: 12px;
@@ -278,7 +278,7 @@
 
 .quick-question:hover {
   background: #5a67d8;
-  color: white;
+  color: var(--color-surface);
   border-color: #5a67d8;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(90, 103, 216, 0.3);
@@ -286,7 +286,7 @@
 
 /* ===== INPUT AREA ===== */
 .input-area {
-  background: white;
+  background: var(--color-surface);
   padding: 16px 20px;
   border-top: 1px solid #e5e7eb;
   flex-shrink: 0;
@@ -318,7 +318,7 @@
 
 .input-wrapper input:focus {
   border-color: #5a67d8;
-  background: white;
+  background: var(--color-surface);
   box-shadow: 0 0 0 4px rgba(90, 103, 216, 0.1);
 }
 
@@ -341,8 +341,8 @@
 .send-btn {
   width: 46px;
   height: 46px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
   border: none;
   border-radius: 50%;
   cursor: pointer;
@@ -351,7 +351,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px var(--color-primary-glow);
 }
 
 .send-btn:not(:disabled):hover {
@@ -369,7 +369,7 @@
 
 /* ===== FAQ SUGGESTIONS ===== */
 .faq-suggestions {
-  background: white;
+  background: var(--color-surface);
   padding: 16px 20px 20px;
   border-top: 1px solid #e5e7eb;
   flex-shrink: 0;
@@ -384,7 +384,7 @@
 }
 
 .faq-header i {
-  color: #667eea;
+  color: var(--color-primary);
   font-size: 16px;
 }
 
@@ -401,7 +401,7 @@
 }
 
 .suggestion-btn {
-  background: white;
+  background: var(--color-surface);
   border: 2px solid #e5e7eb;
   padding: 12px 14px;
   border-radius: 12px;
@@ -426,7 +426,7 @@
 .suggestion-btn i {
   font-size: 15px;
   min-width: 18px;
-  color: #667eea;
+  color: var(--color-primary);
 }
 
 /* ===== TYPING INDICATOR ===== */
@@ -439,7 +439,7 @@
 .typing-dot {
   width: 7px;
   height: 7px;
-  background: #667eea;
+  background: var(--color-primary);
   border-radius: 50%;
   animation: bounce 1.4s infinite ease-in-out both;
 }

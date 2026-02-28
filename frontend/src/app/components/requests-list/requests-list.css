@@ -20,13 +20,13 @@
 .header-content h1 {
   font-size: 32px;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--color-text-primary);
   margin: 0 0 8px 0;
 }
 
 .subtitle {
   font-size: 16px;
-  color: #718096;
+  color: var(--color-text-muted);
   margin: 0;
 }
 
@@ -35,7 +35,7 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -47,7 +47,7 @@
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 16px var(--color-primary-glow);
 }
 
 .btn-icon {
@@ -60,7 +60,7 @@
   gap: 12px;
   margin-bottom: 30px;
   flex-wrap: wrap;
-  background: white;
+  background: var(--color-surface);
   padding: 12px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -82,11 +82,11 @@
 }
 
 .tab-button:hover {
-  background: #f7fafc;
+  background: var(--color-bg);
 }
 
 .tab-button.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: white;
   border-color: transparent;
 }
@@ -130,7 +130,7 @@
   align-items: center;
   justify-content: center;
   padding: 80px 20px;
-  color: #718096;
+  color: var(--color-text-muted);
 }
 
 .spinner {
@@ -164,7 +164,7 @@
 
 /* Empty State */
 .empty-state {
-  background: white;
+  background: var(--color-surface);
   border-radius: 12px;
   padding: 80px 40px;
   text-align: center;
@@ -180,20 +180,20 @@
 .empty-state h3 {
   font-size: 24px;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   margin: 0 0 12px 0;
 }
 
 .empty-state p {
   font-size: 16px;
-  color: #718096;
+  color: var(--color-text-muted);
   margin: 0 0 24px 0;
 }
 
 .btn-secondary {
   padding: 12px 24px;
-  background: white;
-  color: #667eea;
+  background: var(--color-surface);
+  color: var(--color-primary);
   border: 2px solid #667eea;
   border-radius: 8px;
   font-size: 16px;
@@ -216,7 +216,7 @@
 
 /* Request Card */
 .request-card {
-  background: white;
+  background: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow: hidden;
@@ -255,7 +255,7 @@
 .type-text {
   font-size: 18px;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--color-text-secondary);
 }
 
 /* Card Body */
@@ -283,7 +283,7 @@
 
 .info-value {
   font-size: 14px;
-  color: #2d3748;
+  color: var(--color-text-secondary);
 }
 
 .reason-text {
@@ -292,7 +292,7 @@
   line-height: 1.6;
   margin: 4px 0 0 0;
   padding: 12px;
-  background: #f7fafc;
+  background: var(--color-bg);
   border-radius: 6px;
 }
 
@@ -336,7 +336,7 @@
   display: flex;
   gap: 12px;
   padding: 16px 20px;
-  background: #f7fafc;
+  background: var(--color-bg);
   border-top: 1px solid #e2e8f0;
 }
 
@@ -387,7 +387,7 @@
 }
 
 .modal-content {
-  background: white;
+  background: var(--color-surface);
   border-radius: 12px;
   padding: 30px;
   max-width: 450px;
@@ -415,7 +415,7 @@
 .modal-content h3 {
   font-size: 22px;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--color-text-primary);
   margin: 0 0 12px 0;
 }
 

@@ -5,15 +5,15 @@
 }
 
 .ai-card {
-  background: white;
+  background: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
 .ai-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
   padding: 24px 32px;
   display: flex;
   justify-content: space-between;
@@ -69,7 +69,7 @@
 
 .loading-spinner {
   text-align: center;
-  color: #667eea;
+  color: var(--color-primary);
 }
 
 .loading-spinner p {
@@ -111,14 +111,14 @@
 }
 
 .action-card:hover {
-  border-color: #667eea;
+  border-color: var(--color-primary);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 4px 12px var(--color-primary-light);
 }
 
 .action-icon {
   font-size: 32px;
-  color: #667eea;
+  color: var(--color-primary);
   margin-bottom: 16px;
 }
 
@@ -162,8 +162,8 @@
 
 .form-input:focus, .form-select:focus, .form-textarea:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
 }
 
 .form-textarea {
@@ -190,13 +190,13 @@
 }
 
 .btn-generate {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
 }
 
 .btn-generate:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px var(--color-primary-glow);
 }
 
 .btn-generate:disabled {
@@ -216,7 +216,7 @@
 
 .btn-copy {
   background: #28a745;
-  color: white;
+  color: var(--color-surface);
   padding: 8px 16px;
   font-size: 14px;
 }
@@ -245,7 +245,7 @@
 }
 
 .result-content {
-  background: white;
+  background: var(--color-surface);
   border-radius: 6px;
   padding: 20px;
   border: 1px solid #e9ecef;
@@ -270,7 +270,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: white;
+  background: var(--color-surface);
   border-radius: 6px;
   border: 1px solid #e9ecef;
 }
@@ -278,7 +278,7 @@
 .btn-small {
   padding: 6px 12px;
   background: #6c757d;
-  color: white;
+  color: var(--color-surface);
   font-size: 12px;
 }
 

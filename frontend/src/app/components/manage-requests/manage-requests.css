@@ -15,13 +15,13 @@
 .header-content h1 {
   font-size: 32px;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--color-text-primary);
   margin: 0 0 8px 0;
 }
 
 .subtitle {
   font-size: 16px;
-  color: #718096;
+  color: var(--color-text-muted);
   margin: 0 0 20px 0;
 }
 
@@ -38,7 +38,7 @@
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background: white;
+  background: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   border-left: 4px solid;
@@ -68,13 +68,13 @@
 .stat-value {
   font-size: 28px;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--color-text-primary);
   line-height: 1;
 }
 
 .stat-label {
   font-size: 14px;
-  color: #718096;
+  color: var(--color-text-muted);
   margin-top: 4px;
 }
 
@@ -84,7 +84,7 @@
   gap: 12px;
   margin-bottom: 20px;
   flex-wrap: wrap;
-  background: white;
+  background: var(--color-surface);
   padding: 12px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -107,11 +107,11 @@
 }
 
 .tab-button:hover {
-  background: #f7fafc;
+  background: var(--color-bg);
 }
 
 .tab-button.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: white;
 }
 
@@ -155,7 +155,7 @@
 .search-input {
   width: 100%;
   padding: 12px 16px 12px 48px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--color-border);
   border-radius: 8px;
   font-size: 15px;
   transition: all 0.2s;
@@ -163,25 +163,25 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .sort-select {
   padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--color-border);
   border-radius: 8px;
   font-size: 15px;
   font-weight: 600;
   color: #4a5568;
-  background: white;
+  background: var(--color-surface);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .sort-select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--color-primary);
 }
 
 /* Loading */
@@ -191,7 +191,7 @@
   align-items: center;
   justify-content: center;
   padding: 80px 20px;
-  color: #718096;
+  color: var(--color-text-muted);
 }
 
 .spinner {
@@ -221,7 +221,7 @@
 
 /* Empty State */
 .empty-state {
-  background: white;
+  background: var(--color-surface);
   border-radius: 12px;
   padding: 80px 40px;
   text-align: center;
@@ -237,13 +237,13 @@
 .empty-state h3 {
   font-size: 24px;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   margin: 0 0 12px 0;
 }
 
 .empty-state p {
   font-size: 16px;
-  color: #718096;
+  color: var(--color-text-muted);
   margin: 0;
 }
 
@@ -256,7 +256,7 @@
 
 /* Request Item */
 .request-item {
-  background: white;
+  background: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 24px;
@@ -285,7 +285,7 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: white;
   display: flex;
   align-items: center;
@@ -303,13 +303,13 @@
 .employee-name {
   font-size: 18px;
   font-weight: 600;
-  color: #1a202c;
+  color: var(--color-text-primary);
   margin: 0 0 4px 0;
 }
 
 .employee-id {
   font-size: 13px;
-  color: #718096;
+  color: var(--color-text-muted);
 }
 
 /* Request Details */
@@ -343,7 +343,7 @@
 .detail-label {
   font-size: 12px;
   font-weight: 600;
-  color: #718096;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -351,7 +351,7 @@
 .detail-value {
   font-size: 14px;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   margin-top: 2px;
 }
 
@@ -375,7 +375,7 @@
   line-height: 1.6;
   margin: 0;
   padding: 12px;
-  background: #f7fafc;
+  background: var(--color-bg);
   border-radius: 6px;
 }
 
@@ -503,7 +503,7 @@
 }
 
 .modal-content {
-  background: white;
+  background: var(--color-surface);
   border-radius: 16px;
   padding: 0;
   max-width: 500px;
@@ -543,7 +543,7 @@
 .modal-header h3 {
   font-size: 22px;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -563,14 +563,14 @@
   flex-direction: column;
   gap: 8px;
   padding: 16px;
-  background: #f7fafc;
+  background: var(--color-bg);
   border-radius: 8px;
   margin: 16px 0;
 }
 
 .request-summary strong {
   font-size: 16px;
-  color: #1a202c;
+  color: var(--color-text-primary);
 }
 
 .request-summary span {
@@ -586,7 +586,7 @@
   display: block;
   font-size: 14px;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   margin-bottom: 8px;
 }
 
@@ -594,7 +594,7 @@
   width: 100%;
   padding: 12px 16px;
   font-size: 14px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--color-border);
   border-radius: 8px;
   transition: all 0.2s;
   resize: vertical;
@@ -603,7 +603,7 @@
 
 .form-textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -618,7 +618,7 @@
   display: flex;
   gap: 12px;
   padding: 20px 24px;
-  background: #f7fafc;
+  background: var(--color-bg);
   border-top: 1px solid #e2e8f0;
 }
 
@@ -635,13 +635,13 @@
 }
 
 .btn-cancel {
-  background: white;
+  background: var(--color-surface);
   color: #4a5568;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--color-border);
 }
 
 .btn-cancel:hover {
-  background: #f7fafc;
+  background: var(--color-bg);
 }
 
 .btn-confirm.approve {

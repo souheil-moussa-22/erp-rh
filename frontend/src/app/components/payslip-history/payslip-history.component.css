@@ -6,14 +6,14 @@
   flex-direction: column;
   align-items: center;
   padding: 30px 20px;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   min-height: 100vh;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
   max-width: 1400px;
   margin: 0 auto;
-  background: white; /* Fond blanc pour tout le container */
+  background: var(--color-surface); /* Fond blanc pour tout le container */
 }
 
 /* Suppression de l'arrière-plan SVG */
@@ -25,7 +25,7 @@
 /* En-tête */
 /* =========================== */
 .header {
-  background: white; /* Fond blanc */
+  background: var(--color-surface); /* Fond blanc */
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   padding: 35px;
@@ -51,8 +51,8 @@
 }
 
 .back-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
   border: none;
   padding: 12px 20px;
   border-radius: 10px;
@@ -60,7 +60,7 @@
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px var(--color-primary-glow);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -76,7 +76,7 @@
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 15px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   position: relative;
@@ -90,7 +90,7 @@
   left: 0;
   width: 50px;
   height: 3px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   border-radius: 2px;
 }
 
@@ -103,7 +103,7 @@
 }
 
 .employee-info span {
-  background: rgba(102, 126, 234, 0.1);
+  background: var(--color-primary-light);
   padding: 6px 12px;
   border-radius: 8px;
   color: #4a5568;
@@ -117,7 +117,7 @@
 .error-message,
 .success-message,
 .no-data-message {
-  background: white;
+  background: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   padding: 30px;
@@ -144,7 +144,7 @@
 
 .error-message button {
   background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-  color: white;
+  color: var(--color-surface);
   border: none;
   padding: 12px 24px;
   border-radius: 8px;
@@ -175,7 +175,7 @@
 /* Sélection d'année */
 /* =========================== */
 .year-selection {
-  background: white;
+  background: var(--color-surface);
   border-radius: 15px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   padding: 25px;
@@ -192,7 +192,7 @@
 
 .year-selection label {
   font-weight: 600;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   font-size: 16px;
 }
 
@@ -201,7 +201,7 @@
   border: 2px solid #e2e8f0;
   border-radius: 10px;
   font-size: 15px;
-  background: white;
+  background: var(--color-surface);
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 140px;
@@ -209,8 +209,8 @@
 
 #yearSelect:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-light);
 }
 
 .years-info {
@@ -232,7 +232,7 @@
 }
 
 .quarter-section {
-  background: white;
+  background: var(--color-surface);
   border-radius: 15px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   padding: 25px;
@@ -248,7 +248,7 @@
 .quarter-section:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
-  border-color: #667eea;
+  border-color: var(--color-primary);
 }
 
 .quarter-section h3 {
@@ -270,7 +270,7 @@
   transform: translateX(-50%);
   width: 40px;
   height: 3px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   border-radius: 2px;
 }
 
@@ -296,8 +296,8 @@
 }
 
 .month-card:hover {
-  border-color: #667eea;
-  background: white;
+  border-color: var(--color-primary);
+  background: var(--color-surface);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
   transform: translateY(-2px);
 }
@@ -319,8 +319,8 @@
 }
 
 .year-badge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
   padding: 5px 12px;
   border-radius: 12px;
   font-size: 11px;
@@ -339,7 +339,7 @@
 
 /* Fiche de paie existante */
 .existing-payslip {
-  background: white;
+  background: var(--color-surface);
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   padding: 18px;
@@ -364,7 +364,7 @@
 
 .period {
   font-weight: 600;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   font-size: 14px;
 }
 
@@ -373,8 +373,8 @@
 }
 
 .view-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
   border: none;
   padding: 10px 16px;
   border-radius: 8px;
@@ -391,7 +391,7 @@
 
 .view-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px var(--color-primary-glow);
 }
 
 .generation-date {
@@ -416,7 +416,7 @@
 
 .generate-btn {
   background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-  color: white;
+  color: var(--color-surface);
   border: none;
   padding: 12px 20px;
   border-radius: 8px;
@@ -437,7 +437,7 @@
 }
 
 .generate-btn:disabled {
-  background: #a0aec0;
+  background: var(--color-text-placeholder);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -483,7 +483,7 @@
 /* Section génération rapide */
 /* =========================== */
 .quick-generate-section {
-  background: white;
+  background: var(--color-surface);
   border-radius: 15px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   padding: 25px;
@@ -530,7 +530,7 @@
 
 .btn-warning {
   background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-  color: white;
+  color: var(--color-surface);
 }
 
 .btn-warning:hover:not(:disabled) {
@@ -540,7 +540,7 @@
 
 .btn-secondary {
   background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
-  color: white;
+  color: var(--color-surface);
 }
 
 .btn-secondary:hover:not(:disabled) {
@@ -549,7 +549,7 @@
 }
 
 .btn:disabled {
-  background: #a0aec0;
+  background: var(--color-text-placeholder);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -559,7 +559,7 @@
 /* Génération annuelle */
 /* =========================== */
 .annual-generation {
-  background: white;
+  background: var(--color-surface);
   border-radius: 15px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   padding: 25px;
@@ -586,7 +586,7 @@
   left: 0;
   width: 40px;
   height: 3px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   border-radius: 2px;
 }
 
@@ -599,8 +599,8 @@
 }
 
 .generate-year-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
   border: none;
   padding: 12px 24px;
   border-radius: 10px;
@@ -614,11 +614,11 @@
 
 .generate-year-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 6px 20px var(--color-primary-glow);
 }
 
 .generate-year-btn:disabled {
-  background: #a0aec0;
+  background: var(--color-text-placeholder);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -672,7 +672,7 @@
   right: 25px;
   font-size: 28px;
   font-weight: bold;
-  color: #667eea;
+  color: var(--color-primary);
   cursor: pointer;
   transition: all 0.3s ease;
   width: 40px;
@@ -682,20 +682,20 @@
   justify-content: center;
   border-radius: 50%;
   z-index: 1001;
-  background: white;
+  background: var(--color-surface);
   border: 1px solid #e2e8f0;
 }
 
 .modal-close-btn:hover {
-  color: #764ba2;
+  color: var(--color-primary-dark);
   transform: rotate(90deg);
-  background: #f7fafc;
+  background: var(--color-bg);
 }
 
 .payslip-modal-header {
   padding: 25px 30px;
   border-bottom: 1px solid #e2e8f0;
-  background: white;
+  background: var(--color-surface);
   flex-shrink: 0;
 }
 
@@ -733,7 +733,7 @@
   padding: 8px 12px;
   border: 2px solid #e2e8f0;
   border-radius: 8px;
-  background: white;
+  background: var(--color-surface);
   cursor: pointer;
   font-size: 14px;
   transition: all 0.3s ease;
@@ -741,8 +741,8 @@
 
 .language-selector select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
 }
 
 /* Conteneur PDF */
@@ -762,7 +762,7 @@
   width: 100%;
   height: 100%;
   border: none;
-  background: white;
+  background: var(--color-surface);
   flex: 1;
   min-height: 0;
 }
@@ -805,7 +805,7 @@
   text-align: center;
   color: #d32f2f;
   font-size: 18px;
-  background: white;
+  background: var(--color-surface);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -947,7 +947,7 @@
 /* Debug Info */
 /* =========================== */
 .debug-info {
-  background: white;
+  background: var(--color-surface);
   border-radius: 8px;
   padding: 10px 15px;
   margin: 10px 0;
@@ -958,7 +958,7 @@
 }
 
 .text-muted {
-  color: #718096 !important;
+  color: var(--color-text-muted) !important;
 }
 
 /* =========================== */
@@ -975,14 +975,14 @@
   text-align: center;
   margin: 20px 0;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   border-radius: 10px;
-  color: white;
+  color: var(--color-surface);
 }
 
 .generate-btn-primary {
   background: #ff6b6b;
-  color: white;
+  color: var(--color-surface);
   border: none;
   padding: 15px 30px;
   border-radius: 8px;

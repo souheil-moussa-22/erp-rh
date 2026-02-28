@@ -36,9 +36,9 @@
 .form-title {
   font-size: 32px;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--color-text-primary);
   margin: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -49,8 +49,8 @@
 
 .back-button {
   padding: 12px 24px;
-  background: #718096;
-  color: white;
+  background: var(--color-text-muted);
+  color: var(--color-surface);
   border: none;
   border-radius: 12px;
   font-size: 14px;
@@ -73,7 +73,7 @@
 .loading-container {
   text-align: center;
   padding: 60px 20px;
-  color: #718096;
+  color: var(--color-text-muted);
 }
 
 .loading-spinner {
@@ -118,7 +118,7 @@
 .form-label {
   font-size: 14px;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--color-text-secondary);
   margin-bottom: 4px;
   display: flex;
   align-items: center;
@@ -142,8 +142,8 @@
   font-size: 15px;
   transition: all 0.3s ease;
   outline: none;
-  background-color: #f7fafc;
-  color: #2d3748;
+  background-color: var(--color-bg);
+  color: var(--color-text-secondary);
   font-family: inherit;
   box-sizing: border-box;
 }
@@ -157,15 +157,15 @@
 
 .form-input::placeholder,
 .form-textarea::placeholder {
-  color: #a0aec0;
+  color: var(--color-text-placeholder);
 }
 
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
-  border-color: #667eea;
-  background-color: white;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary);
+  background-color: var(--color-surface);
+  box-shadow: 0 0 0 4px var(--color-primary-light);
   transform: translateY(-2px);
 }
 
@@ -214,7 +214,7 @@
 
 .char-count {
   font-size: 12px;
-  color: #a0aec0;
+  color: var(--color-text-placeholder);
   text-align: right;
   margin-top: 4px;
   font-weight: 500;
@@ -243,8 +243,8 @@
 
 .submit-button {
   padding: 14px 32px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--color-surface);
   border: none;
   border-radius: 12px;
   font-size: 16px;
@@ -253,7 +253,7 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px var(--color-primary-glow);
   min-width: 160px;
   display: flex;
   align-items: center;
@@ -278,8 +278,8 @@
 
 .cancel-button {
   padding: 14px 32px;
-  background: #718096;
-  color: white;
+  background: var(--color-text-muted);
+  color: var(--color-surface);
   border: none;
   border-radius: 12px;
   font-size: 16px;
