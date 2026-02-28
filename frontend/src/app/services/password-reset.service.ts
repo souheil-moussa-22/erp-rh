@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface ForgotPasswordRequest {
   email: string;
@@ -17,7 +18,7 @@ export interface ResetPasswordRequest {
   providedIn: 'root'
 })
 export class PasswordResetService {
-private apiUrl = 'http://localhost:8081/api';
+private apiUrl = `${environment.apiUrl}/api`;
 
   constructor(private http: HttpClient) { }
 

@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Notification } from './websocket.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
-  private apiUrl = 'http://localhost:8081/api/notifications';
+  private apiUrl = `${environment.apiUrl}/api/notifications`;
   private unreadCountSubject = new BehaviorSubject<number>(0);
 
   constructor(private http: HttpClient) {}

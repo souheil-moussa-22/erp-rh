@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface Formation {
   id: string;
@@ -45,49 +46,22 @@ export interface FormationRequest {
   providedIn: 'root'
 })
 export class FormationService {
-  private apiUrl = 'http://localhost:8081/api/formations';
+  private apiUrl = `${environment.apiUrl}/api/formations`;
 
   constructor(private http: HttpClient) { }
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('authToken');
-    console.log(' FormationService - Token:', token ? `PRESENT (${token.length} chars)` : 'NULL');
-
-    if (token) {
-      return new HttpHeaders({
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      });
-    }
-
-    console.warn(' FormationService - No token found');
-    return new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
+    return token
+      ? new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' })
+      : new HttpHeaders({ 'Content-Type': 'application/json' });
   }
 
   getAllFormations(): Observable<Formation[]> {
-    console.log(' FormationService - Getting all formations');
     const headers = this.getAuthHeaders();
 
-    console.log(' Headers:', headers.keys());
-    console.log(' Auth header present:', !!headers.get('Authorization'));
-
     return this.http.get<Formation[]>(this.apiUrl, { headers }).pipe(
-      tap(formations => {
-        console.log(' Formations loaded successfully:', formations.length);
-      }),
-      catchError(error => {
-        console.error(' Error loading formations:', error);
-
-        // Debug détaillé
-        if (error.status === 401) {
-          console.error(' 401 Unauthorized!');
-          console.error('   - Token used:', headers.get('Authorization')?.substring(0, 30) + '...');
-        }
-
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
@@ -97,31 +71,11 @@ export class FormationService {
   }
 
   createFormation(request: FormationRequest, createdById: string): Observable<Formation> {
-    console.log(' Creating formation...');
-    console.log(' Request:', request);
-    console.log(' Created by ID:', createdById);
-
     const headers = this.getAuthHeaders();
     const params = new HttpParams().set('createdById', createdById);
 
-    console.log(' Headers for POST:', headers.keys());
-    console.log(' Auth header:', headers.get('Authorization')?.substring(0, 30) + '...');
-    console.log(' Params:', params.toString());
-
     return this.http.post<Formation>(this.apiUrl, request, { headers, params }).pipe(
-      tap(response => {
-        console.log(' Formation created successfully:', response.id);
-      }),
-      catchError(error => {
-        console.error(' Error creating formation:', error);
-
-        if (error.status === 401) {
-          console.error(' 401 Unauthorized for POST!');
-          console.error('   - Token used:', headers.get('Authorization')?.substring(0, 30) + '...');
-        }
-
-        return throwError(() => error);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
