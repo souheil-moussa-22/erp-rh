@@ -18,7 +18,11 @@ public class GeminiAiServiceImpl implements AiService {
     @Value("${gemini.api.key}")
     private String apiKey;
 
-    private final RestTemplate restTemplate = new RestTemplate(); // Création directe
+    private final RestTemplate restTemplate;
+
+    public GeminiAiServiceImpl(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public AiSuggestionResponse generateSuggestion(AiSuggestionRequest request) {

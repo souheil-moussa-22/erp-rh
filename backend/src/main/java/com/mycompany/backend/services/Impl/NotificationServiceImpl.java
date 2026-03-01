@@ -6,6 +6,7 @@ import com.mycompany.backend.entities.Employee;
 import com.mycompany.backend.entities.Notification;
 import com.mycompany.backend.repositories.EmployeeRepository;
 import com.mycompany.backend.repositories.NotificationRepository;
+import com.mycompany.backend.services.EmployeeService;
 import com.mycompany.backend.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,7 +23,7 @@ public class NotificationServiceImpl implements NotificationService {
     private EmployeeRepository employeeRepository;
 
     @Autowired
-    private EmployeeServiceImpl employeeService;
+    private EmployeeService employeeService;
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
