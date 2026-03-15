@@ -1,255 +1,252 @@
-<!-- Modal -->
 <div *ngIf="isOpen" class="modal-overlay" (click)="closeModal()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
+  <div class="modal-content mat-elevation-z8" (click)="$event.stopPropagation()">
 
     <!-- Header -->
     <div class="modal-header">
-      <h2>Add Employee</h2>
-      <button class="close-btn" (click)="closeModal()">×</button>
+      <div class="modal-title">
+        <mat-icon>person_add</mat-icon>
+        <h2>Add Employee</h2>
+      </div>
+      <button mat-icon-button (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
 
     <div class="modal-body">
 
-      <!-- Error Message -->
-      <div *ngIf="errorMessage" class="error-message">
-        {{ errorMessage }}
+      <!-- Error -->
+      <div *ngIf="errorMessage" class="error-banner">
+        <mat-icon>error_outline</mat-icon> {{ errorMessage }}
       </div>
 
       <!-- Permission Warning -->
-      <div *ngIf="!canAddEmployee" class="permission-warning-banner">
-        <div class="warning-content">
-          <span class="warning-icon">⚠</span>
-          <span class="warning-text">
-            You do not have permission to add employees. Only HR and HR Managers can perform this action.
-          </span>
-        </div>
+      <div *ngIf="!canAddEmployee" class="warning-banner">
+        <mat-icon>warning</mat-icon>
+        You do not have permission to add employees. Only HR and HR Managers can perform this action.
       </div>
 
       <!-- Form -->
       <form *ngIf="canAddEmployee" #employeeForm="ngForm" (ngSubmit)="saveEmployee()">
 
-        <!-- SECTION — Personal Information -->
+        <!-- Personal Information -->
         <div class="form-section">
-          <h4>Personal Information</h4>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Full Name *</label>
-              <input type="text" name="username" [(ngModel)]="employee.username" required placeholder="John Doe">
-            </div>
-
-            <div class="form-group">
-              <label>Email *</label>
-              <input type="email" name="email" [(ngModel)]="employee.email" required placeholder="john.doe@example.com">
-            </div>
+          <div class="section-title">
+            <mat-icon>person</mat-icon>
+            <h4>Personal Information</h4>
           </div>
+          <mat-divider></mat-divider>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Phone</label>
-              <input type="text" name="phone" [(ngModel)]="employee.phone" placeholder="+33 1 23 45 67 89">
-            </div>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Full Name *</mat-label>
+              <input matInput name="username" [(ngModel)]="employee.username" required placeholder="John Doe">
+              <mat-icon matPrefix>badge</mat-icon>
+            </mat-form-field>
 
-            <div class="form-group">
-              <label>Gender</label>
-              <select name="gender" [(ngModel)]="employee.gender">
-                <option value="">-- Select --</option>
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-              </select>
-            </div>
-          </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Email *</mat-label>
+              <input matInput type="email" name="email" [(ngModel)]="employee.email" required placeholder="john@example.com">
+              <mat-icon matPrefix>email</mat-icon>
+            </mat-form-field>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Password *</label>
-              <input type="password" name="password" [(ngModel)]="employee.password" required placeholder="••••••">
-              <div *ngIf="employee.password" class="password-strength">
-                Password Strength:
-                <span [class]="'strength-' + passwordStrength">
-                  {{ passwordStrength === 'empty' ? 'Empty' :
-                  passwordStrength === 'weak' ? 'Weak' :
-                    passwordStrength === 'medium' ? 'Medium' : 'Strong' }}
-                </span>
-              </div>
-            </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Phone</mat-label>
+              <input matInput name="phone" [(ngModel)]="employee.phone" placeholder="+1 234 567 8900">
+              <mat-icon matPrefix>phone</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Gender</mat-label>
+              <mat-select name="gender" [(ngModel)]="employee.gender">
+                <mat-option value="">-- Select --</mat-option>
+                <mat-option value="MALE">Male</mat-option>
+                <mat-option value="FEMALE">Female</mat-option>
+              </mat-select>
+              <mat-icon matPrefix>wc</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Password *</mat-label>
+              <input matInput type="password" name="password" [(ngModel)]="employee.password" required placeholder="••••••">
+              <mat-icon matPrefix>lock</mat-icon>
+              <mat-hint *ngIf="passwordStrength">Strength: <strong>{{ passwordStrength }}</strong></mat-hint>
+            </mat-form-field>
           </div>
         </div>
 
-        <!-- SECTION — Employment Information -->
+        <!-- Employment Information -->
         <div class="form-section">
-          <h4>Employment Information</h4>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Hire Date</label>
-              <input type="date" name="hireDate" [(ngModel)]="employee.hireDate">
-            </div>
-
-            <div class="form-group">
-              <label>Salary (TND)</label>
-              <input type="number" name="salary" [(ngModel)]="employee.salary" step="0.01" min="0" placeholder="Salary amount">
-            </div>
+          <div class="section-title">
+            <mat-icon>work</mat-icon>
+            <h4>Employment Information</h4>
           </div>
+          <mat-divider></mat-divider>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Position *</label>
-              <select name="position" [(ngModel)]="employee.position" required>
-                <option value="">-- Select a position --</option>
-                <option value="SOFTWARE_DEVELOPER">Software Developer</option>
-                <option value="SENIOR_DEVELOPER">Senior Developer</option>
-                <option value="FRONTEND_DEVELOPER">Frontend Developer</option>
-                <option value="BACKEND_DEVELOPER">Backend Developer</option>
-                <option value="FULLSTACK_DEVELOPER">Fullstack Developer</option>
-                <option value="SOFTWARE_ENGINEER">Software Engineer</option>
-                <option value="SYSTEM_ENGINEER">System Engineer</option>
-                <option value="DEVOPS_ENGINEER">DevOps Engineer</option>
-                <option value="QA_ENGINEER">QA Engineer</option>
-                <option value="DATA_ENGINEER">Data Engineer</option>
-                <option value="PROJECT_MANAGER">Project Manager</option>
-                <option value="TEAM_LEAD">Team Lead</option>
-                <option value="TECH_LEAD">Tech Lead</option>
-                <option value="PRODUCT_MANAGER">Product Manager</option>
-                <option value="FINANCE_MANAGER">Finance Manager</option>
-                <option value="SALES_MANAGER">Sales Manager</option>
-                <option value="MARKETING_SPECIALIST">Marketing Specialist</option>
-                <option value="UI_UX_DESIGNER">UI/UX Designer</option>
-                <option value="GRAPHIC_DESIGNER">Graphic Designer</option>
-                <option value="DATA_ANALYST">Data Analyst</option>
-                <option value="BUSINESS_ANALYST">Business Analyst</option>
-                <option value="IT_SUPPORT">IT Support</option>
-                <option value="NETWORK_ADMIN">Network Admin</option>
-                <option value="DATABASE_ADMIN">Database Admin</option>
-                <option value="SECURITY_ANALYST">Security Analyst</option>
-                <option value="INTERN">Intern</option>
-                <option value="OTHER">Other</option>
-              </select>
-            </div>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Hire Date</mat-label>
+              <input matInput type="date" name="hireDate" [(ngModel)]="employee.hireDate">
+              <mat-icon matPrefix>calendar_today</mat-icon>
+            </mat-form-field>
 
-            <div class="form-group">
-              <label>Status</label>
-              <select name="status" [(ngModel)]="employee.status">
-                <option value="ACTIVE">Active</option>
-                <option value="INACTIVE">Inactive</option>
-                <option value="ON_LEAVE">On Leave</option>
-                <option value="PROBATION">Probation</option>
-                <option value="TERMINATED">Terminated</option>
-                <option value="RESIGNED">Resigned</option>
-              </select>
-            </div>
-          </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Salary (TND)</mat-label>
+              <input matInput type="number" name="salary" [(ngModel)]="employee.salary" step="0.01" min="0" placeholder="0.00">
+              <mat-icon matPrefix>payments</mat-icon>
+            </mat-form-field>
 
-          <!-- Custom Position -->
-          <div class="form-row" *ngIf="employee.position === 'OTHER'">
-            <div class="form-group">
-              <label>Custom Position *</label>
-              <input type="text" name="customPosition" [(ngModel)]="employee.customPosition" placeholder="Specify the position">
-            </div>
-          </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Position *</mat-label>
+              <mat-select name="position" [(ngModel)]="employee.position" required>
+                <mat-option value="">-- Select a position --</mat-option>
+                <mat-option *ngFor="let pos of availablePositions" [value]="pos.value">{{ pos.label }}</mat-option>
+              </mat-select>
+              <mat-icon matPrefix>work_outline</mat-icon>
+            </mat-form-field>
 
-        <div class="form-group">
-          <label class="required">Rôle</label>
-          <select [(ngModel)]="employee.role" name="role" required>
-            <option *ngFor="let role of availableRoles" [value]="role.value">
-              {{ role.label }}
-            </option>
-          </select>
-        </div>
-    </div>
+            <mat-form-field appearance="outline" *ngIf="employee.position === 'OTHER'">
+              <mat-label>Custom Position *</mat-label>
+              <input matInput name="customPosition" [(ngModel)]="employee.customPosition" placeholder="Specify position">
+              <mat-icon matPrefix>edit</mat-icon>
+            </mat-form-field>
 
-        <!-- SECTION — Tunisian Payroll Information -->
-        <div class="form-section">
-          <h4>Tunisian Payroll Information</h4>
+            <mat-form-field appearance="outline">
+              <mat-label>Role</mat-label>
+              <mat-select name="role" [(ngModel)]="employee.role">
+                <mat-option *ngFor="let role of availableRoles" [value]="role.value">{{ role.label }}</mat-option>
+              </mat-select>
+              <mat-icon matPrefix>manage_accounts</mat-icon>
+            </mat-form-field>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>CIN *</label>
-              <input type="text" name="cin" [(ngModel)]="employee.cin" required placeholder="CIN number">
-            </div>
-
-            <div class="form-group">
-              <label>CNSS Number *</label>
-              <input type="text" name="cnssNumber" [(ngModel)]="employee.cnssNumber" required placeholder="CNSS number">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Matricule *</label>
-              <input type="text" name="matricule" [(ngModel)]="employee.matricule" required placeholder="Internal ID">
-            </div>
-
-            <div class="form-group">
-              <label>Working Days / Month</label>
-              <input type="number" name="workingDays" [(ngModel)]="employee.workingDays" min="0" max="31">
-            </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Status</mat-label>
+              <mat-select name="status" [(ngModel)]="employee.status">
+                <mat-option value="ACTIVE">Active</mat-option>
+                <mat-option value="INACTIVE">Inactive</mat-option>
+                <mat-option value="ON_LEAVE">On Leave</mat-option>
+                <mat-option value="PROBATION">Probation</mat-option>
+                <mat-option value="TERMINATED">Terminated</mat-option>
+                <mat-option value="RESIGNED">Resigned</mat-option>
+              </mat-select>
+              <mat-icon matPrefix>toggle_on</mat-icon>
+            </mat-form-field>
           </div>
         </div>
 
-        <!-- SECTION — Address & Bank -->
+        <!-- Tunisian Payroll Information -->
         <div class="form-section">
-          <h4>Address & Bank</h4>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Address</label>
-              <input type="text" name="address" [(ngModel)]="employee.address">
-            </div>
-
-            <div class="form-group">
-              <label>City</label>
-              <input type="text" name="city" [(ngModel)]="employee.city">
-            </div>
+          <div class="section-title">
+            <mat-icon>receipt_long</mat-icon>
+            <h4>Tunisian Payroll Information</h4>
           </div>
+          <mat-divider></mat-divider>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>RIB</label>
-              <input type="text" name="rib" [(ngModel)]="employee.rib">
-            </div>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>CIN *</mat-label>
+              <input matInput name="cin" [(ngModel)]="employee.cin" required placeholder="CIN number">
+              <mat-icon matPrefix>credit_card</mat-icon>
+            </mat-form-field>
 
-            <div class="form-group">
-              <label>Bank Name</label>
-              <input type="text" name="bankName" [(ngModel)]="employee.bankName">
-            </div>
+            <mat-form-field appearance="outline">
+              <mat-label>CNSS Number *</mat-label>
+              <input matInput name="cnssNumber" [(ngModel)]="employee.cnssNumber" required placeholder="CNSS number">
+              <mat-icon matPrefix>assignment_ind</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Matricule *</mat-label>
+              <input matInput name="matricule" [(ngModel)]="employee.matricule" required placeholder="Internal ID">
+              <mat-icon matPrefix>tag</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Working Days / Month</mat-label>
+              <input matInput type="number" name="workingDays" [(ngModel)]="employee.workingDays" min="0" max="31">
+              <mat-icon matPrefix>date_range</mat-icon>
+            </mat-form-field>
           </div>
         </div>
 
-        <!-- SECTION — Allowances & Bonuses -->
+        <!-- Address & Bank -->
         <div class="form-section">
-          <h4>Allowances & Bonuses (TND)</h4>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Transport Allowance</label>
-              <input type="number" name="transportAllowance" [(ngModel)]="employee.transportAllowance" step="0.01" min="0">
-            </div>
-
-            <div class="form-group">
-              <label>Family Allowance</label>
-              <input type="number" name="familyAllowance" [(ngModel)]="employee.familyAllowance" step="0.01" min="0">
-            </div>
+          <div class="section-title">
+            <mat-icon>account_balance</mat-icon>
+            <h4>Address &amp; Bank</h4>
           </div>
+          <mat-divider></mat-divider>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Other Bonuses</label>
-              <input type="number" name="otherBonuses" [(ngModel)]="employee.otherBonuses" step="0.01" min="0">
-            </div>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Address</mat-label>
+              <input matInput name="address" [(ngModel)]="employee.address">
+              <mat-icon matPrefix>home</mat-icon>
+            </mat-form-field>
 
-            <div class="form-group">
-              <label>Actual Worked Days</label>
-              <input type="number" name="actualWorkingDays" [(ngModel)]="employee.actualWorkingDays" min="0" max="31">
-            </div>
+            <mat-form-field appearance="outline">
+              <mat-label>City</mat-label>
+              <input matInput name="city" [(ngModel)]="employee.city">
+              <mat-icon matPrefix>location_city</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>RIB</mat-label>
+              <input matInput name="rib" [(ngModel)]="employee.rib">
+              <mat-icon matPrefix>account_balance_wallet</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Bank Name</mat-label>
+              <input matInput name="bankName" [(ngModel)]="employee.bankName">
+              <mat-icon matPrefix>business</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Allowances & Bonuses -->
+        <div class="form-section">
+          <div class="section-title">
+            <mat-icon>savings</mat-icon>
+            <h4>Allowances &amp; Bonuses (TND)</h4>
+          </div>
+          <mat-divider></mat-divider>
+
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Transport Allowance</mat-label>
+              <input matInput type="number" name="transportAllowance" [(ngModel)]="employee.transportAllowance" step="0.01" min="0">
+              <mat-icon matPrefix>directions_bus</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Family Allowance</mat-label>
+              <input matInput type="number" name="familyAllowance" [(ngModel)]="employee.familyAllowance" step="0.01" min="0">
+              <mat-icon matPrefix>family_restroom</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Other Bonuses</mat-label>
+              <input matInput type="number" name="otherBonuses" [(ngModel)]="employee.otherBonuses" step="0.01" min="0">
+              <mat-icon matPrefix>card_giftcard</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Actual Worked Days</mat-label>
+              <input matInput type="number" name="actualWorkingDays" [(ngModel)]="employee.actualWorkingDays" min="0" max="31">
+              <mat-icon matPrefix>event_available</mat-icon>
+            </mat-form-field>
           </div>
         </div>
 
         <!-- Actions -->
-        <div class="modal-actions">
-          <button type="button" (click)="closeModal()" [disabled]="isLoading">Cancel</button>
-          <button type="submit" [disabled]="!employeeForm.valid || isSubmitting">
-            {{ isSubmitting ? 'Creating...' : 'Add Employee' }}
+        <div class="modal-footer">
+          <button mat-stroked-button type="button" (click)="closeModal()" [disabled]="isSubmitting">
+            Cancel
+          </button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="employeeForm.invalid || isSubmitting">
+            <mat-spinner *ngIf="isSubmitting" diameter="18"></mat-spinner>
+            <mat-icon *ngIf="!isSubmitting">save</mat-icon>
+            {{ isSubmitting ? 'Saving...' : 'Save Employee' }}
           </button>
         </div>
 

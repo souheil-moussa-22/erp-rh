@@ -19,6 +19,8 @@ export interface Employee {
   id?: string;
   employee?: Employee;
   username: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
   phone?: string;
   salary?: number;

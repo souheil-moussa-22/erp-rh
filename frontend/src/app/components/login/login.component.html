@@ -1,74 +1,59 @@
-<!-- login.component.html - VERSION FINALE SANS TESTS -->
 <div class="auth-container">
-  <div class="auth-card">
-    <div class="auth-header">
-      <div class="logo">
-        <i class="logo-icon">🏢</i>
+  <mat-card class="auth-card">
+    <mat-card-header class="auth-header">
+      <div class="logo-section">
+        <mat-icon class="logo-icon">business</mat-icon>
         <span class="logo-text">HR VISION</span>
       </div>
-      <h1 class="auth-title">Login</h1>
-      <p class="auth-subtitle">Access your personal space</p>
-    </div>
+      <mat-card-title>Sign In</mat-card-title>
+      <mat-card-subtitle>Access your personal space</mat-card-subtitle>
+    </mat-card-header>
 
-    <!-- Message d'erreur -->
-    <div *ngIf="errorMessage" class="error-message global-error">
-      {{ errorMessage }}
-    </div>
+    <mat-card-content>
+      <div *ngIf="errorMessage" class="error-banner">
+        <mat-icon>error_outline</mat-icon>
+        {{ errorMessage }}
+      </div>
 
-    <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="email" class="form-label">Email</label>
-        <input
-          type="email"
-          id="email"
-          formControlName="email"
-          class="form-input"
-          placeholder="your@email.com"
-          [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-        <div class="error-container">
-          @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
-            <div class="error-message">
-              Please enter a valid email address
-            </div>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="your@email.com">
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" placeholder="Your password">
+          <mat-icon matPrefix>lock</mat-icon>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Password is required</mat-error>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="submit-btn"
+          [disabled]="loginForm.invalid || isLoading">
+          @if (isLoading) {
+            <mat-spinner diameter="20"></mat-spinner>
+            <span>Signing in...</span>
+          } @else {
+            <ng-container>
+              <mat-icon>login</mat-icon>
+              <span>Sign In</span>
+            </ng-container>
           }
-        </div>
-      </div>
+        </button>
+      </form>
+    </mat-card-content>
 
-      <div class="form-group">
-        <label for="password" class="form-label">Password</label>
-        <input
-          type="password"
-          id="password"
-          formControlName="password"
-          class="form-input"
-          placeholder="Your password"
-          [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-        <div class="error-container">
-          @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
-            <div class="error-message">
-              Password is required
-            </div>
-          }
-        </div>
-      </div>
-
-      <button
-        type="submit"
-        class="auth-button"
-        [disabled]="loginForm.invalid || isLoading">
-        @if (!isLoading) {
-          <span>Sign In</span>
-        }
-        @if (isLoading) {
-          <span class="loading">Signing in...</span>
-        }
-      </button>
-
-      <div class="auth-footer">
-        <p>Forgot your password?
-          <a routerLink="/forgot-password" class="auth-link">Reset password</a>
-        </p>
-      </div>
-    </form>
-  </div>
+    <mat-card-actions class="auth-footer">
+      <p>Forgot your password?
+        <a routerLink="/forgot-password" mat-button color="primary">Reset password</a>
+      </p>
+    </mat-card-actions>
+  </mat-card>
 </div>

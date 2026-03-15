@@ -1,164 +1,136 @@
-<div class="formations-container">
-  <!-- Statistics Overview Section -->
-  <section class="stats-section">
-    <app-statistics-card 
-      [stats]="stats">
-    </app-statistics-card>
-  </section>
-
-  <!-- Main Content Card -->
-  <div class="formations-card">
-    
-    <!-- Page Header -->
-    <header class="page-header">
-      <div class="header-content">
-        <div class="header-main">
-          <h1 class="page-title">Training Management</h1>
-        </div>
-        
-        <div class="header-actions">
-          <button class="btn-secondary btn-refresh" (click)="loadFormations()" [disabled]="loading">
-            <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
-            <span>{{ loading ? 'Refreshing...' : 'Refresh' }}</span>
-          </button>
-          <button class="btn-primary btn-create" routerLink="/formations/new">
-            <i class="fas fa-plus-circle"></i>
-            <span>Create Training</span>
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <!-- Controls Section -->
-    <section class="controls-section">
-      <div class="controls-grid">
-        
-        <!-- Search and Filters Row -->
-        <div class="controls-row">
-          <!-- Search Box -->
-          <div class="search-control">
-            <div class="search-box">
-              <i class="fas fa-search search-icon"></i>
-              <input 
-                type="text" 
-                class="search-input" 
-                placeholder="Search trainings by title, description, or skills..." 
-                [(ngModel)]="searchTerm" 
-                (input)="searchFormations()"
-              >
-            </div>
-            <!-- <div class="search-hint">
-              <i class="fas fa-info-circle"></i>
-              <span>Press Enter to search</span>
-            </div> -->
-          </div>
-
-          <!-- Filters and Export -->
-          <div class="filters-export-control">
-            <div class="filters-export-grid">
-              
-              <!-- Status Filter -->
-              <div class="filter-group">
-                <select class="filter-select" [(ngModel)]="selectedStatus" (change)="applyFilters()">
-                  <option value="ALL">All Statuses</option>
-                  <option value="PLANIFIED">Planned</option>
-                  <option value="IN_PROGRESS">In Progress</option>
-                  <option value="COMPLETED">Completed</option>
-                  <option value="CANCELLED">Cancelled</option>
-                </select>
-              </div>
-
-              <!-- Category Filter -->
-              <div class="filter-group">
-                <select class="filter-select" [(ngModel)]="selectedCategory" (change)="applyFilters()">
-                  <option value="ALL">All Categories</option>
-                  <option value="TECHNICAL">Technical</option>
-                  <option value="SOFT_SKILLS">Soft Skills</option>
-                  <option value="MANAGEMENT">Management</option>
-                  <option value="COMPLIANCE">Compliance</option>
-                  <option value="LANGUAGE">Language</option>
-                </select>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Results Summary -->
-    <!-- Results Summary -->
-<section class="results-summary" *ngIf="!loading && filteredFormations.length > 0">
-  <div class="summary-content">
-    <div class="summary-text">
-      <h3>Training Programs</h3>
-      <p>Showing {{ filteredFormations.length }} of {{ totalCount }} training{{ totalCount !== 1 ? 's' : '' }}</p>
+<div class="formations-page">
+  <div class="page-header">
+    <div>
+      <h1>Training Programs</h1>
+      <p class="subtitle">Manage and track training formations</p>
     </div>
-    <div class="summary-actions">
-      <div class="sort-control">
-        <label>Sort by:</label>
-        <select class="sort-select" [(ngModel)]="selectedSort" (change)="onSortChange()">
-          <option *ngFor="let option of sortOptions" [value]="option.value">
-            {{ option.label }}
-          </option>
-        </select>
-      </div>
-    </div>
+    <button mat-raised-button color="primary" routerLink="/formations/new">
+      <mat-icon>add</mat-icon> New Formation
+    </button>
   </div>
-</section>
 
-    <!-- Loading State -->
-    <section *ngIf="loading" class="loading-section">
-      <div class="loading-content">
-        <div class="loading-spinner-large"></div>
-        <h3>Loading Training Programs</h3>
-        <p>Please wait while we fetch your training data...</p>
-      </div>
-    </section>
+  <!-- Stats row -->
+  <div class="stats-row" *ngIf="formations && formations.length > 0">
+    <mat-card class="stat-card">
+      <mat-icon>school</mat-icon>
+      <div class="stat-value">{{ totalCount }}</div>
+      <div class="stat-label">Total</div>
+    </mat-card>
+    <mat-card class="stat-card stat-active">
+      <mat-icon>play_circle</mat-icon>
+      <div class="stat-value">{{ inProgressCount }}</div>
+      <div class="stat-label">In Progress</div>
+    </mat-card>
+    <mat-card class="stat-card stat-success">
+      <mat-icon>check_circle</mat-icon>
+      <div class="stat-value">{{ completedCount }}</div>
+      <div class="stat-label">Completed</div>
+    </mat-card>
+    <mat-card class="stat-card stat-pending">
+      <mat-icon>pending</mat-icon>
+      <div class="stat-value">{{ plannedCount }}</div>
+      <div class="stat-label">Planned</div>
+    </mat-card>
+  </div>
 
-    <!-- Empty State -->
-    <section *ngIf="!loading && filteredFormations.length === 0" class="empty-section">
-      <div class="empty-content">
-        <div class="empty-illustration">
-          <i class="fas fa-chalkboard-teacher"></i>
+  <!-- Filters -->
+  <div class="filters-row">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search formations</mat-label>
+      <input matInput [(ngModel)]="searchTerm" (input)="searchFormations()" placeholder="Title, category...">
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-select">
+      <mat-label>Status</mat-label>
+      <mat-select [(ngModel)]="selectedStatus" (ngModelChange)="applyFilters()">
+        <mat-option value="ALL">All</mat-option>
+        <mat-option value="PLANIFIED">Planned</mat-option>
+        <mat-option value="IN_PROGRESS">In Progress</mat-option>
+        <mat-option value="COMPLETED">Completed</mat-option>
+        <mat-option value="CANCELLED">Cancelled</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-select">
+      <mat-label>Category</mat-label>
+      <mat-select [(ngModel)]="selectedCategory" (ngModelChange)="applyFilters()">
+        <mat-option value="ALL">All</mat-option>
+        <mat-option value="TECHNICAL">Technical</mat-option>
+        <mat-option value="SOFT_SKILLS">Soft Skills</mat-option>
+        <mat-option value="MANAGEMENT">Management</mat-option>
+        <mat-option value="COMPLIANCE">Compliance</mat-option>
+        <mat-option value="LANGUAGE">Language</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Loading formations...</p>
+  </div>
+
+  <!-- Grid -->
+  <div *ngIf="!loading" class="formations-grid">
+    <mat-card *ngFor="let formation of filteredFormations" class="formation-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>school</mat-icon>
+        <mat-card-title>{{ formation.title }}</mat-card-title>
+        <mat-card-subtitle>{{ formation.category || 'General' }}</mat-card-subtitle>
+        <span class="status-chip" [class]="'status-' + formation.status.toLowerCase()">
+          {{ formation.status }}
+        </span>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p class="description">{{ formation.description | slice:0:120 }}{{ formation.description.length > 120 ? '...' : '' }}</p>
+
+        <div class="formation-meta">
+          <div class="meta-item" *ngIf="formation.startDate">
+            <mat-icon>date_range</mat-icon>
+            <span>{{ formation.startDate | date:'mediumDate' }}</span>
+          </div>
+          <div class="meta-item" *ngIf="formation.endDate">
+            <mat-icon>event</mat-icon>
+            <span>{{ formation.endDate | date:'mediumDate' }}</span>
+          </div>
+          <div class="meta-item" *ngIf="formation.cost">
+            <mat-icon>attach_money</mat-icon>
+            <span>{{ formation.cost }} TND</span>
+          </div>
+          <div class="meta-item" *ngIf="formation.maxParticipants">
+            <mat-icon>group</mat-icon>
+            <span>{{ formation.currentParticipants || 0 }}/{{ formation.maxParticipants }}</span>
+          </div>
+          <div class="meta-item" *ngIf="formation.formateur">
+            <mat-icon>person</mat-icon>
+            <span>{{ formation.formateur }}</span>
+          </div>
         </div>
-        <h3>No Training Programs Found</h3>
-        <p>Start building your organization's learning ecosystem by creating your first training program.</p>
-      </div>
-    </section>
+      </mat-card-content>
 
-    <!-- Trainings Grid -->
-    <section *ngIf="!loading && filteredFormations.length > 0" class="trainings-section">
-      <div class="trainings-grid">
-        <app-formation-card 
-          *ngFor="let training of filteredFormations"
-          [training]="training"
-          (startFormation)="handleStartFormation($event)"
-          (completeFormation)="handleCompleteFormation($event)"
-          (cancelFormation)="handleCancelFormation($event)"
-          (deleteFormation)="handleDeleteFormation($event)">
-        </app-formation-card>
-      </div>
-    </section>
+      <mat-card-actions>
+        <button mat-button color="primary" *ngIf="formation.status === 'PLANIFIED'" (click)="handleStartFormation(formation.id)">
+          <mat-icon>play_arrow</mat-icon> Start
+        </button>
+        <button mat-button color="accent" *ngIf="formation.status === 'IN_PROGRESS'" (click)="handleCompleteFormation(formation.id)">
+          <mat-icon>done</mat-icon> Complete
+        </button>
+        <button mat-button *ngIf="formation.status !== 'COMPLETED' && formation.status !== 'CANCELLED'" (click)="handleCancelFormation(formation.id)">
+          <mat-icon>cancel</mat-icon> Cancel
+        </button>
+        <button mat-icon-button color="warn" (click)="handleDeleteFormation(formation.id)" matTooltip="Delete">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
 
-    <!-- Pagination (Optional) -->
-    <footer *ngIf="!loading && filteredFormations.length > 0" class="pagination-section">
-      <div class="pagination-content">
-        <div class="pagination-info">
-          Showing {{ filteredFormations.length }} of {{ totalCount }} items
-        </div>
-        <div class="pagination-controls">
-          <button class="btn-pagination" disabled>
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <span class="pagination-page">Page 1</span>
-          <button class="btn-pagination">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
-      </div>
-    </footer>
-
+  <!-- Empty state -->
+  <div *ngIf="!loading && filteredFormations.length === 0" class="empty-state">
+    <mat-icon>school</mat-icon>
+    <h3>No formations found</h3>
+    <p>{{ searchTerm ? 'Try a different search term' : 'Create a new formation to get started' }}</p>
   </div>
 </div>

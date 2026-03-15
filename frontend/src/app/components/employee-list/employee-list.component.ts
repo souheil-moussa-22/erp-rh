@@ -1,11 +1,24 @@
 import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { EmployeeServices, Employee } from '../../services/employee.service';
 import { AuthService } from '../../services/auth.service';
 import { saveAs } from 'file-saver';
 import { FormsModule } from '@angular/forms';
 import { AddEmployeeComponent } from '../add-employee/add-employee.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-employee-list',
@@ -14,7 +27,20 @@ import { AddEmployeeComponent } from '../add-employee/add-employee.component';
     CommonModule,
     RouterModule,
     FormsModule,
-    AddEmployeeComponent
+    AddEmployeeComponent,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatChipsModule,
+    MatTooltipModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    MatDialogModule
   ],
   templateUrl: './employee-list.component.html',
   styleUrls: ['./employee-list.component.css']
@@ -27,6 +53,8 @@ export class EmployeeListComponent implements OnInit {
   successMessage = '';
   filteredEmployees: Employee[] = [];
   showAddModal = false;
+  displayedColumns = ['name', 'email', 'position', 'actions'];
+  employeeToDelete: Employee | null = null;
 
   // Permission checking variables
   canAddEmployees = false;
@@ -47,6 +75,7 @@ export class EmployeeListComponent implements OnInit {
   private employeeService = inject(EmployeeServices);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
 
   ngOnInit(): void {
     this.checkPermissions();
@@ -322,6 +351,14 @@ export class EmployeeListComponent implements OnInit {
   }
 
   // Delete employee
+  confirmDelete(emp: Employee): void {
+    this.employeeToDelete = emp;
+  }
+
+  cancelDelete(): void {
+    this.employeeToDelete = null;
+  }
+
   deleteEmployee(id: string | undefined): void {
     if (!id) return;
 
@@ -330,11 +367,8 @@ export class EmployeeListComponent implements OnInit {
       return;
     }
 
-    if (!confirm("Are you sure you want to delete this employee? This action is irreversible.")) {
-      return;
-    }
-
     this.loading = true;
+    this.employeeToDelete = null;
     this.employeeService.deleteEmployee(id).subscribe({
       next: () => {
         this.employees = this.employees.filter(e => e.id !== id);
@@ -351,6 +385,23 @@ export class EmployeeListComponent implements OnInit {
         setTimeout(() => this.errorMessage = '', 4000);
       }
     });
+  }
+
+  getInitials(emp: Employee): string {
+    const first = (emp.firstName || '')[0] || '';
+    const last = (emp.lastName || '')[0] || '';
+    return (first + last).toUpperCase() || 'U';
+  }
+
+  viewEmployee(id: string | undefined): void {
+    if (!id) return;
+    this.router.navigate(['/employees', id]);
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex + 1;
+    this.loadEmployees();
   }
 
   trackByEmployeeId(index: number, emp: Employee): string {

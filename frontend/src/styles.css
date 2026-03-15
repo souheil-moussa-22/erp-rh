@@ -1,3 +1,5 @@
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
 /* =============================================
    GLOBAL STYLES & DESIGN TOKENS
    HR Vision – ERP RH Design System
@@ -355,4 +357,49 @@ img {
 :focus-visible {
   outline: 3px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* ── Material Component Global Overrides ── */
+
+/* Ensure body doesn't overflow when sidenav is open */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Sidenav content padding */
+.mat-sidenav-content {
+  padding: 0;
+}
+
+/* Page content spacing utility */
+.page-content {
+  padding: 24px;
+}
+
+/* Consistent card styling */
+.mat-mdc-card {
+  border-radius: 12px !important;
+}
+
+/* Form field full width utility */
+.full-width {
+  width: 100%;
+}
+
+/* Table row hover */
+.mat-mdc-row:hover {
+  background: rgba(63, 81, 181, 0.04) !important;
+}
+
+/* Snackbar success */
+.snack-success {
+  background: #4caf50 !important;
+  color: white !important;
+}
+
+/* Snackbar error */
+.snack-error {
+  background: #f44336 !important;
+  color: white !important;
 }

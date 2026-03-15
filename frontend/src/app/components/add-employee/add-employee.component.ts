@@ -4,6 +4,13 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../environments/environment';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-add-employee',
@@ -12,7 +19,14 @@ import { environment } from '../../../environments/environment';
   standalone: true,
   imports: [
     FormsModule,
-    CommonModule
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDividerModule,
+    MatProgressSpinnerModule
   ]
 })
 export class AddEmployeeComponent implements OnInit {
@@ -39,6 +53,36 @@ export class AddEmployeeComponent implements OnInit {
     { value: 'ROLE_EMPLOYEE', label: 'Employé' },
     { value: 'ROLE_HR', label: 'RH' },
     { value: 'ROLE_HRMANAGER', label: 'Manager RH' }
+  ];
+
+  availablePositions = [
+    { value: 'SOFTWARE_DEVELOPER', label: 'Software Developer' },
+    { value: 'SENIOR_DEVELOPER', label: 'Senior Developer' },
+    { value: 'FRONTEND_DEVELOPER', label: 'Frontend Developer' },
+    { value: 'BACKEND_DEVELOPER', label: 'Backend Developer' },
+    { value: 'FULLSTACK_DEVELOPER', label: 'Fullstack Developer' },
+    { value: 'SOFTWARE_ENGINEER', label: 'Software Engineer' },
+    { value: 'SYSTEM_ENGINEER', label: 'System Engineer' },
+    { value: 'DEVOPS_ENGINEER', label: 'DevOps Engineer' },
+    { value: 'QA_ENGINEER', label: 'QA Engineer' },
+    { value: 'DATA_ENGINEER', label: 'Data Engineer' },
+    { value: 'PROJECT_MANAGER', label: 'Project Manager' },
+    { value: 'TEAM_LEAD', label: 'Team Lead' },
+    { value: 'TECH_LEAD', label: 'Tech Lead' },
+    { value: 'PRODUCT_MANAGER', label: 'Product Manager' },
+    { value: 'FINANCE_MANAGER', label: 'Finance Manager' },
+    { value: 'SALES_MANAGER', label: 'Sales Manager' },
+    { value: 'MARKETING_SPECIALIST', label: 'Marketing Specialist' },
+    { value: 'UI_UX_DESIGNER', label: 'UI/UX Designer' },
+    { value: 'GRAPHIC_DESIGNER', label: 'Graphic Designer' },
+    { value: 'DATA_ANALYST', label: 'Data Analyst' },
+    { value: 'BUSINESS_ANALYST', label: 'Business Analyst' },
+    { value: 'IT_SUPPORT', label: 'IT Support' },
+    { value: 'NETWORK_ADMIN', label: 'Network Admin' },
+    { value: 'DATABASE_ADMIN', label: 'Database Admin' },
+    { value: 'SECURITY_ANALYST', label: 'Security Analyst' },
+    { value: 'INTERN', label: 'Intern' },
+    { value: 'OTHER', label: 'Other' }
   ];
 
   availableStatuses = [

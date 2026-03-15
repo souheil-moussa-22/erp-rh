@@ -1,2 +1,4 @@
-/* app.component.css – component-level host styles only.
-   All global/reset styles are in src/styles.css */
+/* app.css */
+:host {
+  display: block;
+}
