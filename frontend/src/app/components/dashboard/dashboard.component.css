@@ -1,290 +1,71 @@
-/* ── Dashboard Layout ── */
-.dashboard-layout {
-  display: flex;
-  min-height: 100vh;
-  background: var(--color-bg);
-  margin-top: var(--navbar-height);
-}
-
-/* ── Sidebar (dashboard-level) ── */
-.sidebar {
-  width: var(--sidebar-width);
-  background: var(--gradient-primary);
-  color: white;
-  padding: var(--space-8) 0;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+.sidenav-container {
+  height: calc(100vh - 64px);
   position: fixed;
+  top: 64px;
   left: 0;
-  top: var(--navbar-height);
-  height: calc(100vh - var(--navbar-height));
-  overflow-y: auto;
-  z-index: 99;
-  transition: width 0.3s ease;
+  right: 0;
+  bottom: 0;
 }
 
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.sidebar li {
-  margin: 3px 0;
-  padding: 0 var(--space-3);
-}
-
-.sidebar a,
-.sidebar .logout-link {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 13px var(--space-5);
-  color: rgba(255, 255, 255, 0.88);
-  text-decoration: none;
-  border-radius: var(--radius-md);
-  transition: var(--transition-normal);
-  font-weight: 500;
-  font-size: var(--font-size-base);
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
-  width: 100%;
-}
-
-.sidebar a:hover,
-.sidebar .logout-link:hover {
+.app-sidenav {
+  width: 240px;
+  background: linear-gradient(180deg, #3f51b5 0%, #283593 100%);
   color: white;
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateX(6px);
 }
 
-.sidebar a.active {
-  background: rgba(255, 255, 255, 0.22);
+.app-sidenav mat-nav-list a {
+  color: rgba(255,255,255,0.87);
+  border-radius: 8px;
+  margin: 2px 8px;
+}
+
+.app-sidenav mat-nav-list a:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.app-sidenav mat-nav-list a.active-link {
+  background: rgba(255,255,255,0.2);
   color: white;
   font-weight: 600;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
-.sidebar a:focus-visible,
-.sidebar .logout-link:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.8);
-  outline-offset: 2px;
+.app-sidenav mat-icon {
+  color: rgba(255,255,255,0.87);
 }
 
-.sidebar .fas {
-  font-size: 15px;
-  width: 18px;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.8);
-  transition: var(--transition-fast);
-  flex-shrink: 0;
+.app-sidenav mat-divider {
+  border-color: rgba(255,255,255,0.2);
+  margin: 8px 0;
 }
 
-.sidebar a:hover .fas,
-.sidebar a.active .fas {
-  color: white;
+.sidenav-content {
+  background: #f5f5f5;
+  overflow-y: auto;
 }
 
-.me-2 {
-  margin-right: var(--space-2);
-}
-
-/* ── Main Content ── */
-.main-content {
-  flex: 1;
-  margin-left: var(--sidebar-width);
-  padding: var(--space-8);
-  background: var(--color-bg);
-  min-height: calc(100vh - var(--navbar-height));
-}
-
-.main-content > * {
-  animation: fadeInUp 0.4s ease;
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── Chatbot Bubble ── */
+/* Chatbot */
 .chatbot-bubble {
   position: fixed;
-  bottom: 28px;
-  right: 28px;
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  background: var(--gradient-primary);
-  color: white;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 8px 28px var(--color-primary-glow);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 26px;
-  z-index: 10001;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.3s ease;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
 }
 
-.chatbot-bubble:hover {
-  transform: scale(1.12);
-  box-shadow: 0 12px 36px rgba(102, 126, 234, 0.6);
-}
-
-.chatbot-bubble:active {
-  transform: scale(0.96);
-}
-
-.chatbot-bubble:focus-visible {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 4px;
-}
-
-/* Notification badge */
 .chatbot-notification {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 14px;
-  height: 14px;
-  background: #ff4757;
-  border: 2px solid white;
-  border-radius: 50%;
-  animation: pulse 2s ease-in-out infinite;
+  top: 4px;
+  right: 4px;
+  color: #f44336;
+  font-size: 16px;
+  line-height: 1;
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50%       { transform: scale(1.25); opacity: 0.75; }
-}
-
-/* Chatbot popup */
 .chatbot-popup-wrapper {
   position: fixed;
-  bottom: 108px;
-  right: 28px;
-  z-index: 10001;
-  animation: slideInUp 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes slideInUp {
-  from { opacity: 0; transform: translateY(24px) scale(0.95); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-/* ── Sidebar scrollbar ── */
-.sidebar::-webkit-scrollbar {
-  width: 5px;
-}
-
-.sidebar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: var(--radius-full);
-}
-
-.sidebar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.4);
-}
-
-/* ── Responsive ── */
-@media (max-width: 1024px) {
-  .sidebar {
-    width: 240px;
-  }
-
-  .main-content {
-    margin-left: 240px;
-    padding: var(--space-6);
-  }
-}
-
-@media (max-width: 768px) {
-  .dashboard-layout {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    position: relative;
-    width: 100%;
-    top: 0;
-    height: auto;
-    padding: var(--space-3) 0;
-  }
-
-  .sidebar ul {
-    display: flex;
-    overflow-x: auto;
-    padding: 0 var(--space-4);
-    gap: var(--space-2);
-  }
-
-  .sidebar li {
-    margin: 0;
-    padding: 0;
-    flex-shrink: 0;
-  }
-
-  .sidebar a,
-  .sidebar .logout-link {
-    flex-direction: column;
-    text-align: center;
-    padding: var(--space-3) var(--space-3);
-    font-size: 13px;
-    gap: var(--space-1);
-    min-width: 100px;
-    transform: none !important;
-  }
-
-  .sidebar a:hover,
-  .sidebar .logout-link:hover {
-    transform: none !important;
-  }
-
-  .me-2 {
-    margin-right: 0;
-  }
-
-  .main-content {
-    margin-left: 0;
-    padding: var(--space-4);
-  }
-
-  .chatbot-popup-wrapper {
-    bottom: 88px;
-    right: var(--space-3);
-    left: var(--space-3);
-  }
-
-  .chatbot-bubble {
-    width: 54px;
-    height: 54px;
-    font-size: 22px;
-    bottom: 20px;
-    right: 20px;
-  }
-}
-
-@media (max-width: 480px) {
-  .main-content {
-    padding: var(--space-3);
-  }
-
-  .chatbot-bubble {
-    bottom: 14px;
-    right: 14px;
-  }
-
-  .chatbot-popup-wrapper {
-    bottom: 76px;
-    right: var(--space-2);
-    left: var(--space-2);
-  }
+  bottom: 90px;
+  right: 24px;
+  z-index: 1001;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  border-radius: 16px;
+  overflow: hidden;
 }

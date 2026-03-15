@@ -1,75 +1,38 @@
-<nav class="navbar">
-  <div class="navbar-container">
-    <!-- Logo / Brand -->
-    <div class="navbar-brand">
-      <a routerLink="/dashboard" class="brand-link">
-        <span class="brand-icon">🏢</span>
-        <span class="brand-text">HR Management</span>
-      </a>
-    </div>
+<mat-toolbar color="primary" class="app-toolbar">
+  <a routerLink="/dashboard" class="brand-link">
+    <mat-icon>business</mat-icon>
+    <span class="brand-text">HR Vision</span>
+  </a>
 
-    <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
-      <span class="hamburger-icon">☰</span>
-    </button>
+  <span class="toolbar-spacer"></span>
 
-    <!-- Right Side Actions -->
-    <div class="navbar-actions">
-      <!-- Notification Bell -->
-      <app-notification></app-notification>
+  <app-notification></app-notification>
 
-      <!-- User Profile Dropdown -->
-      <div class="user-menu">
-        <button class="user-button" (click)="toggleUserMenu()">
-          <div class="user-avatar">
-            {{ getUserInitials() }}
-          </div>
-          <span class="user-name">{{ currentUser?.username || 'User' }}</span>
-          <span class="dropdown-arrow" [class.open]="isUserMenuOpen">▼</span>
-        </button>
+  <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
+    <div class="user-avatar-chip">{{ getUserInitials() }}</div>
+  </button>
 
-        <!-- User Dropdown Menu -->
-        @if (isUserMenuOpen) {
-          <div class="user-dropdown">
-            <div class="dropdown-header">
-              <div class="user-avatar-large">
-                {{ getUserInitials() }}
-              </div>
-              <div class="user-info">
-                <p class="user-fullname">{{ currentUser?.username || 'User' }}</p>
-                <p class="user-email">{{ currentUser?.email || 'user@example.com' }}</p>
-              </div>
-            </div>
-
-            <div class="dropdown-divider"></div>
-
-            <a routerLink="/profile" class="dropdown-item" (click)="closeUserMenu()">
-              <span class="item-icon">👤</span>
-              My Profile
-            </a>
-            <a routerLink="/settings" class="dropdown-item" (click)="closeUserMenu()">
-              <span class="item-icon">⚙️</span>
-              Settings
-            </a>
-            <a routerLink="/notifications" class="dropdown-item" (click)="closeUserMenu()">
-              <span class="item-icon">🔔</span>
-              All Notifications
-            </a>
-
-            <div class="dropdown-divider"></div>
-
-            <button class="dropdown-item logout" (click)="logout()">
-              <span class="item-icon">🚪</span>
-              Logout
-            </button>
-          </div>
-        }
+  <mat-menu #userMenu="matMenu" xPosition="before">
+    <div class="menu-header">
+      <div class="menu-avatar">{{ getUserInitials() }}</div>
+      <div class="menu-user-info">
+        <span class="menu-username">{{ currentUser?.username || 'User' }}</span>
+        <span class="menu-email">{{ currentUser?.email || '' }}</span>
       </div>
     </div>
-  </div>
-</nav>
-
-<!-- Overlay for mobile menu and dropdowns -->
-@if (isMobileMenuOpen || isUserMenuOpen) {
-  <div class="navbar-overlay" (click)="closeAllMenus()"></div>
-}
+    <mat-divider></mat-divider>
+    <button mat-menu-item routerLink="/my-profile">
+      <mat-icon>person</mat-icon>
+      <span>My Profile</span>
+    </button>
+    <button mat-menu-item routerLink="/notifications">
+      <mat-icon>notifications</mat-icon>
+      <span>Notifications</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="logout()" class="logout-menu-item">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>

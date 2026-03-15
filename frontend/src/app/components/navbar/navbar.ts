@@ -3,18 +3,30 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NotificationComponent } from '../notification/notification';
 import { AuthService, User } from '../../services/auth.service';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, NotificationComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    NotificationComponent,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDividerModule
+  ],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css']
 })
 export class NavbarComponent implements OnInit {
   currentUser: User | null = null;
-  isMobileMenuOpen = false;
-  isUserMenuOpen = false;
   isManager = false;
   isAdmin = false;
   isEmployee = false;
@@ -25,7 +37,6 @@ export class NavbarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Subscribe to current user
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
       this.checkUserRole();
@@ -33,14 +44,13 @@ export class NavbarComponent implements OnInit {
   }
 
   checkUserRole(): void {
-    this.isAdmin = this.authService.isHRorManager()
-    this.isManager = this.authService.isHRManager()
+    this.isAdmin = this.authService.isHRorManager();
+    this.isManager = this.authService.isHRManager();
     this.isEmployee = this.authService.isEmployee();
   }
 
   getUserInitials(): string {
     if (!this.currentUser?.username) return 'U';
-
     const names = this.currentUser.username.split(' ');
     if (names.length >= 2) {
       return (names[0][0] + names[1][0]).toUpperCase();
@@ -48,49 +58,8 @@ export class NavbarComponent implements OnInit {
     return this.currentUser.username.substring(0, 2).toUpperCase();
   }
 
-  toggleMobileMenu(): void {
-    this.isMobileMenuOpen = !this.isMobileMenuOpen;
-    this.isUserMenuOpen = false;
-  }
-
-  closeMobileMenu(): void {
-    this.isMobileMenuOpen = false;
-  }
-
-  toggleUserMenu(): void {
-    this.isUserMenuOpen = !this.isUserMenuOpen;
-    this.isMobileMenuOpen = false;
-  }
-
-  closeUserMenu(): void {
-    this.isUserMenuOpen = false;
-  }
-
-  closeAllMenus(): void {
-    this.isMobileMenuOpen = false;
-    this.isUserMenuOpen = false;
-  }
-
   logout(): void {
     this.authService.logout();
-    this.closeAllMenus();
     this.router.navigate(['/login']);
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any): void {
-    if (event.target.innerWidth > 768) {
-      this.isMobileMenuOpen = false;
-    }
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    const clickedInsideNavbar = target.closest('.navbar');
-
-    if (!clickedInsideNavbar) {
-      this.closeAllMenus();
-    }
   }
 }
