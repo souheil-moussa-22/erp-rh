@@ -387,13 +387,14 @@ export class EmployeeListComponent implements OnInit {
     });
   }
 
-  getInitials(emp: any): string {
+  getInitials(emp: Employee): string {
     const first = (emp.firstName || '')[0] || '';
     const last = (emp.lastName || '')[0] || '';
     return (first + last).toUpperCase() || 'U';
   }
 
-  viewEmployee(id: any): void {
+  viewEmployee(id: string | undefined): void {
+    if (!id) return;
     this.router.navigate(['/employees', id]);
   }
 

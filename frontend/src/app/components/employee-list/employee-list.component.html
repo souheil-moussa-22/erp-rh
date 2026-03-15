@@ -60,7 +60,7 @@
             <div class="employee-name-cell">
               <div class="emp-avatar">{{ getInitials(emp) }}</div>
               <div>
-                <div class="emp-name">{{ emp.firstName }} {{ emp.lastName }}</div>
+                <div class="emp-name">{{ emp.firstName || emp.username }} {{ emp.lastName || '' }}</div>
               </div>
             </div>
           </td>
@@ -135,7 +135,7 @@
           <mat-card-subtitle>This action cannot be undone</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-          <p>Are you sure you want to delete <strong>{{ employeeToDelete.firstName }} {{ employeeToDelete.lastName }}</strong>?</p>
+          <p>Are you sure you want to delete <strong>{{ employeeToDelete.firstName || employeeToDelete.username }} {{ employeeToDelete.lastName || '' }}</strong>?</p>
         </mat-card-content>
         <mat-card-actions align="end">
           <button mat-button (click)="cancelDelete()">Cancel</button>
