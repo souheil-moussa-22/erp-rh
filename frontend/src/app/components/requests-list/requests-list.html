@@ -1,214 +1,165 @@
 <div class="requests-page">
   <!-- Page Header -->
   <div class="page-header">
-    <div class="header-content">
+    <div>
       <h1>My Leave Requests</h1>
       <p class="subtitle">View and manage your leave requests</p>
     </div>
-    <button class="btn-primary" (click)="goToSubmitRequest()">
-      <span class="btn-icon">➕</span>
-      New Request
+    <button mat-raised-button color="primary" (click)="goToSubmitRequest()">
+      <mat-icon>add</mat-icon> New Request
     </button>
+  </div>
+
+  <!-- Stats row -->
+  <div class="stats-row" *ngIf="requests && requests.length > 0">
+    <mat-card class="stat-card">
+      <mat-icon>list_alt</mat-icon>
+      <div class="stat-value">{{ getTotalCount() }}</div>
+      <div class="stat-label">Total</div>
+    </mat-card>
+    <mat-card class="stat-card stat-pending">
+      <mat-icon>pending</mat-icon>
+      <div class="stat-value">{{ getCountByStatus('PENDING') }}</div>
+      <div class="stat-label">Pending</div>
+    </mat-card>
+    <mat-card class="stat-card stat-approved">
+      <mat-icon>check_circle</mat-icon>
+      <div class="stat-value">{{ getCountByStatus('APPROVED') }}</div>
+      <div class="stat-label">Approved</div>
+    </mat-card>
+    <mat-card class="stat-card stat-rejected">
+      <mat-icon>cancel</mat-icon>
+      <div class="stat-value">{{ getCountByStatus('REJECTED') }}</div>
+      <div class="stat-label">Rejected</div>
+    </mat-card>
   </div>
 
   <!-- Filter Tabs -->
   <div class="filter-tabs">
-    <button
-      class="tab-button"
-      [class.active]="filter === 'all'"
-      (click)="filterRequests('all')"
-    >
+    <button mat-button [class.active-tab]="filter === 'all'" (click)="filterRequests('all')">
       All ({{ getTotalCount() }})
     </button>
-    <button
-      class="tab-button"
-      [class.active]="filter === 'PENDING'"
-      (click)="filterRequests('PENDING')"
-    >
-      <span class="status-badge pending">⏳</span>
-      Pending ({{ getCountByStatus('PENDING') }})
+    <button mat-button [class.active-tab]="filter === 'PENDING'" (click)="filterRequests('PENDING')">
+      <mat-icon>pending</mat-icon> Pending ({{ getCountByStatus('PENDING') }})
     </button>
-    <button
-      class="tab-button"
-      [class.active]="filter === 'APPROVED'"
-      (click)="filterRequests('APPROVED')"
-    >
-      <span class="status-badge approved">✅</span>
-      Approved ({{ getCountByStatus('APPROVED') }})
+    <button mat-button [class.active-tab]="filter === 'APPROVED'" (click)="filterRequests('APPROVED')">
+      <mat-icon>check_circle</mat-icon> Approved ({{ getCountByStatus('APPROVED') }})
     </button>
-    <button
-      class="tab-button"
-      [class.active]="filter === 'REJECTED'"
-      (click)="filterRequests('REJECTED')"
-    >
-      <span class="status-badge rejected">❌</span>
-      Rejected ({{ getCountByStatus('REJECTED') }})
+    <button mat-button [class.active-tab]="filter === 'REJECTED'" (click)="filterRequests('REJECTED')">
+      <mat-icon>cancel</mat-icon> Rejected ({{ getCountByStatus('REJECTED') }})
     </button>
   </div>
 
   <!-- Loading State -->
-  @if (isLoading) {
-    <div class="loading-container">
-      <div class="spinner"></div>
-      <p>Loading your requests...</p>
-    </div>
-  }
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Loading your requests...</p>
+  </div>
 
   <!-- Error Message -->
-  @if (errorMessage && !isLoading) {
-    <div class="alert alert-error">
-      {{ errorMessage }}
-    </div>
-  }
+  <div *ngIf="errorMessage && !isLoading" class="alert alert-error">
+    <mat-icon>error_outline</mat-icon>
+    {{ errorMessage }}
+  </div>
 
   <!-- Requests List -->
-  @if (!isLoading && !errorMessage) {
-    <div class="requests-container">
-      @if (filteredRequests.length === 0) {
-        <div class="empty-state">
-          <span class="empty-icon">📋</span>
-          <h3>No requests found</h3>
-          <p>
-            @if (filter === 'all') {
-              You haven't submitted any leave requests yet.
-            } @else {
-              You don't have any {{ filter.toLowerCase() }} requests.
-            }
-          </p>
-          <button class="btn-secondary" (click)="goToSubmitRequest()">
-            Submit Your First Request
-          </button>
-        </div>
-      } @else {
-        <div class="requests-grid">
-          @for (request of filteredRequests; track request.id) {
-            <div class="request-card" [class.pending]="request.status === 'PENDING'">
-              <!-- Card Header -->
-              <div class="card-header">
-                <div class="request-type">
-                  <span class="type-icon">{{ getTypeIcon(request.type) }}</span>
-                  <span class="type-text">{{ formatType(request.type) }}</span>
-                </div>
-                <span class="status-badge" [ngClass]="getStatusClass(request.status)">
-                  {{ getDisplayStatus(request.status) }}
-                </span>
-              </div>
-
-              <!-- Card Body -->
-              <div class="card-body">
-                <!-- Dates -->
-                <div class="info-row">
-                  <span class="info-label">📅 Duration:</span>
-                  <span class="info-value">
-                    {{ formatDate(request.startDate) }} → {{ formatDate(request.endDate) }}
-                  </span>
-                </div>
-
-                <div class="info-row">
-                  <span class="info-label">⏱️ Days:</span>
-                  <span class="info-value">{{ request.duration }} day(s)</span>
-                </div>
-
-                <!-- Reason -->
-                <div class="info-row reason">
-                  <span class="info-label">💭 Reason:</span>
-                  <p class="reason-text">{{ request.reason }}</p>
-                </div>
-
-                <!-- Submission Date -->
-                <div class="info-row">
-                  <span class="info-label">📤 Submitted:</span>
-                  <span class="info-value">{{ formatDateTime(request.submissionDate) }}</span>
-                </div>
-
-                <!-- Response Info (if approved/rejected) -->
-                @if (request.status !== 'PENDING') {
-                  <div class="response-section">
-                    <!-- RH Response -->
-                    @if (request.status === 'APPROVED_RH' || request.status === 'REJECTED_RH' ||
-                    request.status === 'APPROVED_MANAGER' || request.status === 'REJECTED_MANAGER') {
-                      <div class="info-row">
-                        <span class="info-label">
-                          @if (request.status === 'REJECTED_RH') {
-                            ❌ RH Decision:
-                          } @else {
-                            ✅ RH Approved by:
-                          }
-                        </span>
-                        <span class="info-value">{{ request.rhRespondedBy || 'RH' }}</span>
-                      </div>
-                      <div class="info-row">
-                        <span class="info-label">📆 RH Response Date:</span>
-                        <span class="info-value">{{ formatDateTime(request.rhResponseDate || '') }}</span>
-                      </div>
-                      @if (request.rhRejectionReason) {
-                        <div class="rejection-reason">
-                          <strong>RH Rejection Reason:</strong>
-                          <p>{{ request.rhRejectionReason }}</p>
-                        </div>
-                      }
-                    }
-
-                    <!-- Manager Response -->
-                    @if (request.status === 'APPROVED_MANAGER' || request.status === 'REJECTED_MANAGER') {
-                      <div class="info-row manager-response">
-                        <span class="info-label">
-                          @if (request.status === 'REJECTED_MANAGER') {
-                            ❌ Manager Decision:
-                          } @else {
-                            ✅ Manager Approved by:
-                          }
-                        </span>
-                        <span class="info-value">{{ request.managerRespondedBy || 'Manager' }}</span>
-                      </div>
-                      <div class="info-row">
-                        <span class="info-label">📆 Manager Response Date:</span>
-                        <span class="info-value">{{ formatDateTime(request.managerResponseDate || '') }}</span>
-                      </div>
-                      @if (request.managerRejectionReason) {
-                        <div class="rejection-reason">
-                          <strong>Manager Rejection Reason:</strong>
-                          <p>{{ request.managerRejectionReason }}</p>
-                        </div>
-                      }
-                    }
-                  </div>
-                }
-              </div>
-
-              <!-- Card Actions -->
-              <div class="card-actions">
-                <button class="btn-view" (click)="viewDetails(request)">
-                  View Details
-                </button>
-                @if (request.status === 'PENDING') {
-                  <button class="btn-delete" (click)="deleteRequest(request)">
-                    🗑️ Cancel
-                  </button>
-                }
-              </div>
-            </div>
-          }
-        </div>
-      }
+  <ng-container *ngIf="!isLoading && !errorMessage">
+    <!-- Empty state -->
+    <div *ngIf="filteredRequests.length === 0" class="empty-state">
+      <mat-icon>event_busy</mat-icon>
+      <h3>No requests found</h3>
+      <p>
+        <ng-container *ngIf="filter === 'all'">You haven't submitted any leave requests yet.</ng-container>
+        <ng-container *ngIf="filter !== 'all'">You don't have any {{ filter.toLowerCase() }} requests.</ng-container>
+      </p>
+      <button mat-raised-button color="primary" (click)="goToSubmitRequest()">
+        Submit Your First Request
+      </button>
     </div>
-  }
+
+    <!-- Cards grid -->
+    <div *ngIf="filteredRequests.length > 0" class="requests-grid">
+      <mat-card *ngFor="let request of filteredRequests" class="request-card"
+                [class.border-pending]="request.status === 'PENDING'"
+                [class.border-approved]="request.status === 'APPROVED_RH'"
+                [class.border-rejected]="request.status === 'REJECTED_RH' || request.status === 'REJECTED_MANAGER'">
+
+        <mat-card-header>
+          <div mat-card-avatar class="type-avatar">{{ getTypeIcon(request.type) }}</div>
+          <mat-card-title>{{ formatType(request.type) }} Leave</mat-card-title>
+          <mat-card-subtitle>{{ request.duration }} day(s) · {{ formatDate(request.startDate) }} → {{ formatDate(request.endDate) }}</mat-card-subtitle>
+          <span class="status-chip" [ngClass]="'chip-' + getStatusClass(request.status)">
+            {{ getDisplayStatus(request.status) }}
+          </span>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="reason-box">
+            <mat-icon>comment</mat-icon>
+            <p>{{ request.reason }}</p>
+          </div>
+
+          <div class="meta-row">
+            <mat-icon>schedule</mat-icon>
+            <span>Submitted {{ formatDateTime(request.submissionDate) }}</span>
+          </div>
+
+          <!-- Response info -->
+          <ng-container *ngIf="request.status !== 'PENDING'">
+            <mat-divider class="divider"></mat-divider>
+
+            <!-- RH Response -->
+            <ng-container *ngIf="request.rhResponseDate">
+              <div class="response-item" [class.response-rejected]="request.status === 'REJECTED_RH'">
+                <mat-icon>{{ request.status === 'REJECTED_RH' ? 'cancel' : 'verified' }}</mat-icon>
+                <div>
+                  <div class="response-label">RH: {{ request.rhRespondedBy || 'RH' }}</div>
+                  <div class="response-date">{{ formatDateTime(request.rhResponseDate) }}</div>
+                  <div *ngIf="request.rhRejectionReason" class="rejection-text">{{ request.rhRejectionReason }}</div>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- Manager Response -->
+            <ng-container *ngIf="request.managerResponseDate">
+              <div class="response-item" [class.response-rejected]="request.status === 'REJECTED_MANAGER'">
+                <mat-icon>{{ request.status === 'REJECTED_MANAGER' ? 'cancel' : 'verified' }}</mat-icon>
+                <div>
+                  <div class="response-label">Manager: {{ request.managerRespondedBy || 'Manager' }}</div>
+                  <div class="response-date">{{ formatDateTime(request.managerResponseDate) }}</div>
+                  <div *ngIf="request.managerRejectionReason" class="rejection-text">{{ request.managerRejectionReason }}</div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </mat-card-content>
+
+        <mat-card-actions>
+          <button mat-button color="primary" (click)="viewDetails(request)">
+            <mat-icon>info</mat-icon> Details
+          </button>
+          <button mat-button color="warn" *ngIf="request.status === 'PENDING'" (click)="deleteRequest(request)">
+            <mat-icon>delete</mat-icon> Cancel
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </ng-container>
 </div>
 
 <!-- Delete Confirmation Modal -->
-@if (showDeleteModal) {
-  <div class="modal-overlay" (click)="closeDeleteModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <h3>Cancel Leave Request?</h3>
+<div *ngIf="showDeleteModal" class="modal-overlay" (click)="closeDeleteModal()">
+  <mat-card class="modal-card" (click)="$event.stopPropagation()">
+    <mat-card-header>
+      <mat-icon mat-card-avatar color="warn">warning</mat-icon>
+      <mat-card-title>Cancel Leave Request?</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
       <p>Are you sure you want to cancel this leave request? This action cannot be undone.</p>
-      <div class="modal-actions">
-        <button class="btn-secondary" (click)="closeDeleteModal()">
-          No, Keep It
-        </button>
-        <button class="btn-danger" (click)="confirmDelete()">
-          Yes, Cancel Request
-        </button>
-      </div>
-    </div>
-  </div>
-}
+    </mat-card-content>
+    <mat-card-actions align="end">
+      <button mat-button (click)="closeDeleteModal()">No, Keep It</button>
+      <button mat-raised-button color="warn" (click)="confirmDelete()">Yes, Cancel Request</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

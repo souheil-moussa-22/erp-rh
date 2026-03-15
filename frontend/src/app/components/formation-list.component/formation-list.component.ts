@@ -5,6 +5,16 @@ import { FormationService, Formation } from '../../services/formation.service';
 import { FormsModule } from '@angular/forms';
 import { StatisticsCardComponent, StatCard } from '../statistics-card.component/statistics-card.component';
 import { FormationCardComponent } from '../formation-card.component/formation-card.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @Component({
   selector: 'app-formation-list',
@@ -14,7 +24,17 @@ import { FormationCardComponent } from '../formation-card.component/formation-ca
     RouterModule,
     FormsModule,
     StatisticsCardComponent,
-    FormationCardComponent
+    FormationCardComponent,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatChipsModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatBadgeModule
   ],
   templateUrl: './formation-list.component.html',
   styleUrls: ['./formation-list.component.css']

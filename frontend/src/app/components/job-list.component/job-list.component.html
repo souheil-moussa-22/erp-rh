@@ -1,198 +1,100 @@
-<div class="job-container">
-  <div class="job-card">
-    <!-- Header with title and actions -->
-    <div class="job-header">
-      <h1 class="job-title">
-        <i class="fas fa-briefcase me-2"></i>
-        Job Offers Management
-      </h1>
-      
-      <div class="search-filter-container">
-        <!-- Search bar -->
-        <div class="search-wrapper">
-          <i class="fas fa-search search-icon"></i>
-          <input
-            type="text"
-            class="search-input"
-            placeholder="Search for an offer..."
-            [(ngModel)]="searchKeyword"
-            (input)="searchJobs()"
-          >
-        </div>
-        
-        <!-- Status filter -->
-        <div class="filter-wrapper">
-          <i class="fas fa-filter filter-icon"></i>
-          <select class="filter-select" [(ngModel)]="selectedStatus" (change)="filterByStatus()">
-            <option *ngFor="let status of statuses" [value]="status">
-              {{ status === 'ALL' ? 'All Statuses' : status }}
-            </option>
-          </select>
-        </div>
-        
-        <!-- Create button -->
-        <a routerLink="/jobs/new" class="create-button">
-          <i class="fas fa-plus me-2"></i>
-          New Offer
-        </a>
-      </div>
+<div class="jobs-page">
+  <div class="page-header">
+    <div>
+      <h1>Job Offers</h1>
+      <p class="subtitle">Manage open positions and job listings</p>
     </div>
+    <a mat-raised-button color="primary" routerLink="/jobs/new">
+      <mat-icon>add</mat-icon> New Job Offer
+    </a>
+  </div>
 
-    <!-- Loading State -->
-    @if (loading) {
-      <div class="loading-container">
-        <div class="loading-spinner">
-          <i class="fas fa-spinner fa-spin"></i>
+  <!-- Filters -->
+  <div class="filters-row">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search jobs</mat-label>
+      <input matInput [(ngModel)]="searchKeyword" (input)="searchJobs()" placeholder="Title, department...">
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-select">
+      <mat-label>Status</mat-label>
+      <mat-select [(ngModel)]="selectedStatus" (ngModelChange)="filterByStatus()">
+        <mat-option value="ALL">All</mat-option>
+        <mat-option value="DRAFT">Draft</mat-option>
+        <mat-option value="PUBLISHED">Published</mat-option>
+        <mat-option value="CLOSED">Closed</mat-option>
+        <mat-option value="ARCHIVED">Archived</mat-option>
+        <mat-option value="EXPIRED">Expired</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Loading job offers...</p>
+  </div>
+
+  <!-- Jobs grid -->
+  <div *ngIf="!loading" class="jobs-grid">
+    <mat-card *ngFor="let job of filteredOffers" class="job-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>work</mat-icon>
+        <mat-card-title>{{ job.title }}</mat-card-title>
+        <mat-card-subtitle>{{ job.department }} · {{ job.location }}</mat-card-subtitle>
+        <span class="status-chip" [class]="'status-' + job.status?.toLowerCase()">
+          {{ job.status }}
+        </span>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p class="description">{{ job.description | slice:0:150 }}{{ (job.description?.length ?? 0) > 150 ? '...' : '' }}</p>
+
+        <div class="job-tags">
+          <mat-chip-set>
+            <mat-chip *ngIf="job.contractType">{{ job.contractType }}</mat-chip>
+            <mat-chip *ngIf="job.experienceLevel">{{ job.experienceLevel }}</mat-chip>
+            <mat-chip *ngIf="job.educationRequired">{{ job.educationRequired }}</mat-chip>
+          </mat-chip-set>
         </div>
-        <p>Loading job offers...</p>
-      </div>
-    }
 
-    <!-- Job offers grid -->
-    @if (!loading && filteredOffers.length > 0) {
-      <div class="job-grid">
-        @for (job of filteredOffers; track job.id) {
-          <div class="job-item">
-            
-            <!-- Offer header -->
-            <div class="job-item-header">
-              <div>
-                <h3 class="job-item-title">
-                  <i class="fas fa-file-alt me-2"></i>
-                  {{ job.title }}
-                </h3>
-                <p class="job-department">
-                  <i class="fas fa-building me-2"></i>
-                  {{ job.department }} • 
-                  <i class="fas fa-map-marker-alt me-2"></i>
-                  {{ job.location }}
-                </p>
-              </div>
-              <span class="status-badge" [class]="getStatusBadgeClass(job.status)">
-                <i class="fas" [class]="getStatusIcon(job.status)"></i>
-                {{ job.status }}
-              </span>
-            </div>
-
-            <!-- Main details -->
-            <div class="job-details">
-              <div class="job-detail">
-                <i class="fas fa-file-contract me-2"></i>
-                {{ job.contractType }}
-              </div>
-              <div class="job-detail">
-                <i class="fas fa-chart-line me-2"></i>
-                {{ job.experienceLevel }}
-              </div>
-              <div class="job-detail">
-                <i class="fas fa-graduation-cap me-2"></i>
-                {{ job.educationRequired }}
-              </div>
-              @if (job.closingDate) {
-                <div class="job-detail">
-                  <i class="fas fa-calendar-times me-2"></i>
-                  Closes: {{ formatDate(job.closingDate) }}
-                </div>
-              }
-            </div>
-
-            <!-- Description -->
-            <p class="job-description">
-              <i class="fas fa-align-left me-2"></i>
-              {{ job.description }}
-            </p>
-
-            <!-- Statistics -->
-            <div class="job-stats">
-              <div class="stat">
-                <i class="fas fa-eye stat-icon"></i>
-                <span class="stat-value">{{ job.viewCount || 0 }}</span>
-                <span class="stat-label">Views</span>
-              </div>
-              <div class="stat">
-                <i class="fas fa-users stat-icon"></i>
-                <span class="stat-value">{{ job.applicationCount || 0 }}</span>
-                <span class="stat-label">Applications</span>
-              </div>
-              <div class="stat">
-                <i class="fas fa-tags stat-icon"></i>
-                <span class="stat-value">{{ job.tags.length || 0 }}</span>
-                <span class="stat-label">Tags</span>
-              </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="job-actions">
-              @if (job.status === 'DRAFT') {
-                <button 
-                  class="action-button btn-success"
-                  (click)="publishJob(job.id)"
-                  title="Publish offer">
-                  <i class="fas fa-bullhorn me-2"></i>
-                  Publish
-                </button>
-              }
-              
-              @if (job.status === 'PUBLISHED') {
-                <button 
-                  class="action-button btn-warning"
-                  (click)="closeJob(job.id)"
-                  title="Close offer">
-                  <i class="fas fa-lock me-2"></i>
-                  Close
-                </button>
-              }
-              
-            <!-- Dans la section des actions, remplacez le bouton Edit -->
-<a 
-  [routerLink]="['/jobs', job.id, 'edit']" 
-  class="action-button btn-primary"
-  title="Edit offer">
-  <i class="fas fa-edit me-2"></i>
-  Edit
-</a>
-              
-              <button 
-                class="action-button btn-danger"
-                (click)="deleteJob(job.id)"
-                title="Delete offer">
-                <i class="fas fa-trash me-2"></i>
-                Delete
-              </button>
-            </div>
-
-            <!-- Tags -->
-            @if (job.tags && job.tags.length > 0) {
-              <div class="job-tags">
-                <i class="fas fa-hashtag me-2"></i>
-                @for (tag of job.tags; track tag) {
-                  <span class="tag">{{ tag }}</span>
-                }
-              </div>
-            }
-          </div>
-        }
-      </div>
-    }
-
-    <!-- No results -->
-    @if (!loading && filteredOffers.length === 0) {
-      <div class="no-results">
-        <div class="no-results-icon">
-          <i class="fas fa-search fa-3x"></i>
+        <div class="job-meta" *ngIf="job.closingDate">
+          <mat-icon>event</mat-icon>
+          <span>Closes {{ job.closingDate | date:'mediumDate' }}</span>
         </div>
-        <h3>No offers found</h3>
-        @if (searchKeyword || selectedStatus !== 'ALL') {
-          <p>No offers match your search criteria.</p>
-        }
-        @if (!searchKeyword && selectedStatus === 'ALL') {
-          <p>No job offers have been created yet.</p>
-        }
-        <a routerLink="/jobs/new" class="create-button" style="margin-top: 20px;">
-          <i class="fas fa-plus me-2"></i>
-          Create first offer
+
+        <div class="job-stats-row">
+          <span class="stat-item">
+            <mat-icon>visibility</mat-icon> {{ job.viewCount || 0 }} views
+          </span>
+          <span class="stat-item">
+            <mat-icon>people</mat-icon> {{ job.applicationCount || 0 }} applications
+          </span>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-button color="primary" *ngIf="job.status === 'DRAFT'" (click)="publishJob(job.id)">
+          <mat-icon>publish</mat-icon> Publish
+        </button>
+        <button mat-button *ngIf="job.status === 'PUBLISHED'" (click)="closeJob(job.id)">
+          <mat-icon>lock</mat-icon> Close
+        </button>
+        <a mat-icon-button [routerLink]="['/jobs', job.id, 'edit']" matTooltip="Edit">
+          <mat-icon>edit</mat-icon>
         </a>
-      </div>
-    }
+        <button mat-icon-button color="warn" (click)="deleteJob(job.id)" matTooltip="Delete">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && filteredOffers?.length === 0" class="empty-state">
+    <mat-icon>work_outline</mat-icon>
+    <h3>No job offers found</h3>
+    <p>{{ searchKeyword || selectedStatus !== 'ALL' ? 'No offers match your search criteria.' : 'Create a new job offer to get started' }}</p>
   </div>
 </div>
