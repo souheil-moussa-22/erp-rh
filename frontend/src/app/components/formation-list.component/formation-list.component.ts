@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormationService, Formation } from '../../services/formation.service';
 import { FormsModule } from '@angular/forms';
-import { StatisticsCardComponent, StatCard } from '../statistics-card.component/statistics-card.component';
-import { FormationCardComponent } from '../formation-card.component/formation-card.component';
+import { StatCard } from '../statistics-card.component/statistics-card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,8 +22,6 @@ import { MatBadgeModule } from '@angular/material/badge';
     CommonModule,
     RouterModule,
     FormsModule,
-    StatisticsCardComponent,
-    FormationCardComponent,
     MatCardModule,
     MatButtonModule,
     MatIconModule,

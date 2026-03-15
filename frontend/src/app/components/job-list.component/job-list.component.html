@@ -43,13 +43,13 @@
         <mat-icon mat-card-avatar>work</mat-icon>
         <mat-card-title>{{ job.title }}</mat-card-title>
         <mat-card-subtitle>{{ job.department }} · {{ job.location }}</mat-card-subtitle>
-        <span class="status-chip" [class]="'status-' + job.status?.toLowerCase()">
+        <span class="status-chip" [class]="'status-' + job.status.toLowerCase()">
           {{ job.status }}
         </span>
       </mat-card-header>
 
       <mat-card-content>
-        <p class="description">{{ job.description | slice:0:150 }}{{ (job.description?.length ?? 0) > 150 ? '...' : '' }}</p>
+        <p class="description">{{ job.description | slice:0:150 }}{{ job.description.length > 150 ? '...' : '' }}</p>
 
         <div class="job-tags">
           <mat-chip-set>
@@ -92,7 +92,7 @@
   </div>
 
   <!-- Empty state -->
-  <div *ngIf="!loading && filteredOffers?.length === 0" class="empty-state">
+  <div *ngIf="!loading && filteredOffers.length === 0" class="empty-state">
     <mat-icon>work_outline</mat-icon>
     <h3>No job offers found</h3>
     <p>{{ searchKeyword || selectedStatus !== 'ALL' ? 'No offers match your search criteria.' : 'Create a new job offer to get started' }}</p>

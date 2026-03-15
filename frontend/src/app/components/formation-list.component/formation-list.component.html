@@ -78,13 +78,13 @@
         <mat-icon mat-card-avatar>school</mat-icon>
         <mat-card-title>{{ formation.title }}</mat-card-title>
         <mat-card-subtitle>{{ formation.category || 'General' }}</mat-card-subtitle>
-        <span class="status-chip" [class]="'status-' + formation.status?.toLowerCase()">
+        <span class="status-chip" [class]="'status-' + formation.status.toLowerCase()">
           {{ formation.status }}
         </span>
       </mat-card-header>
 
       <mat-card-content>
-        <p class="description">{{ formation.description | slice:0:120 }}{{ (formation.description?.length ?? 0) > 120 ? '...' : '' }}</p>
+        <p class="description">{{ formation.description | slice:0:120 }}{{ formation.description.length > 120 ? '...' : '' }}</p>
 
         <div class="formation-meta">
           <div class="meta-item" *ngIf="formation.startDate">
@@ -128,7 +128,7 @@
   </div>
 
   <!-- Empty state -->
-  <div *ngIf="!loading && filteredFormations?.length === 0" class="empty-state">
+  <div *ngIf="!loading && filteredFormations.length === 0" class="empty-state">
     <mat-icon>school</mat-icon>
     <h3>No formations found</h3>
     <p>{{ searchTerm ? 'Try a different search term' : 'Create a new formation to get started' }}</p>
